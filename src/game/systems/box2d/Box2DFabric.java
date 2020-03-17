@@ -269,7 +269,7 @@ public class Box2DFabric extends EntitySystem implements IFabric, EntityListener
 	Vector2 point1 = new Vector2();
 	Vector2 point2 = new Vector2();
 	@Override
-	public boolean isVisible(float x1, float y1, float x2, float y2, IEntityFilter filter)
+	public boolean hasLineOfSight(float x1, float y1, float x2, float y2, IEntityFilter filter)
 	{
 		assert !Float.isNaN(x1) && (x1 != x2 || y1 != y2);
 		callback.reset( filter );

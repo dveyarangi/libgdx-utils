@@ -63,7 +63,7 @@ public class TargetComponent implements Component, Poolable
 			}
 
 			ISpatialComponent t = entity.getComponent(SpatialComponent.class);
-			isVisible = filter == null ? true : fabric.isVisible( s.x(), s.y(), t.x(), t.y(), filter );
+			isVisible = filter == null ? true : fabric.hasLineOfSight( s.x(), s.y(), t.x(), t.y(), filter );
 
 		}
 		while(counter --> 0 && !isVisible);

@@ -1,8 +1,8 @@
 package game.world;
 
-import game.systems.box2d.IEntityFilter;
-
 import com.badlogic.gdx.math.Matrix4;
+
+import game.systems.box2d.IEntityFilter;
 
 /**
  * This interface for entity interactions with world, user and other entities
@@ -16,6 +16,6 @@ public interface IFabric
 
 	public void debugDraw(Matrix4 proj);
 
-	public boolean isVisible(float x1, float y1, float x2, float y2, IEntityFilter filter);
+	public boolean hasLineOfSight(float sx, float sy, float tx, float ty, IEntityFilter filter);
 
 }

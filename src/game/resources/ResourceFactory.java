@@ -21,7 +21,9 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
+import com.badlogic.gdx.utils.GdxRuntimeException;
 
+import game.debug.Debug;
 import game.util.Angles;
 
 /**
@@ -430,7 +432,14 @@ public class ResourceFactory
 
 	public static com.badlogic.gdx.graphics.Texture getTexture( String texture )
 	{
-		return factory.manager.get(texture);
+		try {
+			return factory.manager.get(texture);
+		}
+		catch(GdxRuntimeException e)
+		{
+			Debug.log(e.getMessage() +"; check definitions in " + factory.resourceSetType.getName());
+			throw new IllegalArgumentException(e);
+		}
 	}
 
 	public static com.badlogic.gdx.scenes.scene2d.ui.Skin getSkin( String skin )

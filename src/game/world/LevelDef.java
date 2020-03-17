@@ -55,14 +55,24 @@ public class LevelDef
 	// public IBackground getBackgroundDef() { return background; }
 	// public void setBackgroundDef( final IBackground background ) {
 	// this.background = background; }
-	public List<SystemDef<?>> getSystemDefs()
+	List<SystemDef<?>> getSystemDefs()
 	{
 		return systems;
+	}
+	
+	public void addSystem(SystemDef <?> systemDef)
+	{
+		systems.add(systemDef);
 	}
 
 	public List<EntityDef> getEntityDefs()
 	{
 		return entities;
+	}
+	
+	public void addEntity(EntityDef entityDef)
+	{
+		entities.add(entityDef);
 	}
 
 	// public Map <String, AnimationHandle> getAnimations() { return animations;
