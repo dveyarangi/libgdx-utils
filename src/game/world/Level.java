@@ -11,6 +11,7 @@ import com.badlogic.gdx.Gdx;
 import game.debug.Debug;
 import game.systems.EntityFactory;
 import game.systems.SystemDef;
+import game.systems.control.GameInputProcessor;
 import game.systems.lifecycle.LifecycleSystem;
 import game.systems.rendering.EntityRenderingSystem;
 import game.systems.rendering.ISystemRenderer;
@@ -118,7 +119,7 @@ public class Level extends EntitySystem
 			EntitySystem system = systemDef.createSystem();
 			systemDef.initSystem( this, system );
 			engine.addSystem( system );
-			ISystemRenderer systemRenderer =systemDef.createRenderer( system );
+			ISystemRenderer systemRenderer = systemDef.createRenderer( system );
 			if( systemRenderer != null )
 				systemRenderers.add(systemRenderer);
 		}
@@ -169,6 +170,9 @@ public class Level extends EntitySystem
 		{
 			systemRenderers.get(idx).render();
 		}
+		
+		GameInputProcessor processor = getEngine().getSystem(GameInputProcessor.class);
+		processor.render(renderer);
 	}
 
 	public GameboardModules getModules() { return modules; }

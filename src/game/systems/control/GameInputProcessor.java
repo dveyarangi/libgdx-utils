@@ -351,7 +351,7 @@ public class GameInputProcessor extends EntitySystem implements InputProcessor
 		return true;
 	}
 
-	public void draw( final IRenderer renderer )
+	public void render( final IRenderer renderer )
 	{
 		final ShapeRenderer shape = renderer.shaper();
 
