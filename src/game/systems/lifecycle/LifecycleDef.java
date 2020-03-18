@@ -4,12 +4,14 @@ import com.badlogic.ashley.core.Entity;
 
 import game.systems.IComponentDef;
 import game.world.Level;
+import lombok.NoArgsConstructor;
 
 /**
  * Holds definitions for entity type and life length.
  * @author Fima
  *
  */
+@NoArgsConstructor
 public class LifecycleDef implements IComponentDef <LifecycleComponent>
 {
 

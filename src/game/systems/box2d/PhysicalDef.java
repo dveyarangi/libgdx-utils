@@ -14,12 +14,26 @@ import game.systems.spatial.ISpatialComponent;
 import game.systems.spatial.SpatialComponent;
 import game.util.Angles;
 import game.world.Level;
+import lombok.NoArgsConstructor;
 
 public class PhysicalDef implements IMovementDef<PhysicalComponent>
 {
 
 	// setting body shape to axis aligned square
+	
+	public static PhysicalDef createStatic(PartDef part, short categoryBits)
+	{
+		PhysicalDef physical = new PhysicalDef(0);
+		part.bodyDef.bullet = false;
+		part.bodyDef.type = BodyDef.BodyType.StaticBody;
+		part.fixtureDef.filter.categoryBits = categoryBits;
+		part.fixtureDef.density = 1;
+		physical.parts.add( part );		
 
+		return physical;
+	}
+
+	@NoArgsConstructor
 	public static class PartDef
 	{
 		/**
@@ -31,6 +45,28 @@ public class PhysicalDef implements IMovementDef<PhysicalComponent>
 		public Polygon shape;
 
 		public FixtureDef fixtureDef = new FixtureDef();
+		
+		
+		public static PartDef createSquare(float d)
+		{
+			PartDef def = new PartDef( );
+			def.aabbarr[0].set(-d/2, -d/2);
+			def.aabbarr[1].set(-d/2, +d/2);
+			def.aabbarr[2].set(+d/2, +d/2);
+			def.aabbarr[3].set(+d/2, -d/2);
+			float [] points = new float [8];
+			points[0] = def.aabbarr[0].x;points[1] = def.aabbarr[0].y;
+			points[2] = def.aabbarr[1].x;points[3] = def.aabbarr[1].y;
+			points[4] = def.aabbarr[2].x;points[5] = def.aabbarr[2].y;
+			points[6] = def.aabbarr[3].x;points[7] = def.aabbarr[3].y;
+
+			def.shape = new Polygon( points );
+			PolygonShape poly = new PolygonShape();
+			poly.set( def.aabbarr );
+			def.fixtureDef.shape = poly;
+			
+			return def;
+		}
 
 		public PartDef(float r)
 		{
@@ -68,7 +104,7 @@ public class PhysicalDef implements IMovementDef<PhysicalComponent>
 
 	private float maxSpeed;
 
-	public PhysicalDef( float r, float maxSpeed )
+	public PhysicalDef(float maxSpeed )
 	{
 		this.parts = new Array <PartDef> (1);
 		this.maxSpeed = maxSpeed;

@@ -328,7 +328,7 @@ public class GameInputProcessor extends EntitySystem implements InputProcessor
 
 		consumed = controlModes.drag(worldPos.x, worldPos.y, camController.camera().zoom, pickedObject, lastButton);
 
-		if(! consumed && lastButton == Input.Buttons.LEFT)
+		if(! consumed && lastButton == Input.Buttons.RIGHT)
 		{
 			camController.moveBy(prevWorldPos.x - worldPos.x, prevWorldPos.y - worldPos.y);
 		}
