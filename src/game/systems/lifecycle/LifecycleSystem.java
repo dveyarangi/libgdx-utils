@@ -9,9 +9,9 @@ import com.badlogic.ashley.utils.ImmutableArray;
 import com.badlogic.gdx.utils.PooledLinkedList;
 
 import game.systems.DescendantsComponent;
-import game.systems.EntityId;
 import game.systems.EntityDef;
 import game.systems.EntityFactory;
+import game.systems.EntityId;
 import game.systems.spatial.AnchorComponent;
 import game.systems.spatial.ISpatialComponent;
 import game.world.Constants;
@@ -147,6 +147,9 @@ public class LifecycleSystem extends EntitySystem implements EntityListener
 	 */
 	private void sweepGraveyard()
 	{
+		if(graveyard.size() == 0)
+			return;
+		
 		graveyard.iter();
 		Entity corpse;
 		while( ( corpse = graveyard.next() ) != null )
