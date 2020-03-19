@@ -1,13 +1,13 @@
 package game.systems.rendering;
 
 
-public class TextureRenderingDef extends RendererDef<SpriteRenderingComponent>
+public class TextureRenderingDef extends RendererDef<SpriteComponent>
 {
 	public String textureName;
 
 	public TextureRenderingDef( String textureName )
 	{
-		super(SpriteRenderingComponent.class);
+		super(SpriteComponent.class);
 		this.textureName = textureName;
 	}
 

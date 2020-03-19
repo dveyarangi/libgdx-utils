@@ -12,7 +12,7 @@ import game.systems.rendering.AnimationRenderingComponent;
 import game.systems.rendering.EntityRenderingSystem;
 import game.systems.rendering.MeshRenderingComponent;
 import game.systems.rendering.ShapeRenderingComponent;
-import game.systems.rendering.SpriteRenderingComponent;
+import game.systems.rendering.SpriteComponent;
 import game.world.camera.BestviewCameraProvider;
 import game.world.camera.ICameraProvider;
 
@@ -104,7 +104,7 @@ public abstract class WorldScreen<G extends AbstractGame> extends AbstractScreen
 		modules.addRendererType(AnimationRenderingComponent.class);
 		modules.addRendererType(ShapeRenderingComponent.class);
 		modules.addRendererType(MeshRenderingComponent.class);
-		modules.addRendererType(SpriteRenderingComponent.class);
+		modules.addRendererType(SpriteComponent.class);
 	}
 
 	private void update( float delta )
@@ -147,4 +147,9 @@ public abstract class WorldScreen<G extends AbstractGame> extends AbstractScreen
 		processor.resize(screenWidth, screenHeight);
 	}
 
+	public void dispose()
+	{
+		GameInputProcessor processor = level.getEngine().getSystem(GameInputProcessor.class);
+		processor.dispose();
+	}
 }
