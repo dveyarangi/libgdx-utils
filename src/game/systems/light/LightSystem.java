@@ -13,11 +13,12 @@ import box2dLight.RayHandler;
 import game.config.GraphicOptions;
 import game.systems.spatial.ISpatialComponent;
 import game.systems.spatial.SpatialComponent;
+import lombok.Getter;
 
 public class LightSystem extends EntitySystem implements EntityListener
 {
 
-	private OrthographicCamera camera;
+	@Getter private OrthographicCamera camera;
 	/**
 	 * Entities with light.
 	 */
@@ -27,7 +28,7 @@ public class LightSystem extends EntitySystem implements EntityListener
 	
 	public void init( World world, OrthographicCamera camera, LightSystemDef lightSystemDef  )
 	{
-		RayHandler.setGammaCorrection(true);
+		//RayHandler.setGammaCorrection(true);
 		//RayHandler.useDiffuseLight(true);
 		
 		
@@ -72,8 +73,7 @@ public class LightSystem extends EntitySystem implements EntityListener
 			light.light.setPosition(spatial.x(), spatial.y());
 		}
 
-		rayHandler.setCombinedMatrix( camera );
-		rayHandler.update();
+		//rayHandler.update();
 	}
 
 
