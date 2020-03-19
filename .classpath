@@ -28,12 +28,22 @@
 			<attribute name="gradle_used_by_scope" value="main,test"/>
 		</attributes>
 	</classpathentry>
+	<classpathentry exported="true" kind="lib" path="D:/Dev/gradle-5.6.2/data/caches/modules-2/files-2.1/com.kotcrab.vis/vis-ui/1.4.2/229926609c7150a6d75df79f64320943e8b895a3/vis-ui-1.4.2.jar" sourcepath="D:/Dev/gradle-5.6.2/data/caches/modules-2/files-2.1/com.kotcrab.vis/vis-ui/1.4.2/adddec5d417f82aa7bef6abe6f282ee9c176b91d/vis-ui-1.4.2-sources.jar">
+		<attributes>
+			<attribute name="gradle_used_by_scope" value="main,test"/>
+		</attributes>
+	</classpathentry>
 	<classpathentry kind="lib" path="D:/Dev/gradle-5.6.2/data/caches/modules-2/files-2.1/com.badlogicgames.gdx/gdx/1.9.10/79d9ad27bd5e3eb18c9ade61d3a27d7237695d53/gdx-1.9.10.jar" sourcepath="D:/Dev/gradle-5.6.2/data/caches/modules-2/files-2.1/com.badlogicgames.gdx/gdx/1.9.10/37e7ec91522313dabc753c72196dd665ea4a9332/gdx-1.9.10-sources.jar">
 		<attributes>
 			<attribute name="gradle_used_by_scope" value="main,test"/>
 		</attributes>
 	</classpathentry>
 	<classpathentry exported="true" kind="lib" path="D:/Dev/gradle-5.6.2/data/caches/modules-2/files-2.1/org.projectlombok/lombok/1.16.2/abcc131bb227dcdd30437ee1cc164579767b03b4/lombok-1.16.2.jar" sourcepath="D:/Dev/gradle-5.6.2/data/caches/modules-2/files-2.1/org.projectlombok/lombok/1.16.2/d290f2c24acbbd5c036b1091e4bd149e2fe9877c/lombok-1.16.2-sources.jar">
+		<attributes>
+			<attribute name="gradle_used_by_scope" value="main,test"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry exported="true" kind="lib" path="D:/Dev/gradle-5.6.2/data/caches/modules-2/files-2.1/org.yaml/snakeyaml/1.21/18775fdda48574784f40b47bf478ab0593f92e4d/snakeyaml-1.21.jar" sourcepath="D:/Dev/gradle-5.6.2/data/caches/modules-2/files-2.1/org.yaml/snakeyaml/1.21/1baf1df46ea31a7bf1667eccf8f417c034e5dcc6/snakeyaml-1.21-sources.jar">
 		<attributes>
 			<attribute name="gradle_used_by_scope" value="main,test"/>
 		</attributes>

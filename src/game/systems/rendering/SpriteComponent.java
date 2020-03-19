@@ -8,22 +8,23 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import game.resources.ResourceFactory;
 import game.systems.spatial.ISpatialComponent;
 import game.world.Level;
+import lombok.Getter;
 
 /**
  * Provides sprite rendering method.
  *
  * @author Fima
  */
-public class SpriteRenderingComponent implements IRenderingComponent
+public class SpriteComponent implements IRenderingComponent
 {
 	//static { ComponentType.registerFor(IRenderingComponent.class, SpriteRenderingComponent.class); }
 
-	protected TextureRegion region;
+	@Getter protected TextureRegion region;
 
 
 	protected int [] cid;
 
-	public SpriteRenderingComponent()
+	public SpriteComponent()
 	{
 		cid = new int[1];
 	}
@@ -41,16 +42,24 @@ public class SpriteRenderingComponent implements IRenderingComponent
 		{
 			RegionRenderingDef tdef = (RegionRenderingDef) def;
 			TextureAtlas atlas = factory.getTextureAtlas(tdef.atlasName);
-			this.region = atlas.findRegion(tdef.regionName);
+			if( tdef.regionName == null)
+				this.region = atlas.getRegions().get(0);
+			else
+				this.region = atlas.findRegion(tdef.regionName);
 		}
-
-
 
 		this.cid[0] = TextureID.genid(region.getTexture());
 	}
 
 	@Override
 	public int [] cid() { return cid; }
+	
+	
+	public void setRegion(TextureRegion region)
+	{
+		this.region = region;
+		this.cid[0] = TextureID.genid(region.getTexture());
+	}
 
 	@Override
 	public void reset()
