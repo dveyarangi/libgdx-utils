@@ -89,7 +89,7 @@ public class GameInputProcessor extends EntitySystem implements InputProcessor
 
 	public static float ZOOM_SPEED_COEF = 0.1f;
 
-	public GameInputProcessor( HUD hud )
+	public GameInputProcessor( HUD ui )
 	{
 		this.controlModes = new ControlModes();
 
@@ -114,8 +114,12 @@ public class GameInputProcessor extends EntitySystem implements InputProcessor
 			}
 		});
 
-		this.ui = hud;
+		this.ui = ui;
+		this.ui.init( this );
+		
 		inputMultiplexer.addProcessor(uiProcessor);
+		if( ui != null)
+			inputMultiplexer.addProcessor(ui.getInputProcessor());
 		inputMultiplexer.addProcessor(new GestureDetector(new GameGestureListener(camController)));
 		inputMultiplexer.addProcessor(this);
 	}
@@ -391,6 +395,8 @@ public class GameInputProcessor extends EntitySystem implements InputProcessor
 		 */
 
 		controlModes.render(renderer);
+		
+		ui.render();
 	}
 
 	/**
@@ -426,4 +432,8 @@ public class GameInputProcessor extends EntitySystem implements InputProcessor
 		controlModes.addMode(mode);
 	}
 
+	public void dispose()
+	{
+		ui.dispose();
+	}
 }

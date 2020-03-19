@@ -1,30 +1,56 @@
 package game.systems.hud;
 
-import game.systems.rendering.IRenderer;
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.InputProcessor;
+import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.utils.viewport.ScreenViewport;
+
+import game.systems.control.GameInputProcessor;
+import lombok.Getter;
 
 public abstract class HUD
 {
+	protected Stage stage;
+	
+	protected Table table;
+	
+	@Getter private int screenWidth, screenHeight;
 
-	private int screenWidth, screenHeight;
+	protected GameInputProcessor input;
 
-	public abstract void init();
+	public void init(GameInputProcessor gameInputProcessor) 
+	{
+		this.input = gameInputProcessor;
+		this.stage = new Stage(new ScreenViewport());
+		
+		this.table = new Table();
+		
+		table.setFillParent(true);
+		stage.addActor(table);
+		table.setDebug(true);
+	}
 
-	public abstract void update( IRenderer renderer );
-
-	public void resize( int width, int height )
+	
+	public void render()
+	{
+		stage.act(Gdx.graphics.getDeltaTime());
+		stage.draw();
+	}
+	
+	
+	public void resize(int width, int height)
 	{
 		this.screenWidth = width;
 		this.screenHeight = height;
+
+		stage.getViewport().update(width, height, true);
 	}
 
-	public int getScreenHeight()
+	public InputProcessor getInputProcessor() { return stage; } 
+
+	public void dispose() 
 	{
-		return screenHeight;
+		stage.dispose();
 	}
-
-	public int getScreenWidth()
-	{
-		return screenWidth;
-	}
-
 }
