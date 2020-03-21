@@ -14,11 +14,12 @@ public class LightComponent implements Component, Poolable
 {
 	LightDef def;
 	Light light;
+	
 	@Override
 	public void reset()
 	{
-		// TODO Auto-generated method stub
-
+		def = null;
+		light = null;
 	}
 
 	public void init( RayHandler rayHandler )

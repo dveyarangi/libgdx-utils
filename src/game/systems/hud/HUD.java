@@ -6,6 +6,7 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
+import game.debug.Debug;
 import game.systems.control.GameInputProcessor;
 import lombok.Getter;
 
@@ -19,16 +20,21 @@ public abstract class HUD
 
 	protected GameInputProcessor input;
 
+	public HUD()
+	{
+		this.stage = new Stage(new ScreenViewport());
+
+	}
+	
 	public void init(GameInputProcessor gameInputProcessor) 
 	{
 		this.input = gameInputProcessor;
-		this.stage = new Stage(new ScreenViewport());
 		
 		this.table = new Table();
 		
 		table.setFillParent(true);
 		stage.addActor(table);
-		table.setDebug(true);
+		table.setDebug(Debug.DEBUG_UI);
 	}
 
 	

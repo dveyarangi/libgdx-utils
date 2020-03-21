@@ -28,8 +28,8 @@ public class LightSystem extends EntitySystem implements EntityListener
 	
 	public void init( World world, OrthographicCamera camera, LightSystemDef lightSystemDef  )
 	{
-		//RayHandler.setGammaCorrection(true);
-		//RayHandler.useDiffuseLight(true);
+		RayHandler.setGammaCorrection(true);
+		RayHandler.useDiffuseLight(lightSystemDef.useDiffuseLight);
 		
 		
 
@@ -39,7 +39,7 @@ public class LightSystem extends EntitySystem implements EntityListener
 		rayHandler.setCulling(true);
 		rayHandler.setLightMapRendering(true);
 		rayHandler.setBlur(true);
-		rayHandler.setAmbientLight(0.2f, 0.2f, 0.2f, 0.7f);
+		rayHandler.setAmbientLight(0.2f, .2f, .2f, 0.7f);
 		rayHandler.setBlurNum(GraphicOptions.LIGHTS_BLUR_SIZE);
 
 
@@ -69,8 +69,12 @@ public class LightSystem extends EntitySystem implements EntityListener
 
 			ISpatialComponent spatial = SpatialComponent.get( entity );
 			LightComponent light = entity.getComponent( LightComponent.class );
-			light.light.setDirection(spatial.a());
-			light.light.setPosition(spatial.x(), spatial.y());
+			//if(spatial.isChanged())
+			//{
+				light.light.setDirection(spatial.a());
+				light.light.setPosition(spatial.x(), spatial.y());
+				//light.light.setStaticLight(staticLight);
+			//}
 		}
 
 		//rayHandler.update();
@@ -82,7 +86,7 @@ public class LightSystem extends EntitySystem implements EntityListener
 	public void entityRemoved( Entity entity )
 	{
 		LightComponent light = entity.getComponent(LightComponent.class);
-		light.light.dispose();
+		light.light.remove(true); // TODO: cache!
 	}
 
 	@Override
