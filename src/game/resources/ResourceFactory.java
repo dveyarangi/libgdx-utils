@@ -48,7 +48,7 @@ public class ResourceFactory
 	 */
 	@Target( ElementType.FIELD ) @Retention( RetentionPolicy.RUNTIME ) public static @interface Texture {
 		boolean useMipMap() default false;
-		int priority() default 0;
+		int priority() default 1;
 	}
 
 	/**
@@ -101,11 +101,11 @@ public class ResourceFactory
 	}
 
 	@Target( ElementType.FIELD ) @Retention( RetentionPolicy.RUNTIME ) public static @interface Atlas {
-		int priority() default 0;
+		int priority() default 1;
 	}
 
 	@Target( ElementType.FIELD ) @Retention( RetentionPolicy.RUNTIME ) public static @interface Region {
-		int priority() default 0;
+		int priority() default 1;
 		String atlas();
 		String name();
 	}
@@ -158,7 +158,7 @@ public class ResourceFactory
 	 *            should contain static variables, annotated with resource type
 	 *            annotations
 	 */
-	public static ResourceFactory init( Class<?> resourceSetType )
+	public static ResourceFactory init( Class<?> resourceSetType)
 	{
 
 		if( factory != null )
@@ -173,6 +173,8 @@ public class ResourceFactory
 		// factory.manager.getLogger().setLevel(Logger.INFO);;
 		// add resources to assets manager:
 		factory.resolver = new InternalFileHandleResolver();
+		
+		factory.loadConfigurations();
 
 		factory.loadTextures(resourceSetType);
 
@@ -188,8 +190,6 @@ public class ResourceFactory
 		factory.loadShaders();
 
 		factory.loadRegions();
-		
-		factory.loadConfigurations();
 
 		// load colorfiles:
 		// TODO: to separate loader
@@ -275,21 +275,28 @@ public class ResourceFactory
 						Texture texxanno = (Texture) anno;
 						String textureFile = (String) field.get(null);
 						
-						TextureLoader.TextureParameter p = new TextureLoader.TextureParameter();
-						p.genMipMaps = texxanno.useMipMap();
-						
-						manager.load( textureFile, com.badlogic.gdx.graphics.Texture.class, p);
-
-						TextureHandle textureHandle = new TextureHandle(textureFile, texxanno.priority());
-
-						if(!textures.contains( textureHandle))
-							textures.offer( textureHandle );
+						loadTexture(textureFile, texxanno.useMipMap());
 					}
 				}
 			}
 		} catch( IllegalArgumentException e ){e.printStackTrace();
 		} catch( IllegalAccessException e ){e.printStackTrace();}
 	}
+	
+	void loadTexture(String textureFile, boolean useMipMap)
+	{
+		TextureLoader.TextureParameter p = new TextureLoader.TextureParameter();
+		p.genMipMaps = useMipMap;
+		
+		manager.load( textureFile, com.badlogic.gdx.graphics.Texture.class, p);
+
+		TextureHandle textureHandle = new TextureHandle(textureFile, 0);
+
+		if(!textures.contains( textureHandle))
+			textures.offer( textureHandle );	
+	}
+
+
 	private void loadAtlases()
 	{
 		try
@@ -302,19 +309,24 @@ public class ResourceFactory
 					if( anno instanceof Atlas )
 					{
 						Atlas atlanno = (Atlas) anno;
-						String atlasFile = (String) field.get(null);
-						manager.load( atlasFile, TextureAtlas.class );
-
-						String textureFile = atlasFile.substring(0, atlasFile.length()-6) + ".png";
-						TextureHandle textureHandle = new TextureHandle( textureFile, atlanno.priority() );
-						if(!textures.contains( textureHandle))
-							textures.offer( textureHandle );
+						String atlasName = (String) field.get(null);
+						loadAtlas(atlasName, atlanno.priority());
 					}
 				}
 			}
 		} catch( IllegalArgumentException e ) { e.printStackTrace();
 		} catch( IllegalAccessException e ) { e.printStackTrace(); }
 	}
+
+	void loadAtlas(String atlasName, int proirity)
+	{
+		manager.load( atlasName, TextureAtlas.class );
+		String textureFile = atlasName.substring(0, atlasName.length()-6) + ".png";
+		TextureHandle textureHandle = new TextureHandle( textureFile, proirity );
+		if(!textures.contains( textureHandle))
+			textures.offer( textureHandle );
+	}
+
 
 	private void loadShaders()
 	{
@@ -352,7 +364,8 @@ public class ResourceFactory
 	private void loadConfigurations()
 	{
 
-		manager.setLoader(Configuration.class, new JsonLoader(resolver));
+		JsonLoader loader = new JsonLoader(resolver, this);
+		manager.setLoader(Configuration.class, loader);
 
 		try
 		{
@@ -364,10 +377,16 @@ public class ResourceFactory
 					if( anno instanceof Cfg )
 					{
 						Cfg cfganno = (Cfg) anno;
-						manager.load(
-								(String) field.get(null),
+						
+						String filename = (String) field.get(null);
+						Configuration.Parameter param = new Configuration.Parameter(cfganno.type());
+						FileHandle configFile = resolver.resolve(filename);
+						
+						loader.getDependencies(filename, configFile, param);
+						
+						manager.load(filename,
 								Configuration.class,
-								new Configuration.Parameter(cfganno.type())
+								param
 								);
 					}
 				}

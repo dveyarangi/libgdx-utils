@@ -41,7 +41,7 @@ public class SpriteComponent implements IRenderingComponent
 		else
 		{
 			RegionRenderingDef tdef = (RegionRenderingDef) def;
-			TextureAtlas atlas = factory.getTextureAtlas(tdef.atlasName);
+			TextureAtlas atlas = tdef.atlas;
 			if( tdef.regionName == null)
 				this.region = atlas.getRegions().get(0);
 			else

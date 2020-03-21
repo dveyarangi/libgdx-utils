@@ -22,18 +22,47 @@ repositories {
     maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
     jcenter()
     google()
+    flatDir {
+       dirs 'lib'
+	}
 }
 
 
-eclipse.project {
-    name = "libgdx-utils"
+eclipse {
+	project {
+		name = "libgdx-utils"
+		
+		natures 'org.springsource.ide.eclipse.gradle.core.nature', 'org.eclipse.jdt.core.javanature'		
+		buildCommand 'org.eclipse.jdt.core.javabuilder'
+	}
+	
+	pathVariables '.': file('.')
+
+	classpath {
+	    file {
+			withXml {
+				def node = it.asNode();
+				
+				// fix  local entries to be of 'lib' type
+				// this is a workaround to simplify core project plugin configuration;
+				// packages from locally imported jars properly exported from plugin:
+				
+				node.classpathentry.findAll { entry -> entry.@kind == 'var' }*.@kind = 'lib';
+				
+				// export Eclipse project dependencies:
+				
+				node.classpathentry.findAll { entry -> entry.@kind == 'lib' }*.@exported = true;
+			}
+		}
+			
+	}
 }
 
 //apply plugin: "java-library"
 
 
 dependencies {
-
+	compile name: "ashley-core-modified"
 	compile "com.badlogicgames.gdx:gdx:$gdxVersion"
 	compile "com.badlogicgames.gdx:gdx-box2d:$gdxVersion"
 	compile "com.badlogicgames.box2dlights:box2dlights:$box2DLightsVersion"
@@ -42,4 +71,5 @@ dependencies {
 	compile "org.projectlombok:lombok:1.16.2"
 	compile "org.yaml:snakeyaml:1.21"
 	compile "com.kotcrab.vis:vis-ui:$visuiVersion"
+	compile "com.google.code.gson:gson:2.8.6"
 }
