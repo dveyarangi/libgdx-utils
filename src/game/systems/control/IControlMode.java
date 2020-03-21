@@ -3,6 +3,7 @@ package game.systems.control;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.EntityListener;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
 
 import game.systems.rendering.IRenderer;
 import game.world.Level;
@@ -68,6 +69,8 @@ public interface IControlMode extends EntityListener
 	public void update( float delta );
 
 	IControl control();
+
+	Table createUI();
 
 
 }

@@ -100,6 +100,8 @@ public class Debug
 	private FPSLogger fpsLogger = new FPSLogger();
 
 	UIInputProcessor uiProcessor;
+	
+	public static boolean DEBUG_UI = false;
 
 	// private static InvokationMapper mapper = new InvokationMapper();
 

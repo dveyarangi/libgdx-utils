@@ -7,6 +7,7 @@ import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.EntitySystem;
 import com.badlogic.ashley.core.Family;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
 
 import game.systems.order.ControlComponent;
 import game.systems.rendering.IRenderer;
@@ -129,6 +130,11 @@ public class ControlModes extends EntitySystem
 	{
 		if( !controlModes.isEmpty() )
 			currControlMode.render(renderer);
+	}
+	
+	public Table createUI()
+	{
+		return currControlMode.createUI();
 	}
 
 	public IControl control() {

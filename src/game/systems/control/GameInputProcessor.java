@@ -21,6 +21,7 @@ import game.systems.rendering.IRenderer;
 import game.world.IPickProvider;
 import game.world.Level;
 import game.world.LevelInitialSettings;
+import lombok.Getter;
 
 /**
  * handles input for game
@@ -57,7 +58,7 @@ public class GameInputProcessor extends EntitySystem implements InputProcessor
 	 */
 	private ICameraController camController;
 
-	private ControlModes controlModes;
+	@Getter private ControlModes controlModes;
 
 
 	/**
@@ -115,7 +116,7 @@ public class GameInputProcessor extends EntitySystem implements InputProcessor
 		});
 
 		this.ui = ui;
-		this.ui.init( this );
+		
 		
 		inputMultiplexer.addProcessor(uiProcessor);
 		if( ui != null)
@@ -132,7 +133,11 @@ public class GameInputProcessor extends EntitySystem implements InputProcessor
 	{
 		this.level = engine.getSystem(Level.class);
 
+		
 		controlModes.init( level );
+		
+
+		this.ui.init( this );
 		
 		LevelInitialSettings settings = level.getDef().getInitialSettings();
 		camController = new FreeCameraController( level.getModules().getCameraProvider(), settings.getInitZoom(), settings.getMinZoom(), settings.getMaxZoom() );
