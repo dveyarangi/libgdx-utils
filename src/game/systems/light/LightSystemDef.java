@@ -9,7 +9,9 @@ import game.world.Level;
 
 public class LightSystemDef extends SystemDef <LightSystem>
 {
-	boolean makeShadows;
+	public boolean useDiffuseLight = false;
+	
+	public boolean makeShadows;
 
 	public LightSystemDef()
 	{
