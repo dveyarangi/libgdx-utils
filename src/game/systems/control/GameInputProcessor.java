@@ -319,12 +319,13 @@ public class GameInputProcessor extends EntitySystem implements InputProcessor
 		boolean consumed = controlModes.touchUp(worldPos.x, worldPos.y, camController.camera().zoom, pickedObject, button);
 
 		if(!consumed)
-			// if(button == Input.Buttons.RIGHT)
-		{
-			dragging = false;
-			touchedObject = null;
-			controlModes.untouch();
-		}
+			if(button == Input.Buttons.RIGHT)
+			{
+				dragging = false;
+				touchedObject = null;
+				controlModes.untouch();
+				lastButton = 0;
+			}
 		return true;
 	}
 
