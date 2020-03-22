@@ -28,7 +28,7 @@ public class LightSystem extends EntitySystem implements EntityListener
 	
 	public void init( World world, OrthographicCamera camera, LightSystemDef lightSystemDef  )
 	{
-		RayHandler.setGammaCorrection(true);
+		//RayHandler.setGammaCorrection(true);
 		RayHandler.useDiffuseLight(lightSystemDef.useDiffuseLight);
 		
 		
@@ -39,7 +39,8 @@ public class LightSystem extends EntitySystem implements EntityListener
 		rayHandler.setCulling(true);
 		rayHandler.setLightMapRendering(true);
 		rayHandler.setBlur(true);
-		rayHandler.setAmbientLight(0.2f, .2f, .2f, 0.7f);
+		if( lightSystemDef.ambientLightColor != null )
+			rayHandler.setAmbientLight(lightSystemDef.ambientLightColor);
 		rayHandler.setBlurNum(GraphicOptions.LIGHTS_BLUR_SIZE);
 
 

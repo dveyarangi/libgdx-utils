@@ -1,5 +1,6 @@
 package game.systems.light;
 
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 
 import game.systems.SystemDef;
@@ -12,6 +13,8 @@ public class LightSystemDef extends SystemDef <LightSystem>
 	public boolean useDiffuseLight = false;
 	
 	public boolean makeShadows;
+	
+	public Color ambientLightColor;
 
 	public LightSystemDef()
 	{
