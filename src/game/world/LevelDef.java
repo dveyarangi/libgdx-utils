@@ -5,6 +5,8 @@ import java.util.List;
 
 import game.systems.EntityDef;
 import game.systems.SystemDef;
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * Defines a game level.
@@ -18,9 +20,11 @@ import game.systems.SystemDef;
 public class LevelDef
 {
 	private String name;
+	
+	@Getter @Setter private int centerX, centerY;
 
-	private int width, halfWidth;
-	private int height, halfHeight;
+	@Getter private int width, halfWidth;
+	@Getter private int height, halfHeight;
 
 	private LevelInitialSettings initialSettings;
 
@@ -30,20 +34,10 @@ public class LevelDef
 
 	private List<EntityDef> entities = new ArrayList<>();
 
-	public float getWidth()
-	{
-		return width;
-	}
-
 	public void setWidth( final int width )
 	{
 		this.width = width;
 		halfWidth = width / 2;
-	}
-
-	public float getHeight()
-	{
-		return height;
 	}
 
 	public void setHeight( final int height )
@@ -91,16 +85,6 @@ public class LevelDef
 	public void setInitialSettings( final LevelInitialSettings settings )
 	{
 		this.initialSettings = settings;
-	}
-
-	public float getHalfWidth()
-	{
-		return halfWidth;
-	}
-
-	public float getHalfHeight()
-	{
-		return halfHeight;
 	}
 
 }

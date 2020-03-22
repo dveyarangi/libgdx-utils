@@ -25,20 +25,23 @@ import game.world.camera.ICameraProvider;
  */
 public class CoordinateGrid implements IOverlay<Level>
 {
+	private final float cx, cy;
 	private final float halfWidth;
 	private final float halfHeight;
 
 	private final ICameraProvider cameraProvider;
 
-	public CoordinateGrid( float halfWidth, float halfHeight, ICameraProvider cameraProvider )
+	public CoordinateGrid( float cx, float cy, float halfWidth, float halfHeight, ICameraProvider cameraProvider )
 	{
+		this.cx = cx;
+		this.cy = cy;
 		this.halfWidth = halfWidth;
 		this.halfHeight = halfHeight;
 		this.cameraProvider = cameraProvider;
 	}
 
 	Color backColor = new Color(0x3D75A00A);
-	Color lineColor = new Color(0x5EB2F21A);
+	Color lineColor = new Color(0x5EB2F22A);
 
 	// Color lineColor = new Color( 0x8DA1AA0A );
 
@@ -82,24 +85,30 @@ public class CoordinateGrid implements IOverlay<Level>
 
 			int magnitude = (int) Math.pow(2, i);
 			float step = order * magnitude * 16;
-
-			float minx = FastMath.toGrid(Math.max(-halfWidth, screenMinX), step);
-			float maxx = FastMath.toGrid(Math.min(halfWidth, screenMaxX), step);
-			float miny = FastMath.toGrid(Math.max(-halfHeight, screenMinY), step);
-			float maxy = FastMath.toGrid(Math.min(halfHeight, screenMaxY), step);
+			
+			float rminx = Math.max(cx-halfWidth, screenMinX);
+			float rmaxx = Math.min(cx+halfWidth, screenMaxX);
+			float rminy = Math.max(cy-halfHeight, screenMinY);
+			float rmaxy = Math.min(cy+halfHeight, screenMaxY);
+			float minx = FastMath.toGrid(rminx, step, cx);
+			float maxx = FastMath.toGrid(rmaxx, step, cx);
+			float miny = FastMath.toGrid(rminy, step, cy);
+			float maxy = FastMath.toGrid(rmaxy, step, cy);
 
 			for( float x = minx; x <= maxx; x += step )
 			{
-				shape.line(x, miny, x, maxy);
+				if( x >= rminx && x <= rmaxx )
+					shape.line(x, rminy, x, rmaxy);
 			}
 			for( float y = miny; y <= maxy; y += step )
 			{
-				shape.line(minx, y, maxx, y);
+				if( y >= rminy && y <= rmaxy )
+				shape.line(rminx, y, rmaxx, y);
 			}
 		}
 
-		shape.setColor(1, 0, 1f, 0.5f);
-		shape.rect(-halfWidth, -halfHeight, 2 * halfWidth, 2 * halfHeight);
+		shape.setColor(lineColor.r, lineColor.g, lineColor.b, 1f);
+		shape.rect(cx-halfWidth, cy-halfHeight, 2 * halfWidth, 2 * halfHeight);
 
 		shape.end();
 

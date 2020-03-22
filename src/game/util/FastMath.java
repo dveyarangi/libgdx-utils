@@ -77,7 +77,10 @@ public class FastMath
 	{
 		return round(val / cell) * cell;
 	}
-
+	public static float toGrid( float val, float cell, float offset )
+	{
+		return round((val-offset) / cell) * cell + offset;
+	}
 	public static int toGrid( double val, int cell )
 	{
 		return round(val / cell) * cell;

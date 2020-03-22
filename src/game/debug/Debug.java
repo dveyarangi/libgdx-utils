@@ -131,7 +131,7 @@ public class Debug
 
 		// coordinate grid:
 		this.addOverlay(Hotkeys.TOGGLE_COORDINATE_GRID,
-				new CoordinateGrid(level.def().getHalfWidth(), level.def().getHalfHeight(),
+				new CoordinateGrid(level.getDef().getCenterX(), level.getDef().getCenterY(), level.def().getHalfWidth(), level.def().getHalfHeight(),
 						level.getModules().getCameraProvider())
 				);
 
