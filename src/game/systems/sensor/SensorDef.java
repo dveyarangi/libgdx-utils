@@ -1,17 +1,19 @@
 package game.systems.sensor;
 
-import game.systems.IComponentDef;
-import game.util.RandomUtil;
-import game.world.Level;
-
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
+
+import game.systems.IComponentDef;
+import game.util.RandomUtil;
+import game.world.Level;
+import lombok.Getter;
 
 public class SensorDef implements IComponentDef<SensorComponent>
 {
 	float sensingInterval;
 	int factionId;
+	@Getter float radius;
 
 	public BodyDef bodyDef = new BodyDef();
 	public FixtureDef fixtureDef = new FixtureDef();

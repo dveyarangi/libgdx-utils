@@ -1,14 +1,14 @@
 package game.systems.sensor;
 
-import game.systems.faction.FactionComponent;
-import game.world.Constants;
-
 import com.badlogic.ashley.core.Component;
 import com.badlogic.ashley.core.ComponentMapper;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.utils.Pool.Poolable;
 import com.badlogic.gdx.utils.PooledLinkedList;
+
+import game.systems.faction.FactionComponent;
+import game.world.Constants;
 
 /**
  * Defines box2d sensor body.
@@ -55,22 +55,22 @@ public class SensorComponent implements Component, Poolable
 	public boolean propagateToDescendants() { return propagateToDescendants; }
 
 	/**
-	 * Called by box2d engine when an entity overlaps the sensing body.
+	 * Called by Fabric when an entity overlaps the sensing body.
 	 * @param sensedEntity
 	 */
 	public void sense( Entity sensedEntity )
 	{
-		// if(shouldSense())
-		// {
-		FactionComponent faction = FactionComponent.get(sensedEntity);
-		if( faction == null)
-			return;
-		if( faction.id() == factionId )
-			sensed.add(sensedEntity);
-		// }
+		if(shouldSense())
+		{
+			FactionComponent faction = FactionComponent.get(sensedEntity);
+			if( faction == null)
+				return;
+			if( faction.id() == factionId )
+				sensed.add(sensedEntity);
+		}
 	}
 	/**
-	 * Called by box2d engine when an entity no longer overlaps the sensing body.
+	 * Called by Fabric when an entity no longer overlaps the sensing body.
 	 * @param sensedEntity
 	 */
 	public void unsense( Entity sensedEntity )
@@ -104,7 +104,6 @@ public class SensorComponent implements Component, Poolable
 
 	public void clear()
 	{
-		timeSinceSensing = 0;
 		sensed.clear();
 	}
 
