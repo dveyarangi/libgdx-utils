@@ -4,7 +4,6 @@ import com.badlogic.ashley.core.Entity;
 
 import game.systems.control.IMoveOrder;
 import game.systems.spatial.ISpatialComponent;
-import game.systems.spatial.SpatialComponent;
 import game.systems.targeting.TargetComponent;
 
 public class Box2DPullOrder implements IMoveOrder
@@ -20,8 +19,8 @@ public class Box2DPullOrder implements IMoveOrder
 		assert target != null;
 
 		PhysicalComponent body = PhysicalComponent.get( entity );
-		ISpatialComponent sourceSpatial = SpatialComponent.get( entity );
-		ISpatialComponent targetSpatial = SpatialComponent.get( target.getTarget() );
+		ISpatialComponent sourceSpatial = ISpatialComponent.get( entity );
+		ISpatialComponent targetSpatial = ISpatialComponent.get( target.getTarget() );
 
 		float dx = targetSpatial.x() - sourceSpatial.x();
 		float dy = targetSpatial.y() - sourceSpatial.y();

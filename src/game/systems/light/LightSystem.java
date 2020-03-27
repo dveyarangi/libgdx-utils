@@ -12,7 +12,6 @@ import com.badlogic.gdx.physics.box2d.World;
 import box2dLight.RayHandler;
 import game.config.GraphicOptions;
 import game.systems.spatial.ISpatialComponent;
-import game.systems.spatial.SpatialComponent;
 import lombok.Getter;
 
 public class LightSystem extends EntitySystem implements EntityListener
@@ -68,7 +67,7 @@ public class LightSystem extends EntitySystem implements EntityListener
 		{
 			Entity entity = entities.get( eidx );
 
-			ISpatialComponent spatial = SpatialComponent.get( entity );
+			ISpatialComponent spatial = ISpatialComponent.get( entity );
 			LightComponent light = entity.getComponent( LightComponent.class );
 			//if(spatial.isChanged())
 			//{

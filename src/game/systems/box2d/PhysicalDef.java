@@ -11,7 +11,6 @@ import com.badlogic.gdx.utils.Array;
 import game.systems.EntityDef;
 import game.systems.movement.IMovementDef;
 import game.systems.spatial.ISpatialComponent;
-import game.systems.spatial.SpatialComponent;
 import game.util.Angles;
 import game.world.Level;
 import lombok.NoArgsConstructor;
@@ -118,7 +117,7 @@ public class PhysicalDef implements IMovementDef<PhysicalComponent>
 	{
 		component.def = this;
 		component.maxSpeed = maxSpeed;
-		ISpatialComponent spatial = SpatialComponent.get( entity );
+		ISpatialComponent spatial = ISpatialComponent.get( entity );
 		EntityDef def = EntityDef.get( entity );
 		float dx = (float) Math.cos(spatial.a() * Angles.TO_RAD), dy = (float) Math.sin(spatial.a() * Angles.TO_RAD);
 
