@@ -49,10 +49,9 @@ public class KinematicMovementDef implements IMovementDef<KinematicComponent>
 	@Override
 	public void initComponent( KinematicComponent component, Entity entity, Level level )
 	{
-		component.vx = vx;
-		component.vy = vy;
-		component.va = va;
-		component.vr = vr;
+		component.setLinearVelocity(vx, vy);
+		component.setAngularVelocity(va);
+		component.setExpansion(vr);
 	}
 
 	@Override

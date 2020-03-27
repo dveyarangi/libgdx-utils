@@ -10,10 +10,10 @@ import com.badlogic.gdx.utils.Pool.Poolable;
  * Defines positioning and kinematic properties of a game entity
  * @author Fima
  */
-public abstract class ISpatialComponent implements Component, Poolable
+public interface ISpatialComponent extends Component, Poolable
 {
 
-	private static ComponentMapper<ISpatialComponent> MAPPER = ComponentMapper.getFor(ISpatialComponent.class);
+	static ComponentMapper<ISpatialComponent> MAPPER = ComponentMapper.getFor(ISpatialComponent.class);
 
 	public static ISpatialComponent get( Entity entity )
 	{
@@ -58,4 +58,7 @@ public abstract class ISpatialComponent implements Component, Poolable
 	/** sets entity radius */
 	public abstract void resize( float f );
 
+	/** True if the component position, orientation or size were changed during last heartbeat */
+	public abstract boolean isChanged();
+	public abstract void setChanged(boolean isChanged);
 }

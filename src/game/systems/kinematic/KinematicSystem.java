@@ -18,7 +18,6 @@ import game.util.Angles;
 public class KinematicSystem extends IteratingSystem implements EntityListener
 {
 
-	@SuppressWarnings( "unchecked" )
 	public KinematicSystem()
 	{
 		super(Family.all(KinematicComponent.class).get());
@@ -40,12 +39,11 @@ public class KinematicSystem extends IteratingSystem implements EntityListener
 		if( kinematics.isUndefined() )
 		{
 			ISpatialComponent spatial = ISpatialComponent.get(entity);
-			float vx = kinematics.maxSpeed * (float) Math.cos(spatial.a() * Angles.TO_RAD);
-			float vy = kinematics.maxSpeed * (float) Math.sin(spatial.a() * Angles.TO_RAD);
+			float vx = kinematics.getMaxSpeed() * (float) Math.cos(spatial.a() * Angles.TO_RAD);
+			float vy = kinematics.getMaxSpeed() * (float) Math.sin(spatial.a() * Angles.TO_RAD);
 
-			kinematics.vx = vx;
-			kinematics.vy = vy;
-			kinematics.va = 0;
+			kinematics.setLinearVelocity(vx, vy);
+			kinematics.setAngularVelocity(0);;
 		}
 	}
 
@@ -55,10 +53,13 @@ public class KinematicSystem extends IteratingSystem implements EntityListener
 		ISpatialComponent spatial = ISpatialComponent.get(entity);
 		KinematicComponent kinematics = KinematicComponent.get(entity);
 
-		spatial.transpose(kinematics.vx * deltaTime, kinematics.vy * deltaTime);
-		spatial.rotate(kinematics.va * Angles.TAU * deltaTime);
-
-		spatial.resize(spatial.r() + kinematics.vr * deltaTime);
+		spatial.setChanged(false);
+		if( !kinematics.isStatic() )
+		{
+			spatial.transpose(kinematics.getVx() * deltaTime, kinematics.getVy() * deltaTime);
+			spatial.rotate(kinematics.getVa() * Angles.TAU * deltaTime);
+			spatial.resize(spatial.r() + kinematics.getVr() * deltaTime);
+		}
 	}
 
 	@Override
