@@ -6,22 +6,22 @@ import com.badlogic.ashley.core.ComponentMapper;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.physics.box2d.Body;
 
-public class PhysicalComponent implements IMovementComponent
+public class Box2DPhysicalComponent implements IMovementComponent
 {
 	static
 	{
 		// ComponentType.registerFor(IMovementComponent.class,
 		// PhysicalComponent.class);
 	}
-	public static ComponentMapper<PhysicalComponent> MAPPER = ComponentMapper.getFor(PhysicalComponent.class);
+	public static ComponentMapper<Box2DPhysicalComponent> MAPPER = ComponentMapper.getFor(Box2DPhysicalComponent.class);
 
-	public static PhysicalComponent get( Entity entity )
+	public static Box2DPhysicalComponent get( Entity entity )
 	{
 		return MAPPER.get(entity);
 	}
 
 	public Body body;
-	public PhysicalDef def;
+	public Box2DPhysicalDef def;
 
 	public float maxSpeed;
 

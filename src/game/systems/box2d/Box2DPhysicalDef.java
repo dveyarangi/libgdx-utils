@@ -2,6 +2,8 @@ package game.systems.box2d;
 
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.math.Polygon;
+import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.math.Shape2D;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
@@ -15,14 +17,19 @@ import game.util.Angles;
 import game.world.Level;
 import lombok.NoArgsConstructor;
 
-public class PhysicalDef implements IMovementDef<PhysicalComponent>
+public class Box2DPhysicalDef implements IMovementDef<Box2DPhysicalComponent>
 {
 
 	// setting body shape to axis aligned square
-	
-	public static PhysicalDef createStatic(PartDef part, short categoryBits)
+	static 
 	{
-		PhysicalDef physical = new PhysicalDef(0);
+		Shape2D shape = new Rectangle(0,0,1,1);
+
+	}
+	
+	public static Box2DPhysicalDef createStatic(PartDef part, short categoryBits)
+	{
+		Box2DPhysicalDef physical = new Box2DPhysicalDef(0);
 		part.bodyDef.bullet = false;
 		part.bodyDef.type = BodyDef.BodyType.StaticBody;
 		part.fixtureDef.filter.categoryBits = categoryBits;
@@ -103,17 +110,17 @@ public class PhysicalDef implements IMovementDef<PhysicalComponent>
 
 	private float maxSpeed;
 
-	public PhysicalDef(float maxSpeed )
+	public Box2DPhysicalDef(float maxSpeed )
 	{
 		this.parts = new Array <PartDef> (1);
 		this.maxSpeed = maxSpeed;
 	}
 
 	@Override
-	public Class<PhysicalComponent> getComponentClass() { return PhysicalComponent.class; }
+	public Class<Box2DPhysicalComponent> getComponentClass() { return Box2DPhysicalComponent.class; }
 
 	@Override
-	public void initComponent( PhysicalComponent component, Entity entity, Level level )
+	public void initComponent( Box2DPhysicalComponent component, Entity entity, Level level )
 	{
 		component.def = this;
 		component.maxSpeed = maxSpeed;

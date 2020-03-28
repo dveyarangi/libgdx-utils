@@ -18,7 +18,7 @@ import com.badlogic.gdx.physics.box2d.RayCastCallback;
 import com.badlogic.gdx.physics.box2d.Shape;
 import com.badlogic.gdx.physics.box2d.World;
 
-import game.systems.box2d.PhysicalDef.PartDef;
+import game.systems.box2d.Box2DPhysicalDef.PartDef;
 import game.systems.sensor.SensorComponent;
 import game.systems.sensor.SensorDef;
 import game.systems.spatial.ISpatialComponent;
@@ -31,7 +31,7 @@ import game.world.environment.nav.NavNode;
 /**
  * Manages entity interaction.
  *
- * Applies to entities with {@link PhysicalComponent} and {@link SensorComponent}.
+ * Applies to entities with {@link Box2DPhysicalComponent} and {@link SensorComponent}.
  *
  * @author Fima
  *
@@ -91,12 +91,12 @@ public class Box2DFabric extends EntitySystem implements IFabric, EntityListener
 	@Override
 	public void addedToEngine( Engine engine )
 	{
-		Family physicalfamily = Family.one(PhysicalComponent.class).get();
+		Family physicalfamily = Family.one(Box2DPhysicalComponent.class).get();
 		Family sensorfamily = Family.one(SensorComponent.class).get();
 
 		// engine.addEntityListener(physicalfamily, this);
 		// engine.addEntityListener(sensorfamily , this);
-		engine.addEntityListener(Family.one(PhysicalComponent.class, SensorComponent.class).get(), this);
+		engine.addEntityListener(Family.one(Box2DPhysicalComponent.class, SensorComponent.class).get(), this);
 
 		physicalEntities = engine.getEntitiesFor(physicalfamily);
 		sensorEntities = engine.getEntitiesFor(sensorfamily);
@@ -160,11 +160,11 @@ public class Box2DFabric extends EntitySystem implements IFabric, EntityListener
 
 	private void initBodyComponent( Entity entity )
 	{
-		PhysicalComponent physical = PhysicalComponent.get(entity);
+		Box2DPhysicalComponent physical = Box2DPhysicalComponent.get(entity);
 		if( physical != null && physical.body == null )
 		{
 
-			PhysicalDef phydef = physical.def;
+			Box2DPhysicalDef phydef = physical.def;
 			for(int pi = 0; pi < phydef.parts.size; pi ++)
 			{
 				PartDef part = phydef.parts.get(pi);
@@ -211,7 +211,7 @@ public class Box2DFabric extends EntitySystem implements IFabric, EntityListener
 		{
 			Entity entity = physicalEntities.get(idx);
 			ISpatialComponent spatial = ISpatialComponent.get(entity);
-			PhysicalComponent physical = PhysicalComponent.get(entity);
+			Box2DPhysicalComponent physical = Box2DPhysicalComponent.get(entity);
 			Vector2 pos = physical.getBody().getPosition();
 			if(!Float.isNaN(pos.x)) // TODO: Box2D investigate this, caused jni failures in past
 			{
@@ -303,7 +303,7 @@ public class Box2DFabric extends EntitySystem implements IFabric, EntityListener
 	@Override
 	public void entityRemoved( Entity entity )
 	{
-		PhysicalComponent body = PhysicalComponent.get(entity);
+		Box2DPhysicalComponent body = Box2DPhysicalComponent.get(entity);
 		if( body != null )
 			world.destroyBody(body.getBody());
 

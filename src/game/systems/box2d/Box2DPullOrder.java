@@ -18,7 +18,7 @@ public class Box2DPullOrder implements IMoveOrder
 		TargetComponent target = entity.getComponent( TargetComponent.class );
 		assert target != null;
 
-		PhysicalComponent body = PhysicalComponent.get( entity );
+		Box2DPhysicalComponent body = Box2DPhysicalComponent.get( entity );
 		ISpatialComponent sourceSpatial = ISpatialComponent.get( entity );
 		ISpatialComponent targetSpatial = ISpatialComponent.get( target.getTarget() );
 
