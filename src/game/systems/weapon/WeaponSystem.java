@@ -6,8 +6,8 @@ import com.badlogic.ashley.systems.IteratingSystem;
 import com.badlogic.gdx.math.Vector2;
 
 import game.systems.EntityFactory;
-import game.systems.box2d.PhysicalComponent;
-import game.systems.box2d.PhysicalDef;
+import game.systems.box2d.Box2DPhysicalComponent;
+import game.systems.box2d.Box2DPhysicalDef;
 import game.systems.spatial.ISpatialComponent;
 import game.systems.spatial.ISpatialDef;
 import game.systems.targeting.TargetComponent;
@@ -117,9 +117,9 @@ public class WeaponSystem extends IteratingSystem
 	{
 		WeaponDef def = weapon.def;
 		ISpatialComponent targetSpatial = target.getTarget().getComponent(ISpatialComponent.class);
-		PhysicalComponent targetPhysical = target.getTarget().getComponent(PhysicalComponent.class);
+		Box2DPhysicalComponent targetPhysical = target.getTarget().getComponent(Box2DPhysicalComponent.class);
 		// TODO: dismantle this monstrosity:
-		float bulletSpeed = weapon.def.getBulletDef().getDef(PhysicalDef.class).getMaxSpeed();
+		float bulletSpeed = weapon.def.getBulletDef().getDef(Box2DPhysicalDef.class).getMaxSpeed();
 
 		weapon.targetOrientation.set(targetSpatial.x() - spatial.x(), targetSpatial.y() - spatial.y());
 
