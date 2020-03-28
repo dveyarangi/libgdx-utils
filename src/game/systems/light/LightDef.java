@@ -28,6 +28,11 @@ public class LightDef implements IComponentDef<LightComponent>
 	@Override
 	public void initComponent( LightComponent component, Entity entity, Level level )
 	{
-		component.def = this;
+		component.coneAngle = coneAngle;
+		component.type = type;
+		component.color.set(color);
+		component.distance = distance;
+		component.filter = filter;
+		component.isStatic = isStatic;
 	}
 }
