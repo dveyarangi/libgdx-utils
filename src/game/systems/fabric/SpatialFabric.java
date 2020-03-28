@@ -1,30 +1,25 @@
 package game.systems.fabric;
 
-import com.badlogic.ashley.core.Component;
 import com.badlogic.ashley.core.ComponentMapper;
 import com.badlogic.ashley.core.Engine;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.EntityListener;
 import com.badlogic.ashley.core.EntitySystem;
 import com.badlogic.ashley.core.Family;
-import com.badlogic.ashley.core.PooledEngine;
 import com.badlogic.ashley.utils.ImmutableArray;
 import com.badlogic.gdx.math.Matrix4;
-import com.badlogic.gdx.utils.Pool.Poolable;
+import com.badlogic.gdx.utils.ObjectSet;
 import com.badlogic.gdx.utils.PooledLinkedList;
 
 import game.systems.box2d.IEntityFilter;
 import game.systems.sensor.SensorComponent;
 import game.systems.spatial.ISpatialComponent;
-import game.systems.spatial.SpatialComponent;
 import game.world.Constants;
 import game.world.IFabric;
 import game.world.IPickProvider;
-import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import yarangi.spatial.AABB;
-import yarangi.spatial.ISpatialObject;
 import yarangi.spatial.ISpatialSensor;
 import yarangi.spatial.SpatialHashMap;
 
@@ -33,7 +28,8 @@ public class SpatialFabric extends EntitySystem implements IFabric, EntityListen
 {
 	public SpatialHashMap <SpatialIndexComponent> space;
 	
-	private ImmutableArray<Entity> spatialEntities;
+	private ObjectSet<Entity> dynamicEntities = new ObjectSet <Entity>();
+	
 	private ImmutableArray<Entity> sensorEntities;
 	
 	private ComponentMapper<SpatialIndexComponent> mapper;
@@ -42,30 +38,6 @@ public class SpatialFabric extends EntitySystem implements IFabric, EntityListen
 	
 	@Setter private IEntityFilter entityFilter;
 
-	private static class SpatialIndexComponent implements ISpatialObject, Component, Poolable
-	{
-
-		@Getter Entity entity;
-		
-		@Getter AABB area = AABB.createFromCenter(0, 0, 0, 0, 0);
-		
-		public void init(Entity entity)
-		{
-			this.entity = entity;
-			
-			ISpatialComponent spatial = ISpatialComponent.get(entity);
-			
-			area.move(spatial.x(), spatial.y());
-			area.fitTo(spatial.r());
-		}
-
-		@Override
-		public void reset()
-		{
-			this.entity = null;
-		}
-		
-	}
 	
 	//Pool pool = 
 	
@@ -78,12 +50,10 @@ public class SpatialFabric extends EntitySystem implements IFabric, EntityListen
 	@Override
 	public void entityAdded(Entity e)
 	{
-		SpatialIndexComponent sic = ((PooledEngine)this.getEngine()).createComponent(SpatialIndexComponent.class);
-		e.add(sic);
-		
-		sic.init(e);
-		
+		SpatialIndexComponent sic = mapper.get(e);
 		space.add( sic );
+		if( !sic.isStatic )
+			dynamicEntities.add(sic.getEntity());
 	}
 
 	@Override
@@ -91,6 +61,8 @@ public class SpatialFabric extends EntitySystem implements IFabric, EntityListen
 	{
 		SpatialIndexComponent sic = mapper.get(e);
 		space.remove(sic);
+		if( !sic.isStatic )
+			dynamicEntities.remove(sic.getEntity());
 	}
 
 
@@ -99,9 +71,8 @@ public class SpatialFabric extends EntitySystem implements IFabric, EntityListen
 	{
 
 		// copy bodies positions into entities:
-		for( int idx = 0; idx < spatialEntities.size(); idx++ )
-		{
-			Entity entity = spatialEntities.get(idx);
+		for(Entity entity : dynamicEntities)
+		{			
 			ISpatialComponent spatial = ISpatialComponent.get(entity);
 			SpatialIndexComponent index = mapper.get(entity);
 			if( spatial.isChanged() )
@@ -196,14 +167,14 @@ public class SpatialFabric extends EntitySystem implements IFabric, EntityListen
 //		if( kinematicSystem == null )
 //			log.info("Spatial fabric could not locate kinematic system");
 		
-		Family spatialfamily = Family.one(SpatialComponent.class).get();
+		Family spatialfamily = Family.one(SpatialIndexComponent.class).get();
 		Family sensorfamily = Family.one(SensorComponent.class).get();
 
 		// engine.addEntityListener(physicalfamily, this);
 		// engine.addEntityListener(sensorfamily , this);
-		engine.addEntityListener(Family.one(SpatialComponent.class, SensorComponent.class).get(), this);
+		engine.addEntityListener(Family.one(SpatialIndexComponent.class, SensorComponent.class).get(), this);
 
-		spatialEntities = engine.getEntitiesFor(spatialfamily);
+		//spatialEntities = engine.getEntitiesFor(spatialfamily);
 		sensorEntities = engine.getEntitiesFor(sensorfamily);
 		
 		super.addedToEngine(engine);
