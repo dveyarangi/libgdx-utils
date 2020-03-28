@@ -30,9 +30,9 @@ public class LevelDef
 
 	// private IBackground background = new DummyBackground();
 
-	private List<SystemDef<?>> systems = new ArrayList<> ();
+	private ArrayList<SystemDef<?>> systems = new ArrayList<> ();
 
-	private List<EntityDef> entities = new ArrayList<>();
+	private ArrayList<EntityDef> entities = new ArrayList<>();
 
 	public void setWidth( final int width )
 	{
@@ -59,7 +59,7 @@ public class LevelDef
 		systems.add(systemDef);
 	}
 
-	public List<EntityDef> getEntityDefs()
+	public ArrayList<EntityDef> getEntityDefs()
 	{
 		return entities;
 	}

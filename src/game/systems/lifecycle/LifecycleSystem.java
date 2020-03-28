@@ -5,7 +5,6 @@ import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.EntityListener;
 import com.badlogic.ashley.core.EntitySystem;
 import com.badlogic.ashley.core.Family;
-import com.badlogic.ashley.utils.ImmutableArray;
 import com.badlogic.gdx.utils.PooledLinkedList;
 
 import game.systems.DescendantsComponent;
@@ -31,9 +30,14 @@ public class LifecycleSystem extends EntitySystem implements EntityListener
 	private EntityFactory configurer;
 
 	/**
+	 * Newborn entities arrive here
+	 */
+	private PooledLinkedList<Entity> nursery = new PooledLinkedList <Entity>(Integer.MAX_VALUE);
+	
+	/**
 	 * Entities with lifecycle.
 	 */
-	private ImmutableArray<Entity> entities;
+	private PooledLinkedList<Entity> entities = new PooledLinkedList <Entity>(Integer.MAX_VALUE);
 
 	/**
 	 * Temporal pool of removed entities
@@ -59,7 +63,7 @@ public class LifecycleSystem extends EntitySystem implements EntityListener
 	{
 		Family family = Family.one(LifecycleComponent.class).get();
 
-		entities = engine.getEntitiesFor(family);
+		//entities = engine.getEntitiesFor(family);
 		engine.addEntityListener(family, 0, this);
 	}
 
@@ -67,6 +71,7 @@ public class LifecycleSystem extends EntitySystem implements EntityListener
 	public void entityAdded( Entity entity )
 	{
 		LifecycleComponent lifecycle = LifecycleComponent.get(entity);
+		nursery.add(entity);
 		lifecycle.isAlive = true; // no officially alive
 		entity.flags = EntityId.UID();
 	}
@@ -75,23 +80,21 @@ public class LifecycleSystem extends EntitySystem implements EntityListener
 	public void update( float deltaTime )
 	{
 
+		
+		processNursery();
+		
 		/////////////////////////////////////////////////////
 		// advance life time for all entities;
 		// determine if life is elapsed;
 		// create lifecycle effects, if applicable
-		for( Entity entity : entities )
+		entities.iter();
+		Entity entity = null;
+		while((entity = entities.next()) != null)
 		{
 			LifecycleComponent lifecycle = LifecycleComponent.get(entity);
 			// //////////////////////////////////////////////////////////////////////
 			// being born, living a little and then dying:
 
-			boolean isNewborn = false;
-
-			// marking newborn:
-			if( lifecycle.lifetime == 0 )
-			{
-				isNewborn = true;
-			}
 			// advancing life time
 			lifecycle.lifetime += deltaTime;
 
@@ -101,37 +104,26 @@ public class LifecycleSystem extends EntitySystem implements EntityListener
 				lifecycle.setDead();
 			}
 
+			// moving corpses to graveyard:
 			if( !lifecycle.isAlive() )
 			{
 				graveyard.add(entity);
+				entities.remove();
 			}
 
-			// //////////////////////////////////////////////////////////////////////
-			// manifesting those steps:
 
+			// checking if trail effect is required
 			LifeAuraComponent aura = LifeAuraComponent.get(entity);
 			if( aura != null )
 			{
-				// ISpatialComponent spatial = ISpatialComponent.get( entity );
-				if( isNewborn )
+				if( aura.def.trailTotalDuration > lifecycle.lifetime )
 				{
-					configurer.addEntity(aura.createBirthDef( entity ));
-				}
-				else if( !lifecycle.isAlive() )
-				{
-					configurer.addEntity(aura.createDeathDef( entity ));
-				}
-				else
-				{
-					if( aura.def.trailTotalDuration > lifecycle.lifetime )
+					aura.timeSinceSpawn += deltaTime;
+					if( aura.timeSinceSpawn >= aura.def.trailInterval )
 					{
-						aura.timeSinceSpawn += deltaTime;
-						if( aura.timeSinceSpawn >= aura.def.trailInterval )
-						{
-							EntityDef def = aura.createTrailDef( entity );
-							configurer.addEntity(def);
-							aura.timeSinceSpawn = 0;
-						}
+						EntityDef def = aura.createTrailDef( entity );
+						configurer.addEntity(def);
+						aura.timeSinceSpawn = 0;
 					}
 				}
 			}
@@ -140,6 +132,33 @@ public class LifecycleSystem extends EntitySystem implements EntityListener
 		// //////////////////////////////////////////////////////////////////////
 		// sending to The Great Pool, may be dead from other reasons also
 		this.sweepGraveyard();
+	}
+
+	private void processNursery()
+	{
+		nursery.iter();
+		Entity baby = null;
+		while((baby = nursery.next()) != null)
+		{
+			
+			LifecycleComponent lifecycle = LifecycleComponent.get(baby);
+			
+			if(!lifecycle.isImmortal())
+				entities.add(baby);
+			
+			
+			
+			LifeAuraComponent aura = LifeAuraComponent.get(baby);
+			if( aura == null )
+				continue;
+			
+			configurer.addEntity(aura.createBirthDef( baby ));
+			
+			
+			
+		}
+		
+		nursery.clear();
 	}
 
 	/**
@@ -167,8 +186,9 @@ public class LifecycleSystem extends EntitySystem implements EntityListener
 					LifecycleComponent childsLife = LifecycleComponent.get(child);
 					// TODO: no lifecycle aura for children:
 					childsLife.setDead();
-					configurer.removeEntity(child);
-				}			}
+					getEngine().removeEntity(child);
+				}			
+			}
 
 			// informing parent:
 			if( spatial != null && spatial instanceof AnchorComponent )
@@ -178,9 +198,15 @@ public class LifecycleSystem extends EntitySystem implements EntityListener
 				if( family != null ) // kind of Jesus otherwise
 					family.remove(corpse);
 			}
+			
+			LifeAuraComponent aura = LifeAuraComponent.get(corpse);
+			if( aura != null)
+				configurer.addEntity(aura.createDeathDef( corpse ));
+
 
 			// thats it:
-			configurer.removeEntity(corpse);
+			getEngine().removeEntity(corpse);
+			
 		}
 
 		graveyard.clear();
@@ -190,6 +216,7 @@ public class LifecycleSystem extends EntitySystem implements EntityListener
 	@Override
 	public void entityRemoved( Entity entity )
 	{
+		//graveyard.add(entity);
 	}
 
 	@Override
@@ -197,5 +224,12 @@ public class LifecycleSystem extends EntitySystem implements EntityListener
 	{
 		engine.removeEntityListener(this);
 		super.removedFromEngine(engine);
+	}
+
+	public void killEntity(Entity entity)
+	{
+		LifecycleComponent lifecycle = LifecycleComponent.get(entity);
+		lifecycle.isAlive = false;
+		entities.add(entity);
 	}
 }

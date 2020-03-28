@@ -4,6 +4,7 @@ import com.badlogic.ashley.core.Component;
 import com.badlogic.ashley.core.ComponentMapper;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.Pool.Poolable;
 
 /**
  * This class provides definitions common for entity components, and allows to
@@ -16,7 +17,7 @@ import com.badlogic.gdx.utils.Array;
  *
  * @author Fima
  */
-public class EntityDef implements Component
+public class EntityDef implements Component, Poolable
 {
 	public static ComponentMapper<EntityDef> MAPPER = ComponentMapper.getFor(EntityDef.class);
 
@@ -84,6 +85,15 @@ public class EntityDef implements Component
 			}
 		}
 		return null;
+	}
+
+	@Override
+	public void reset()
+	{
+		genericAspects.clear();
+		descendants = false;
+		isPickable = false;
+		
 	}
 
 

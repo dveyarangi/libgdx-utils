@@ -62,6 +62,8 @@ public class LifecycleComponent implements Component, Poolable
 	{
 		return lifelen;
 	}
+	
+	public boolean isImmortal() { return Float.isInfinite(lifelen); }
 
 	public void setDead()
 	{

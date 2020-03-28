@@ -27,6 +27,7 @@ public class SpatialDef implements ISpatialDef<SpatialComponent>
 		component.y(this.y());
 		component.a(this.a());
 		component.r(this.r());
+		component.setChanged(false);
 	}
 
 	@Override public float x() { return x; }

@@ -8,6 +8,7 @@ import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.PooledEngine;
 
 import game.systems.lifecycle.LifecycleComponent;
+import game.systems.lifecycle.LifecycleSystem;
 import game.systems.spatial.SpatialComponent;
 import game.world.Level;
 import game.world.LevelDef;
@@ -28,6 +29,7 @@ public class EntityFactory
 	 * Entity pooling and managing engine
 	 */
 	private PooledEngine engine;
+	private LifecycleSystem lifecycle;
 
 	private Level level;
 
@@ -38,16 +40,26 @@ public class EntityFactory
 	{
 		this.engine = engine;
 		this.level = level;
+	
+	}
+	
+	public LifecycleSystem getLifecycle()
+	{
+		if( lifecycle == null)
+			this.lifecycle = engine.getSystem(LifecycleSystem.class);
+		
+		return lifecycle;
 	}
 
 	public void createUnits( LevelDef def )
 	{
 		// ////////////////////////////////////////////////////
 		// create starting units:
-		for( EntityDef unitDef : def.getEntityDefs() )
+		for( int idx = 0; idx < def.getEntityDefs().size(); idx ++ )
 		{
-			assert unitDef != null : "Unit def is null, looks like redundant comma in units list in config";
-			Entity unit = this.createUnit(unitDef);
+			EntityDef entityDef = def.getEntityDefs().get(idx);
+			assert entityDef != null : "Unit def is null, looks like redundant comma in units list in config";
+			Entity unit = this.createUnit(entityDef);
 
 			engine.addEntity(unit);
 		}
@@ -85,8 +97,10 @@ public class EntityFactory
 
 		// /////////////////////////////////////////////////////////
 		// Generic components
-		for( IComponentDef componentDef : def.getDefs() )
+		for( int idx = 0; idx < def.getDefs().size; idx ++ )
 		{
+			IComponentDef componentDef = def.getDefs().get(idx);
+			
 			if(componentDef.getComponentClass() == null) // TODO: validate component type is not null
 				throw new IllegalArgumentException("No class defined for component def " + componentDef);
 
@@ -155,7 +169,7 @@ public class EntityFactory
 
 	public void removeEntity( Entity entity )
 	{
-		engine.removeEntity(entity);
+		getLifecycle().killEntity(entity);
 	}
 
 	public void bore()
