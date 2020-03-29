@@ -11,28 +11,36 @@ import com.badlogic.gdx.physics.box2d.World;
 
 import box2dLight.RayHandler;
 import game.config.GraphicOptions;
+import game.screen.WorldScreen;
 import game.systems.spatial.ISpatialComponent;
-import lombok.Getter;
 
+/**
+ * Handles {@link LightComponent}s, backed by box2dlights.
+ * It requires Box2DFabric used by WorldScreen ({@link WorldScreen#createFabric() })
+ * 
+ * @author Fima
+ */
 public class LightSystem extends EntitySystem implements EntityListener
 {
 
-	@Getter private OrthographicCamera camera;
+	protected OrthographicCamera camera;
 	/**
 	 * Entities with light.
 	 */
 	private ImmutableArray<Entity> entities;
 
-	RayHandler rayHandler;
+	protected RayHandler rayHandler;
 	
-	public void init( World world, OrthographicCamera camera, LightSystemDef lightSystemDef  )
+	private GraphicOptions graphicOptions;
+	
+	public void init( World world, OrthographicCamera camera, LightSystemDef lightSystemDef, GraphicOptions options  )
 	{
 		//RayHandler.setGammaCorrection(true);
 		RayHandler.useDiffuseLight(lightSystemDef.useDiffuseLight);
 		
-		
+		this.graphicOptions = options;
 
-		this.rayHandler = new RayHandler(world, GraphicOptions.LIGHTS_FBO_WIDTH, GraphicOptions.LIGHTS_FBO_HEIGHT);
+		this.rayHandler = new RayHandler(world, options.lightsFBOWidth, options.lightsFBOHeight);
 		this.camera = camera;
 		rayHandler.setShadows( true/*lightSystemDef.makeShadows*/ );
 		rayHandler.setCulling(true);
@@ -40,7 +48,7 @@ public class LightSystem extends EntitySystem implements EntityListener
 		rayHandler.setBlur(true);
 		if( lightSystemDef.ambientLightColor != null )
 			rayHandler.setAmbientLight(lightSystemDef.ambientLightColor);
-		rayHandler.setBlurNum(GraphicOptions.LIGHTS_BLUR_SIZE);
+		rayHandler.setBlurNum(options.lightsBlurSize);
 
 
 	}
@@ -57,7 +65,7 @@ public class LightSystem extends EntitySystem implements EntityListener
 	public void entityAdded( Entity entity )
 	{
 		LightComponent light = entity.getComponent(LightComponent.class);
-		light.init( rayHandler );
+		light.init( rayHandler, graphicOptions );
 	}
 
 	@Override

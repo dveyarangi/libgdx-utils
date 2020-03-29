@@ -26,7 +26,7 @@ public class LightSystemDef extends SystemDef <LightSystem>
 	{
 		Box2DFabric fabric = (Box2DFabric)level.getModules().getEnvironment();
 		OrthographicCamera camera = level.getModules().getCameraProvider().getCamera();
-		system.init( fabric.getWorld(), camera, this );
+		system.init( fabric.getWorld(), camera, this, level.getGraphicOptions() );
 	}
 
 	public ISystemRenderer createRenderer(LightSystem system)

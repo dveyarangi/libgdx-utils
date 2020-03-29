@@ -1,12 +1,13 @@
 package game.systems.rendering;
 
-import game.world.camera.ICameraProvider;
-
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
+
+import game.config.GraphicOptions;
+import game.world.camera.ICameraProvider;
 
 /**
  * Rendering helper
@@ -25,7 +26,7 @@ public class Renderer implements IRenderer
 
 	private ICameraProvider cameraProvider;
 
-	public Renderer( float worldWidth, float worldHeight, ICameraProvider cameraProvider )
+	public Renderer( float worldWidth, float worldHeight, ICameraProvider cameraProvider, GraphicOptions options )
 	{
 
 		this.worldHeight = worldHeight;
@@ -33,7 +34,7 @@ public class Renderer implements IRenderer
 
 		this.cameraProvider = cameraProvider;
 
-		batch = new SpriteBatch();
+		batch = new SpriteBatch(options.spriteBatchSize);
 
 		shaper = new ShapeRenderer();
 		shaper.setAutoShapeType(true);

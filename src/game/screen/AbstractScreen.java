@@ -4,9 +4,11 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 
+import game.config.GraphicOptions;
 import game.systems.rendering.Renderer;
 import game.world.camera.FittingCameraProvider;
 import game.world.camera.ICameraProvider;
+import lombok.Getter;
 
 /**
  * The base class for all game screens.
@@ -20,13 +22,13 @@ public abstract class AbstractScreen<G extends AbstractGame> implements Screen
 	// protected static final int MENU_VIEWPORT_WIDTH = 1024,
 	// MENU_VIEWPORT_HEIGHT = 512;
 
-	protected final G game;
+	@Getter protected final G game;
 	protected final Stage stage;
 
 	protected Renderer renderer;
 
-	@SuppressWarnings( "rawtypes" )
-	AbstractScreen targetScreen;
+
+	protected AbstractScreen<G> targetScreen;
 
 	private ICameraProvider cameraProvider;
 
@@ -37,7 +39,7 @@ public abstract class AbstractScreen<G extends AbstractGame> implements Screen
 
 	public AbstractScreen( final G game )
 	{		
-		this(game, 500,500);
+		this(game, 500,500 );
 	}
 
 	public AbstractScreen( final G game, int worldWidth, int worldHeight )
@@ -49,18 +51,13 @@ public abstract class AbstractScreen<G extends AbstractGame> implements Screen
 		this.worldHeight = worldHeight;
 
 		this.cameraProvider = new FittingCameraProvider(worldWidth, worldHeight);
+
 	}
 
 	protected String getName()
 	{
 		return this.getClass().getSimpleName();
 	}
-
-	protected boolean isGameScreen()
-	{
-		return false;
-	}
-
 	// Screen implementation
 
 	@Override
@@ -68,7 +65,7 @@ public abstract class AbstractScreen<G extends AbstractGame> implements Screen
 	{
 		Gdx.app.debug(TAG, "Showing screen " + this);
 
-		this.renderer = new Renderer(worldWidth, worldHeight, cameraProvider);
+		this.renderer = new Renderer(worldWidth, worldHeight, cameraProvider, new GraphicOptions());
 		renderer.init();
 
 		// set the stage as the input processor
@@ -117,7 +114,7 @@ public abstract class AbstractScreen<G extends AbstractGame> implements Screen
 		 */
 	}
 
-	public void setScreen( AbstractScreen screen )
+	public void setScreen( AbstractScreen <G>screen )
 	{
 		this.targetScreen = screen;
 	}
@@ -155,10 +152,9 @@ public abstract class AbstractScreen<G extends AbstractGame> implements Screen
 
 	}
 
-	public G getGame()
-	{
-		return game;
-	}
+	
+	protected abstract GraphicOptions getOptions();
+
 
 	// /////////////////////////////////////////////////////////////////////////
 

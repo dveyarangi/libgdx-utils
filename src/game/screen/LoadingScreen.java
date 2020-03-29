@@ -6,8 +6,10 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 
+import game.config.GraphicOptions;
 import game.debug.Debug;
 import game.resources.ResourceFactory;
+import lombok.Getter;
 
 /**
  * Creates and gradually loads game resources;
@@ -20,19 +22,33 @@ import game.resources.ResourceFactory;
 public class LoadingScreen<G extends AbstractGame> extends AbstractScreen<G>
 {
 
-	AbstractScreen<?> targetScreen;
-
+	/**
+	 * Resource factory, loaded by this loading screen
+	 */
 	ResourceFactory factory;
 
 	Sprite loadingSprite;
 	float loadingSpriteAngle = 0;
 	
 	
+	/**
+	 * Progress bar dims
+	 */
 	private int minx, miny, lw, lh;
 
+	private float barProgress = 0;
+	
+	/** 
+	 * Delay before moving to the next screen after loading is complete
+	 */
 	private float culloutTime;
 
-	private float barProgress = 0;
+	/**
+	 * Target screen to show after loading is complete
+	 */
+	AbstractScreen<G> targetScreen;
+	
+	@Getter private GraphicOptions options = new GraphicOptions();
 
 	public LoadingScreen( AbstractScreen<G> targetScreen, Class<?> resourcesClass )
 	{
@@ -57,10 +73,8 @@ public class LoadingScreen<G extends AbstractGame> extends AbstractScreen<G>
 	@Override
 	public void render( float delta )
 	{
-		//super.render(delta);
-		Gdx.gl.glClearColor(0, 0, 0, 1);
-		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-		
+
+		// load some data:
 		float progress = factory.stepLoading(0.02f);
 		if(progress == 1)
 		{
@@ -77,7 +91,19 @@ public class LoadingScreen<G extends AbstractGame> extends AbstractScreen<G>
 			}
 		}
 		
+		Gdx.gl.glClearColor(0, 0, 0, 1);
+		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
+		animateSprite(delta);
+
+		animateBar(delta, progress);
+
+
+	}
+
+
+	private void animateSprite(float delta)
+	{
 		loadingSpriteAngle -= 50*delta;
 
 		float w = loadingSprite.getWidth();
@@ -88,8 +114,11 @@ public class LoadingScreen<G extends AbstractGame> extends AbstractScreen<G>
 		renderer.batch.draw( loadingSprite, cx-w/2, cy-h/2, w/2,h/2, w,h,1,1,
 				loadingSpriteAngle);
 
-		renderer.batch.end();
-
+		renderer.batch.end();	
+	}
+	
+	private void animateBar(float delta, float progress)
+	{
 		// smoothing a little:
 		barProgress += (progress - barProgress)/3;
 		
@@ -98,10 +127,9 @@ public class LoadingScreen<G extends AbstractGame> extends AbstractScreen<G>
 		renderer.shaper.end();
 		renderer.shaper.begin( ShapeType.Filled );
 		renderer.shaper.rect( minx, miny, barProgress*lw, lh );
-		renderer.shaper.end();
-
-
+		renderer.shaper.end();	
 	}
+
 
 	@Override
 	public void resize( int width, int height )
@@ -124,4 +152,6 @@ public class LoadingScreen<G extends AbstractGame> extends AbstractScreen<G>
 	{
 		super.dispose();
 	}
+
+
 }

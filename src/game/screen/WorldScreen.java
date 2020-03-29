@@ -1,18 +1,22 @@
-package game.world;
+package game.screen;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 
+import game.config.GraphicOptions;
 import game.debug.Debug;
 import game.resources.ResourceFactory;
-import game.screen.AbstractGame;
-import game.screen.AbstractScreen;
 import game.systems.control.GameInputProcessor;
 import game.systems.rendering.AnimationRenderingComponent;
 import game.systems.rendering.EntityRenderingSystem;
 import game.systems.rendering.MeshRenderingComponent;
 import game.systems.rendering.ShapeRenderingComponent;
 import game.systems.rendering.SpriteComponent;
+import game.world.GameboardModules;
+import game.world.IFabric;
+import game.world.Level;
+import game.world.LevelDef;
+import game.world.LevelInitialSettings;
 import game.world.camera.BestviewCameraProvider;
 import game.world.camera.ICameraProvider;
 
@@ -31,6 +35,11 @@ public abstract class WorldScreen<G extends AbstractGame> extends AbstractScreen
 	public void show()
 	{
 		super.show();
+		
+		GraphicOptions options = getOptions();
+		if( options == null)
+			throw new IllegalArgumentException("Options cannot be null");
+
 
 		// /////////////////////////////////////////////////////////////////////////
 		// LOADING LEVEL RESOURCES
@@ -82,8 +91,10 @@ public abstract class WorldScreen<G extends AbstractGame> extends AbstractScreen
 
 		gameSetup = new GameboardModules(factory, def, environment, worldCameraProvider);
 		extendModules(gameSetup);
+		
+		
 
-		level = new Level( gameSetup );
+		level = new Level( gameSetup, options );
 
 		// TODO: remove
 		Debug.init(level);

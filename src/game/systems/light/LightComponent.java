@@ -31,18 +31,18 @@ public class LightComponent implements Component, Poolable
 		light = null;
 	}
 
-	public void init( RayHandler rayHandler )
+	public void init( RayHandler rayHandler, GraphicOptions options )
 	{
 		switch(type)
 		{
 		case CONE_LIGHT:
-			light = new ConeLight(rayHandler, GraphicOptions.LIGHTS_FULL_RAY, color, distance, 0, 0, 0, coneAngle);
+			light = new ConeLight(rayHandler, options.lightsFullRay, color, distance, 0, 0, 0, coneAngle);
 			break;
 		case DIRECTIONAL_LIGHT:
-			light = new DirectionalLight(rayHandler, GraphicOptions.LIGHTS_FULL_RAY, color, 0);
+			light = new DirectionalLight(rayHandler, options.lightsFullRay, color, 0);
 			break;
 		case POINT_LIGHT:
-			light = new PointLight(rayHandler, GraphicOptions.LIGHTS_FULL_RAY, color, distance, 0, 0);
+			light = new PointLight(rayHandler, options.lightsFullRay, color, distance, 0, 0);
 			break;
 		default:
 			break;

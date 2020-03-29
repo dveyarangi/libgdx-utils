@@ -8,6 +8,7 @@ import com.badlogic.ashley.core.EntitySystem;
 import com.badlogic.ashley.core.PooledEngine;
 import com.badlogic.gdx.Gdx;
 
+import game.config.GraphicOptions;
 import game.debug.Debug;
 import game.systems.EntityFactory;
 import game.systems.SystemDef;
@@ -65,15 +66,21 @@ public class Level extends EntitySystem
 
 	
 	private List <ISystemRenderer> systemRenderers;
+	
+	
+	@Getter private GraphicOptions graphicOptions;
 	/**
 	 *
 	 */
-	public Level( GameboardModules modules )
+	public Level( GameboardModules modules, GraphicOptions options )
 	{
+		
 		this.modules = modules;
 
 		this.def = modules.getLevelDef();
-
+		
+		this.graphicOptions = options;
+		
 		// game entities manager:
 		this.engine = new PooledEngine(INITIAL_UNITS_NUM, Integer.MAX_VALUE, 10 * INITIAL_UNITS_NUM, Integer.MAX_VALUE);
 		// flattening game modules:
@@ -102,7 +109,7 @@ public class Level extends EntitySystem
 		// creating entity control systems:
 
 		// ////////////////////////////////////////////////////
-		Renderer rend = new Renderer( def.getWidth(), def.getHeight(), modules.getCameraProvider() );
+		Renderer rend = new Renderer( def.getWidth(), def.getHeight(), modules.getCameraProvider(), graphicOptions );
 		// creating entity rendering system:
 		this.renderer = new EntityRenderingSystem( rend,
 				modules.getGameFactory(), modules.getRendererTypes() );
