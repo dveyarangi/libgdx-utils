@@ -65,7 +65,7 @@ public class EntityRenderingSystem extends EntitySystem implements EntityListene
 	private ResourceFactory factory;
 
 	public static final int PROJECTED_SHAPER_ID = 1;
-
+	public static final int DEBUG_ID = 2;
 	/**
 	 * Actual rendering toolbox
 	 */
@@ -116,7 +116,7 @@ public class EntityRenderingSystem extends EntitySystem implements EntityListene
 
 		// TODO: load and use several textures in the same time;
 		// may use combined contexts.
-		contextOrder = new int [factory.getTextures().size()+1];
+		contextOrder = new int [factory.getTextures().size()+2];
 		int idx = 0;
 		for( TextureHandle textureHandle : factory.getTextures() )
 		{
@@ -130,6 +130,8 @@ public class EntityRenderingSystem extends EntitySystem implements EntityListene
 		// production:
 		this.registerContext(new ShapeRenderingContext(PROJECTED_SHAPER_ID, renderer.shaper()));
 		contextOrder[idx ++] = PROJECTED_SHAPER_ID;
+		this.registerContext(new DebugRenderingContext(DEBUG_ID));
+		contextOrder[idx ++] = DEBUG_ID;
 
 		// registering as listener for all entities with renderer component:
 		Family family = Family.one( rendererTypes ).get();
