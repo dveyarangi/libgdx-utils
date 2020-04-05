@@ -17,8 +17,8 @@ import game.world.IFabric;
 import game.world.Level;
 import game.world.LevelDef;
 import game.world.LevelInitialSettings;
-import game.world.camera.BestviewCameraProvider;
 import game.world.camera.ICameraProvider;
+import game.world.camera.PerspectiveCameraProvider;
 
 public abstract class WorldScreen<G extends AbstractGame> extends AbstractScreen<G >
 {
@@ -86,7 +86,7 @@ public abstract class WorldScreen<G extends AbstractGame> extends AbstractScreen
 		if( settings == null )
 			throw new IllegalArgumentException("Missing level initial settings");
 
-		ICameraProvider worldCameraProvider = new BestviewCameraProvider(def.getWidth(), def.getHeight(),
+		ICameraProvider worldCameraProvider = new PerspectiveCameraProvider(def.getWidth(), def.getHeight(),
 				settings.getCameraPosition().x, settings.getCameraPosition().y, settings.getInitZoom());
 
 		gameSetup = new GameboardModules(factory, def, environment, worldCameraProvider);
@@ -138,7 +138,7 @@ public abstract class WorldScreen<G extends AbstractGame> extends AbstractScreen
 	public void render( float delta )
 	{
 		Gdx.gl.glClearColor(0, 0, 0, 1);
-		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT );
 
 		super.render(delta);
 
