@@ -1,6 +1,7 @@
 package game.systems.control;
 
-import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.Camera;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 
 import game.world.camera.ICameraProvider;
@@ -46,7 +47,7 @@ public class FreeCameraController extends ICameraController
 	}
 
 	@Override
-	public OrthographicCamera camera()
+	public Camera camera()
 	{
 		return cameraProvider.getCamera();
 	}
@@ -63,10 +64,13 @@ public class FreeCameraController extends ICameraController
 		// moving camera toward target state:
 		float dx = this.camera().position.x - this.target.x;
 		float dy = this.camera().position.y - this.target.y;
-		float dz = this.camera().zoom - this.target.z;
+		float dz = this.zoom() - this.target.z;
+
 		this.camera().position.x = this.camera().position.x - CAMERA_SPEEED * dx;
 		this.camera().position.y = this.camera().position.y - CAMERA_SPEEED * dy;
-		this.camera().zoom = this.camera().zoom - CAMERA_SPEEED * dz;
+		
+		cameraProvider.zoom(cameraProvider.zoom() - CAMERA_SPEEED * dz);
+		//this.camera().zoom = this.camera().zoom - CAMERA_SPEEED * dz;
 
 		// recalculating matrices:
 		this.camera().update();
@@ -80,6 +84,7 @@ public class FreeCameraController extends ICameraController
 	@Override
 	public void resize( final int screenWidth, final int screenHeight )
 	{
+		this.cameraProvider.resize(screenWidth, screenHeight);
 	}
 
 	@Override
@@ -92,10 +97,9 @@ public class FreeCameraController extends ICameraController
 	@Override
 	public void zoomTo( final float x, final float y, final float zoom )
 	{
-		this.zomove(x, y, zoom, this.camera().zoom);
+		this.zomove(x, y, zoom, this.zoom());
 
 	}
-
 	/**
 	 * Adjust camera target, while trying to retain world coordinates at cursor.
 	 *
@@ -121,4 +125,14 @@ public class FreeCameraController extends ICameraController
 		this.target.y = y - pOffsetY / 1.0f;
 
 	}
+
+	@Override
+	public float zoom() {  return cameraProvider.zoom(); }
+
+	@Override
+	protected void unproject(int screenX, int screenY, Vector2 out)
+	{
+		cameraProvider.unproject(screenX, screenY, out);
+	}
+
 }

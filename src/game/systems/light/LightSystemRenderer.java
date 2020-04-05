@@ -12,7 +12,7 @@ public class LightSystemRenderer implements ISystemRenderer {
 
 	public void render()
 	{
-		system.rayHandler.setCombinedMatrix( system.camera );
+		system.rayHandler.setCombinedMatrix( system.camera.combined );
 
 		system.rayHandler.update();
 		system.rayHandler.render();

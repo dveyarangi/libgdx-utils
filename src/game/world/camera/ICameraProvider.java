@@ -1,6 +1,7 @@
 package game.world.camera;
 
-import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.Camera;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.viewport.Viewport;
 
 /**
@@ -11,11 +12,17 @@ import com.badlogic.gdx.utils.viewport.Viewport;
  */
 public interface ICameraProvider
 {
-	public OrthographicCamera getCamera();
+	public Camera getCamera();
 
 	public Viewport getViewport();
+	
+	public float zoom();
+	public void zoom(float zoom);
+
 
 	public void resize( int screenWidth, int screenHeight );
+
+	public abstract void unproject(float screenX, float screenY, Vector2 out);
 
 	// public float getMinZoom();
 	// public float getMaxZoom();

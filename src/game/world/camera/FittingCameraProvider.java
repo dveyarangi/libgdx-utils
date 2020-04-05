@@ -1,6 +1,8 @@
 package game.world.camera;
 
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 
@@ -65,6 +67,30 @@ public class FittingCameraProvider implements ICameraProvider
 		// TODO: viewport update calls glViewport which influences the drawing
 		// of world renderer
 		// viewport.update(screenWidth, screenHeight);
+	}
+
+	@Override
+	public float zoom()
+	{
+		return camera.zoom;
+	}
+
+	@Override
+	public void zoom(float zoom)
+	{
+		camera.zoom = zoom;
+	}
+
+	Vector3 temp = new Vector3();
+	
+	@Override
+	public void unproject(float screenX, float screenY, Vector2 out)
+	{
+		temp.x = out.x;
+		temp.y = out.y;
+		camera.unproject(temp);
+		out.x = temp.x;
+		out.y = temp.y;
 	}
 
 }

@@ -11,7 +11,6 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.input.GestureDetector;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.math.Vector3;
 
 import game.systems.box2d.InputAction;
 import game.systems.box2d.InputContext;
@@ -80,7 +79,7 @@ public class GameInputProcessor extends EntitySystem implements InputProcessor
 
 	private boolean debugPick = false;
 
-	protected float BASE_PICK_RADIUS = 10;
+	protected float BASE_PICK_RADIUS = 1;
 	protected float pickRadius = BASE_PICK_RADIUS;
 
 	protected HUD ui;
@@ -184,7 +183,7 @@ public class GameInputProcessor extends EntitySystem implements InputProcessor
 
 
 	/** temporal storage for camera un-projection operation */
-	private final Vector3 cursorPos = new Vector3();
+	private final Vector2 cursorPos = new Vector2();
 
 
 	private void toggleCursorMoved( int screenX, int screenY, boolean forceUpdate )
@@ -197,7 +196,7 @@ public class GameInputProcessor extends EntitySystem implements InputProcessor
 		currx = screenX;
 		curry = screenY;
 
-		float zoom = camController.camera().zoom;
+		float zoom = camController.zoom();
 
 		// determining pick radius:
 		pickRadius = BASE_PICK_RADIUS * zoom;
@@ -205,10 +204,8 @@ public class GameInputProcessor extends EntitySystem implements InputProcessor
 		prevWorldPos.set(worldPos);
 
 		// calculating mouse position in world coordinates:
-		cursorPos.set(currx, curry, 0);// -
 		// camController.camera().viewportWidth/2;
-		camController.camera().unproject(cursorPos);
-
+		camController.unproject(currx, curry, cursorPos);
 		worldPos.x = cursorPos.x;
 		worldPos.y = cursorPos.y;
 
@@ -285,7 +282,7 @@ public class GameInputProcessor extends EntitySystem implements InputProcessor
 	{
 		this.toggleCursorMoved(screenX, screenY, true);
 
-		boolean consumed = controlModes.touchDown(worldPos.x, worldPos.y, camController.camera().zoom, pickedObject, button);
+		boolean consumed = controlModes.touchDown(worldPos.x, worldPos.y, camController.zoom(), pickedObject, button);
 
 		lastButton = button;
 
@@ -316,7 +313,7 @@ public class GameInputProcessor extends EntitySystem implements InputProcessor
 	{
 		this.toggleCursorMoved(screenX, screenY, true);
 
-		boolean consumed = controlModes.touchUp(worldPos.x, worldPos.y, camController.camera().zoom, pickedObject, button);
+		boolean consumed = controlModes.touchUp(worldPos.x, worldPos.y, camController.zoom(), pickedObject, button);
 
 		if(!consumed)
 			if(button == Input.Buttons.RIGHT)
@@ -336,7 +333,7 @@ public class GameInputProcessor extends EntitySystem implements InputProcessor
 
 		boolean consumed = false;
 
-		consumed = controlModes.drag(worldPos.x, worldPos.y, camController.camera().zoom, pickedObject, lastButton);
+		consumed = controlModes.drag(worldPos.x, worldPos.y, camController.zoom(), pickedObject, lastButton);
 
 		if(! consumed && lastButton == Input.Buttons.RIGHT)
 		{

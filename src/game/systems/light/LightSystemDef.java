@@ -1,7 +1,7 @@
 package game.systems.light;
 
+import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.OrthographicCamera;
 
 import game.systems.SystemDef;
 import game.systems.box2d.Box2DFabric;
@@ -25,7 +25,7 @@ public class LightSystemDef extends SystemDef <LightSystem>
 	public void initSystem( Level level, LightSystem system )
 	{
 		Box2DFabric fabric = (Box2DFabric)level.getModules().getEnvironment();
-		OrthographicCamera camera = level.getModules().getCameraProvider().getCamera();
+		Camera camera = level.getModules().getCameraProvider().getCamera();
 		system.init( fabric.getWorld(), camera, this, level.getGraphicOptions() );
 	}
 

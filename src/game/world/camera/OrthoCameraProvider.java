@@ -1,6 +1,8 @@
 package game.world.camera;
 
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.viewport.Viewport;
 
 /**
@@ -8,7 +10,7 @@ import com.badlogic.gdx.utils.viewport.Viewport;
  *
  * @author Fima
  */
-public class BestviewCameraProvider implements ICameraProvider
+public class OrthoCameraProvider implements ICameraProvider
 {
 	/**
 	 * Managed camera
@@ -31,7 +33,7 @@ public class BestviewCameraProvider implements ICameraProvider
 	 */
 	protected float aspectRatio = 1;
 
-	public BestviewCameraProvider( float worldWidth, float worldHeight, float startX, float startY, float startZoom )
+	public OrthoCameraProvider( float worldWidth, float worldHeight, float startX, float startY, float startZoom )
 	{
 		this.worldHeight = worldHeight;
 		this.worldWidth = worldWidth;
@@ -40,6 +42,7 @@ public class BestviewCameraProvider implements ICameraProvider
 
 		camera.position.x = startX;
 		camera.position.y = startY;
+		camera.near = 1f;
 		camera.zoom = startZoom;
 	}
 
@@ -56,6 +59,31 @@ public class BestviewCameraProvider implements ICameraProvider
 		camera.viewportHeight = worldWidth;// * camera.zoom;
 
 		camera.update();
+	}
+
+	@Override
+	public float zoom()
+	{
+		return camera.zoom;
+	}
+
+	@Override
+	public void zoom(float zoom)
+	{
+		camera.zoom = zoom;
+	}
+
+	Vector3 tmp = new Vector3();
+	
+	@Override
+	public void unproject(float screenX, float screenY, Vector2 out)
+	{
+		tmp.x = screenX;
+		tmp.y = screenY;
+		tmp.z = 0;
+		camera.unproject(tmp);
+		out.x = tmp.x;
+		out.y = tmp.y;
 	}
 
 }

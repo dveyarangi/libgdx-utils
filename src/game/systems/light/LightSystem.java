@@ -6,7 +6,7 @@ import com.badlogic.ashley.core.EntityListener;
 import com.badlogic.ashley.core.EntitySystem;
 import com.badlogic.ashley.core.Family;
 import com.badlogic.ashley.utils.ImmutableArray;
-import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.physics.box2d.World;
 
 import box2dLight.RayHandler;
@@ -22,18 +22,20 @@ import game.systems.spatial.ISpatialComponent;
  */
 public class LightSystem extends EntitySystem implements EntityListener
 {
-
-	protected OrthographicCamera camera;
+	
+	private GraphicOptions graphicOptions;
+	
+	protected Camera camera;
+	
 	/**
 	 * Entities with light.
 	 */
 	private ImmutableArray<Entity> entities;
 
 	protected RayHandler rayHandler;
+
 	
-	private GraphicOptions graphicOptions;
-	
-	public void init( World world, OrthographicCamera camera, LightSystemDef lightSystemDef, GraphicOptions options  )
+	public void init( World world, Camera camera, LightSystemDef lightSystemDef, GraphicOptions options  )
 	{
 		//RayHandler.setGammaCorrection(true);
 		RayHandler.useDiffuseLight(lightSystemDef.useDiffuseLight);

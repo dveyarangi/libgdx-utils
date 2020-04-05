@@ -3,7 +3,8 @@
  */
 package game.systems.control;
 
-import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.Camera;
+import com.badlogic.gdx.math.Vector2;
 
 /**
  * Defines camera behavior.
@@ -12,7 +13,7 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 public abstract class ICameraController
 {
 
-	public abstract OrthographicCamera camera();
+	public abstract Camera camera();
 
 	/**
 	 * Move camera to target coordinate and zoom value
@@ -50,5 +51,9 @@ public abstract class ICameraController
 	 * @param height
 	 */
 	abstract void resize( int width, int height );
+
+	public abstract float zoom();
+
+	protected abstract void unproject(int currx, int curry, Vector2 cursorPos);
 
 }
