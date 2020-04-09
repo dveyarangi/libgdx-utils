@@ -15,6 +15,7 @@ import com.badlogic.gdx.utils.ObjectMap;
 import com.badlogic.gdx.utils.ObjectMap.Entries;
 import com.badlogic.gdx.utils.ObjectMap.Entry;
 
+import game.debug.Debug;
 import game.resources.ResourceFactory;
 import game.resources.TextureHandle;
 
@@ -168,7 +169,8 @@ public class EntityRenderingSystem extends EntitySystem implements EntityListene
 		// add ing the entity to appropriate sub-list of the entity mapping:
 		ObjectMap<IRenderingComponent, Entity> elist = entities.get(cid);
 		if(elist == null)
-			throw new IllegalStateException("No rendering context with id " + cid + " found.");
+			throw new IllegalStateException(
+					"No rendering context with id " + cid + " found:\n" + Debug.entityToString(entity));
 
 		elist.put( component, entity );
 	}

@@ -3,9 +3,12 @@
  */
 package game.debug;
 
+
 import java.util.HashMap;
 import java.util.Map;
 
+import com.badlogic.ashley.core.Component;
+import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.FPSLogger;
 import com.badlogic.gdx.graphics.GL20;
@@ -296,5 +299,15 @@ public class Debug
 	public static void registerOverlays( final IntMap<IRenderingComponent> overlays )
 	{
 		overlays.put(FACTION_OID, new UnitSymbol());
+	}
+
+	public static String entityToString(Entity entity)
+	{
+		StringBuilder sb = new StringBuilder();
+		
+		for(Component component : entity.getComponents())
+			sb.append(component.getClass()).append(": ").append(component.toString()).append("\n");
+		
+		return sb.toString();
 	}
 }
