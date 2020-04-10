@@ -11,7 +11,7 @@ import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.utils.ObjectSet;
 import com.badlogic.gdx.utils.PooledLinkedList;
 
-import game.systems.box2d.IEntityFilter;
+import game.systems.control.IEntityFilter;
 import game.systems.sensor.SensorComponent;
 import game.systems.spatial.ISpatialComponent;
 import game.world.Constants;

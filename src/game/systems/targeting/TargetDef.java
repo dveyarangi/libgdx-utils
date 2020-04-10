@@ -1,7 +1,7 @@
 package game.systems.targeting;
 
 import game.systems.IComponentDef;
-import game.systems.box2d.IEntityFilter;
+import game.systems.control.IEntityFilter;
 import game.world.Level;
 
 import com.badlogic.ashley.core.Entity;

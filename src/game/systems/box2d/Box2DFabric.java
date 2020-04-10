@@ -19,6 +19,7 @@ import com.badlogic.gdx.physics.box2d.Shape;
 import com.badlogic.gdx.physics.box2d.World;
 
 import game.systems.box2d.Box2DPhysicalDef.PartDef;
+import game.systems.control.IEntityFilter;
 import game.systems.sensor.SensorComponent;
 import game.systems.sensor.SensorDef;
 import game.systems.spatial.ISpatialComponent;

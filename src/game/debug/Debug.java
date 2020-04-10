@@ -16,10 +16,10 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.utils.IntMap;
 import com.badlogic.gdx.utils.IntMap.Entry;
 
-import game.systems.box2d.InputAction;
-import game.systems.box2d.InputContext;
 import game.systems.control.GameInputProcessor;
 import game.systems.control.Hotkeys;
+import game.systems.control.InputAction;
+import game.systems.control.InputContext;
 import game.systems.hud.UIInputProcessor;
 import game.systems.rendering.EntityRenderingSystem;
 import game.systems.rendering.IRenderer;
@@ -254,6 +254,10 @@ public class Debug
 		timings.remove(processName);
 	}
 
+	
+	public static String DEBUG = "DEBUG";
+	public static String WARN  = "WARN ";
+	public static String ERROR = "ERROR";
 	/**
 	 * Logs a message.
 	 * @param message
@@ -261,16 +265,30 @@ public class Debug
 	 */
 	public static boolean log( final String message )
 	{
-		log(3, message);
+		log(3, DEBUG, message);
 		return true;
 	}
-	public static boolean log( int stackDepth, final String message )
+	
+	public static boolean warn( final String message )
+	{
+		log(3, WARN, message);
+		return true;
+	}
+	public static boolean error( final String message )
+	{
+		log(3, ERROR, message);
+		return true;
+	}
+	
+	private static String LOG_TEMPLATE = "%s:%d >> %s";
+	
+	public static boolean log( int stackDepth, String tag,  final String message )
 	{
 		StackTraceElement el = new Exception().getStackTrace()[stackDepth];
 		String className = el.getClassName();
 		int lineNum = el.getLineNumber();
 
-		Gdx.app.log(className + ":" + lineNum, message);
+		Gdx.app.log(tag, String.format(LOG_TEMPLATE, className, lineNum, message));
 
 		return true;
 	}

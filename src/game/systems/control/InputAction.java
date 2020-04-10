@@ -1,4 +1,4 @@
-package game.systems.box2d;
+package game.systems.control;
 
 public interface InputAction
 {

@@ -1,4 +1,4 @@
-package game.systems.box2d;
+package game.systems.control;
 
 import com.badlogic.ashley.core.Entity;
 

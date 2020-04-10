@@ -2,7 +2,7 @@ package game.world;
 
 import com.badlogic.ashley.core.Entity;
 
-import game.systems.box2d.IEntityFilter;
+import game.systems.control.IEntityFilter;
 
 /**
  * Interface for classes that provide entity picking by mouse

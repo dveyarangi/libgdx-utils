@@ -6,6 +6,7 @@ import com.badlogic.gdx.physics.box2d.QueryCallback;
 import com.badlogic.gdx.physics.box2d.World;
 
 import game.systems.EntityDef;
+import game.systems.control.IEntityFilter;
 import game.world.IPickProvider;
 import lombok.Setter;
 

@@ -7,7 +7,7 @@ import com.badlogic.gdx.utils.Pool.Poolable;
 import com.badlogic.gdx.utils.PooledLinkedList;
 
 import game.systems.EntityCapsule;
-import game.systems.box2d.IEntityFilter;
+import game.systems.control.IEntityFilter;
 import game.systems.spatial.ISpatialComponent;
 import game.systems.spatial.SpatialComponent;
 import game.world.IFabric;
