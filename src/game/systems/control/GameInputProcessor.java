@@ -12,14 +12,13 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.input.GestureDetector;
 import com.badlogic.gdx.math.Vector2;
 
-import game.systems.box2d.InputAction;
-import game.systems.box2d.InputContext;
 import game.systems.hud.HUD;
 import game.systems.hud.UIInputProcessor;
 import game.systems.rendering.IRenderer;
 import game.world.IPickProvider;
 import game.world.Level;
 import game.world.LevelInitialSettings;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 /**
@@ -161,6 +160,8 @@ public class GameInputProcessor extends EntitySystem implements InputProcessor
 		// advancing lifetime:
 		lifeTime += delta;
 
+		uiProcessor.update(delta);
+		
 		// adjusting camera:
 		camController.update(delta);
 
@@ -170,6 +171,8 @@ public class GameInputProcessor extends EntitySystem implements InputProcessor
 		timeController.update(delta);
 
 		controlModes.update(delta);
+		
+
 
 	}
 
@@ -342,7 +345,18 @@ public class GameInputProcessor extends EntitySystem implements InputProcessor
 
 		return true;
 	}
-
+	
+	@AllArgsConstructor
+	public class MoveCameraAction implements InputAction
+	{
+		float dx, dy;
+		@Override
+		public void execute(InputContext context)
+		{
+			camController.moveBy(dx*context.dt*camController.zoom(), dy*context.dt*camController.zoom());
+		}
+	}
+	
 	@Override
 	public boolean mouseMoved( final int screenX, final int screenY )
 	{
@@ -357,6 +371,7 @@ public class GameInputProcessor extends EntitySystem implements InputProcessor
 		camController.zoomTo(worldPos.x, worldPos.y, amount * ZOOM_SPEED_COEF);
 		return true;
 	}
+
 
 	public void render( final IRenderer renderer )
 	{

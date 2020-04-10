@@ -1,10 +1,11 @@
 package game.systems.hud;
 
-import game.systems.box2d.InputAction;
-import game.systems.box2d.InputContext;
-
 import com.badlogic.gdx.InputProcessor;
+import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.IntMap;
+
+import game.systems.control.InputAction;
+import game.systems.control.InputContext;
 
 /**
  * @author Ni
@@ -16,6 +17,8 @@ public class UIInputProcessor implements InputProcessor
 	private IntMap<InputAction> keyActions = new IntMap<InputAction>();
 
 	private InputContext context = new InputContext();
+	
+	private Array<InputAction> activeActions = new Array<>();
 
 	public void registerAction( final int keycode, final InputAction action )
 	{
@@ -29,7 +32,7 @@ public class UIInputProcessor implements InputProcessor
 		if( action == null )
 			return false;
 
-		action.execute(context);
+		activeActions.add(action);
 
 		return true;
 	}
@@ -37,8 +40,12 @@ public class UIInputProcessor implements InputProcessor
 	@Override
 	public boolean keyUp( final int keycode )
 	{
-		// TODO Auto-generated method stub
-		return false;
+		InputAction action = keyActions.get(keycode);
+		if( action == null )
+			return false;
+
+		activeActions.removeValue(action, true);
+		return true;
 	}
 
 	@Override
@@ -81,6 +88,15 @@ public class UIInputProcessor implements InputProcessor
 	{
 		// TODO Auto-generated method stub
 		return false;
+	}
+	
+	public void update(float dt)
+	{
+		context.dt = dt;
+		for(int i = 0; i < activeActions.size; i ++)
+		{
+			activeActions.get(i).execute(context);
+		}
 	}
 
 }
