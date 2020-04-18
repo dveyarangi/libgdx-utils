@@ -5,6 +5,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
+import game.debug.Debug;
 import game.resources.ResourceFactory;
 import game.systems.spatial.ISpatialComponent;
 import game.world.Level;
@@ -20,7 +21,7 @@ public class SpriteComponent implements IRenderingComponent
 	//static { ComponentType.registerFor(IRenderingComponent.class, SpriteRenderingComponent.class); }
 
 	@Getter protected TextureRegion region;
-
+	@Getter float ox, oy, sx, sy;
 
 	protected int [] cid;
 
@@ -37,15 +38,22 @@ public class SpriteComponent implements IRenderingComponent
 		{
 			TextureRenderingDef tdef = (TextureRenderingDef) def;
 			this.region = factory.getTextureRegion(tdef.textureName);
+			this.ox = tdef.ox; this.oy = tdef.oy; this.sx = tdef.w; this.sy = tdef.h;
+			
 		}
 		else
 		{
 			RegionRenderingDef tdef = (RegionRenderingDef) def;
 			TextureAtlas atlas = tdef.atlas;
 			if( tdef.regionName == null)
+			{
 				this.region = atlas.getRegions().get(0);
+				Debug.warn("RegionRenderingDef does not specify regionName");
+			}
 			else
 				this.region = atlas.findRegion(tdef.regionName);
+			
+			this.ox = tdef.ox; this.oy = tdef.oy; this.sx = tdef.w; this.sy = tdef.h;
 		}
 
 		this.cid[0] = TextureID.genid(region.getTexture());
@@ -73,7 +81,10 @@ public class SpriteComponent implements IRenderingComponent
 	{
 		ISpatialComponent spatial = ISpatialComponent.get(entity);
 
-		this.render( spatial.x(), spatial.y(), spatial.a(), spatial.r(), entity, renderer, context );
+		if( useSpatialDimensions())
+			this.render( spatial.x(), spatial.y(), spatial.a(), spatial.r(), entity, renderer, context );
+		else
+			this.render( spatial.x(), spatial.y(), 0, spatial.r(), entity, renderer, context );
 	}
 
 	public boolean render( float x, float y, float a, float r, Entity entity, IRenderer renderer, IRenderingContext context )
@@ -96,5 +107,10 @@ public class SpriteComponent implements IRenderingComponent
 				);
 
 		return false;
+	}
+	
+	public boolean useSpatialDimensions()
+	{
+		return Float.isNaN(ox);
 	}
 }
