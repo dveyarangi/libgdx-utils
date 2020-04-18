@@ -17,7 +17,7 @@ public class UnityAtlasLoader {
 	public static void main(String [] args) throws IOException
 	{
 		Yaml yaml = new Yaml();
-		File inputFile = new File("D:\\Dev\\games_workspace\\retreat\\Assets\\Resources\\Images\\Walls\\ConcreteWall.png.meta");
+		File inputFile = new File("D:\\Dev\\games_workspace\\retreat\\Assets\\Resources\\Images\\Flora\\dandan-liang-familyfarm-2d-environment.jpg.meta");
 		InputStream inputStream = new FileInputStream(inputFile);
 		
 		String imageName = inputFile.getName().substring(0, inputFile.getName().length()-5);
@@ -60,8 +60,8 @@ public class UnityAtlasLoader {
 			Map <String, Object> pivot = (Map<String, Object>)sprite.get("pivot");
 			
 			
-			int xorigin = (int) (width*(double)pivot.get("x"));
-			int yorigin = (int) (height*(double)pivot.get("y"));
+			int xorigin = (int) (width*((Number)pivot.get("x")).floatValue());
+			int yorigin = (int) (height*((Number)pivot.get("y")).floatValue());
 			
 			writer.write(spriteName+"\n");
 			writer.write("  rotate: false"+"\n");
