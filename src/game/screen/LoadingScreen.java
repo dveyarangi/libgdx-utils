@@ -1,15 +1,20 @@
 package game.screen;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 
 import game.config.GraphicOptions;
 import game.debug.Debug;
-import game.resources.ResourceFactory;
+import game.util.LoadableModule;
+import game.util.LoadingProgress;
 import lombok.Getter;
+import lombok.experimental.var;
 
 /**
  * Creates and gradually loads game resources;
@@ -25,22 +30,23 @@ public class LoadingScreen<G extends AbstractGame> extends AbstractScreen<G>
 	/**
 	 * Resource factory, loaded by this loading screen
 	 */
-	ResourceFactory factory;
+	LoadableModule loadable;
 
 	Sprite loadingSprite;
-	float loadingSpriteAngle = 0;
+	static float loadingSpriteAngle = 0;
 	
 	
 	/**
 	 * Progress bar dims
 	 */
-	private int minx, miny, lw, lh;
+	private int pbarminx, pbarminy, pbarlw, pbarlh;
 
 	private float barProgress = 0;
 	
 	/** 
 	 * Delay before moving to the next screen after loading is complete
 	 */
+	private float cullinTime;
 	private float culloutTime;
 
 	/**
@@ -49,15 +55,31 @@ public class LoadingScreen<G extends AbstractGame> extends AbstractScreen<G>
 	AbstractScreen<G> targetScreen;
 	
 	@Getter private GraphicOptions options = new GraphicOptions();
+	
+	FadeGameOverlay overlay = new FadeGameOverlay();
+	
+	FileHandle font = Gdx.files.internal("fonts/VisOpenSans.ttf");
+    FreeTypeFontGenerator generator = new FreeTypeFontGenerator(font);
+    BitmapFont fontLabel;
 
-	public LoadingScreen( AbstractScreen<G> targetScreen, Class<?> resourcesClass )
+	public LoadingScreen( AbstractScreen<G> targetScreen )
+	{
+		this(targetScreen, targetScreen.getLoadable());
+	}
+	
+	public LoadingScreen( AbstractScreen<G> targetScreen, LoadableModule loadable )
 	{
 		super(targetScreen.game);
 
 		this.targetScreen = targetScreen;
 
-		factory = targetScreen.game.resourceFactory = ResourceFactory.init(resourcesClass);
-
+		this.loadable = loadable;
+		
+		var param = new FreeTypeFontGenerator.FreeTypeFontParameter();
+		param.size = 12;
+		
+		fontLabel = generator.generateFont(param);
+		
 		loadingSprite = new Sprite(new Texture("images//lotus.png"));
 		loadingSprite.setSize(Gdx.graphics.getHeight() / 4,Gdx.graphics.getHeight() / 4);
 	}
@@ -73,21 +95,44 @@ public class LoadingScreen<G extends AbstractGame> extends AbstractScreen<G>
 	@Override
 	public void render( float delta )
 	{
-
+		if( cullinTime < FadeGameOverlay.INTERVAL)
+		{
+			cullinTime += delta;
+			overlay.updateOverlay(delta);
+			overlay.drawOverlay(renderer);
+		}
+		
+		if(loadable == null)
+		{
+			this.getGame().setScreen(targetScreen);
+			return;
+		}
 		// load some data:
-		float progress = factory.stepLoading(0.02f);
+		LoadingProgress loadingProgress = loadable.stepLoading(0.02f);
+		float progress = loadingProgress.getProgress();
+		
 		if(progress == 1)
 		{
 			culloutTime += delta;
-			if(culloutTime > 0.2)
+			if(culloutTime > FadeGameOverlay.OUTERVAL)
 			{
 				//this.dispose();
 				this.setScreen(targetScreen);
 
-				factory.finishLoading();
+				loadable.finishLoading();
 				Debug.stopTiming("resource loading");
 				this.getGame().setScreen(targetScreen);
+				
+				// TODO: maybe this helps:
+				Runtime.getRuntime().gc();
+
 				return;
+			}
+			else
+			{
+				overlay.outFade = true;
+				overlay.updateOverlay(delta);
+				overlay.drawOverlay(renderer);
 			}
 		}
 		
@@ -95,9 +140,10 @@ public class LoadingScreen<G extends AbstractGame> extends AbstractScreen<G>
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
 		animateSprite(delta);
-
+		
 		animateBar(delta, progress);
 
+		showMessage(loadingProgress);
 
 	}
 
@@ -113,23 +159,38 @@ public class LoadingScreen<G extends AbstractGame> extends AbstractScreen<G>
 		renderer.batch.begin();
 		renderer.batch.draw( loadingSprite, cx-w/2, cy-h/2, w/2,h/2, w,h,1,1,
 				loadingSpriteAngle);
-
+		
 		renderer.batch.end();	
 	}
 	
 	private void animateBar(float delta, float progress)
 	{
+
 		// smoothing a little:
 		barProgress += (progress - barProgress)/3;
 		
 		renderer.shaper.begin( ShapeType.Line );
-		renderer.shaper.rect( minx, miny, lw, lh );
+		renderer.shaper.setColor(1,1,1,1);
+		renderer.shaper.rect( pbarminx, pbarminy, pbarlw, pbarlh );
 		renderer.shaper.end();
 		renderer.shaper.begin( ShapeType.Filled );
-		renderer.shaper.rect( minx, miny, barProgress*lw, lh );
+		renderer.shaper.rect( pbarminx, pbarminy, barProgress*pbarlw, pbarlh );
 		renderer.shaper.end();	
 	}
 
+	private void showMessage(LoadingProgress progress)
+	{
+		if(progress.getMessage() == null)
+			return;
+		float cx = Gdx.graphics.getWidth()/2;
+		float cy = Gdx.graphics.getHeight()/2;
+		renderer.batch.begin();
+
+		fontLabel.setColor(1,1,1,1);
+		fontLabel.draw(renderer.batch, progress.getMessage(), pbarminx, pbarminy + 2*pbarlh);
+		
+		renderer.batch.end();	
+	}
 
 	@Override
 	public void resize( int width, int height )
@@ -138,13 +199,13 @@ public class LoadingScreen<G extends AbstractGame> extends AbstractScreen<G>
 		float w = loadingSprite.getWidth();
 		float h = loadingSprite.getHeight();
 		
-		this.minx = width / 2 - width / 4;
-    	int maxx = width / 2 + width / 4;
-    	lw = maxx - minx;
-    	this.miny = (int) (height/2 - h/2 - 2*height / 100);
-    	int maxy = (int)(height/2 - h/2- 3*height / 100);
+		this.pbarminx = width / 2 - width / 4;
+    	int pbarmaxx = width / 2 + width / 4;
+    	pbarlw = pbarmaxx - pbarminx;
+    	this.pbarminy = (int) (height/2 - h/2 - 2*height / 100);
+    	int pbarmaxy = (int)(height/2 - h/2- 3*height / 100);
     	//int maxy = 3*height / 100;
-    	lh = maxy - miny;
+    	pbarlh = pbarmaxy - pbarminy;
 	}
 	
 	@Override

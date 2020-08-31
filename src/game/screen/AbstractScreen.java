@@ -6,6 +6,7 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 
 import game.config.GraphicOptions;
 import game.systems.rendering.Renderer;
+import game.util.LoadableModule;
 import game.world.camera.FittingCameraProvider;
 import game.world.camera.ICameraProvider;
 import lombok.Getter;
@@ -154,6 +155,12 @@ public abstract class AbstractScreen<G extends AbstractGame> implements Screen
 
 	
 	protected abstract GraphicOptions getOptions();
+
+	/**
+	 * Allows specifying pre-loadable module 
+	 * @return
+	 */
+	protected LoadableModule getLoadable() { return null; };
 
 
 	// /////////////////////////////////////////////////////////////////////////

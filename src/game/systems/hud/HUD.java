@@ -22,12 +22,12 @@ public abstract class HUD
 
 	public HUD()
 	{
-		this.stage = new Stage(new ScreenViewport());
-
 	}
 	
 	public void init(GameInputProcessor gameInputProcessor) 
 	{
+		this.stage = new Stage(new ScreenViewport());
+
 		this.input = gameInputProcessor;
 		
 		this.table = new Table();

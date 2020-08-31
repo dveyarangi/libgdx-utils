@@ -115,12 +115,6 @@ public class GameInputProcessor extends EntitySystem implements InputProcessor
 
 		this.ui = ui;
 		
-		
-		inputMultiplexer.addProcessor(uiProcessor);
-		if( ui != null)
-			inputMultiplexer.addProcessor(ui.getInputProcessor());
-		inputMultiplexer.addProcessor(new GestureDetector(new GameGestureListener(camController)));
-		inputMultiplexer.addProcessor(this);
 	}
 	/**
 	 * Called when this EntitySystem is added to an {@link Engine}.
@@ -136,6 +130,14 @@ public class GameInputProcessor extends EntitySystem implements InputProcessor
 		
 
 		this.ui.init( this );
+		
+		
+		inputMultiplexer.addProcessor(uiProcessor);
+		if( ui != null)
+			inputMultiplexer.addProcessor(ui.getInputProcessor());
+		inputMultiplexer.addProcessor(new GestureDetector(new GameGestureListener(camController)));
+		inputMultiplexer.addProcessor(this);
+
 		
 		LevelInitialSettings settings = level.getDef().getInitialSettings();
 		camController = new FreeCameraController( level.getModules().getCameraProvider(), settings.getInitZoom(), settings.getMinZoom(), settings.getMaxZoom() );

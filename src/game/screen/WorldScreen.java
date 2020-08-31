@@ -12,6 +12,9 @@ import game.systems.rendering.EntityRenderingSystem;
 import game.systems.rendering.MeshRenderingComponent;
 import game.systems.rendering.ShapeRenderingComponent;
 import game.systems.rendering.SpriteComponent;
+import game.util.LoadableModule;
+import game.util.LoadableThread;
+import game.util.LoadingProgress;
 import game.world.GameboardModules;
 import game.world.IFabric;
 import game.world.Level;
@@ -26,17 +29,28 @@ public abstract class WorldScreen<G extends AbstractGame> extends AbstractScreen
 
 	private Level level;
 
+	private GraphicOptions options;
+
 	public WorldScreen( G game )
 	{
 		super(game);
 	}
-
-	@Override
-	public void show()
+	
+	public LoadableModule getLoadable()
 	{
-		super.show();
+		return new LoadableThread() {
+			@Override
+			public void load(LoadingProgress loadingProgress) {
+				WorldScreen.this.load(loadingProgress);
+			}
+		};
+	}
+	
+	private void load(LoadingProgress progress)
+	{
+		progress.update(0, "Loading level...");
 		
-		GraphicOptions options = getOptions();
+		this.options = getOptions();
 		if( options == null)
 			throw new IllegalArgumentException("Options cannot be null");
 
@@ -47,15 +61,15 @@ public abstract class WorldScreen<G extends AbstractGame> extends AbstractScreen
 		// this should be done before we get here, in a loading screen:
 		//
 		ResourceFactory factory = super.game.getResourceFactory();
-
 		//		factory.finishLoading();
+
 
 		// /////////////////////////////////////////////////////////////////////////
 		// CREATING INTERACTIVE ENVIRONMENT
 		//
 		// this provides entity-entity and UI-entity interaction methods
 		//
-		IFabric environment = createFabric();
+		IFabric environment = createFabric(progress);
 
 
 
@@ -65,9 +79,10 @@ public abstract class WorldScreen<G extends AbstractGame> extends AbstractScreen
 		// this provides entity-entity and UI-entity interaction methods
 		//
 		Debug.startTiming("level creation");
-		
-		LevelDef def = createLevel();
+		LevelDef def = createLevel(progress);
 		Debug.stopTiming("level creation");
+		
+
 
 		// /////////////////////////////////////////////////////////////////////////
 		// CREATING USER INTERFACE OVERLAY
@@ -92,23 +107,31 @@ public abstract class WorldScreen<G extends AbstractGame> extends AbstractScreen
 		gameSetup = new GameboardModules(factory, def, environment, worldCameraProvider);
 		extendModules(gameSetup);
 		
-		
+		progress.update(1, "Populating world...");
+		progress.setFinished(true);
+
+	}
+	
+
+	@Override
+	public void show()
+	{
+		super.show();
+
 
 		level = new Level( gameSetup, options );
 
 		// TODO: remove
 		Debug.init(level);
 
-		// TODO: maybe this helps:
-		Runtime.getRuntime().gc();
 
 		// TODO: this is not the place
 		Gdx.gl.glEnable(GL20.GL_BLEND);
 	}
 	
-	protected abstract LevelDef createLevel();
+	protected abstract LevelDef createLevel(LoadingProgress progress);
 	
-	protected abstract IFabric createFabric();
+	protected abstract IFabric createFabric(LoadingProgress progress);
 	
 	protected void extendModules(GameboardModules modules)
 	{
