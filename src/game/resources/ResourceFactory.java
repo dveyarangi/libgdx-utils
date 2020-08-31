@@ -25,6 +25,8 @@ import com.badlogic.gdx.utils.GdxRuntimeException;
 
 import game.debug.Debug;
 import game.util.Angles;
+import game.util.LoadableModule;
+import game.util.LoadingProgress;
 
 /**
  * This factory looks for resource annotations on constants in provided resource
@@ -33,7 +35,7 @@ import game.util.Angles;
  * @author Fima
  *
  */
-public class ResourceFactory
+public class ResourceFactory implements LoadableModule
 {
 	// /////////////////////////////////////////////////////////////////////////////////////////////////////
 	// RESOURCE ANNOTATIONS:
@@ -144,10 +146,15 @@ public class ResourceFactory
 	private final Map<String, Region> regionList = new HashMap<String, Region>();
 
 	private PriorityQueue <TextureHandle> textures = new PriorityQueue <TextureHandle> ();
+	
+	
 
 	// /////////////////////////////////////////////////////////////////////////////////////////////////////
 	// TODO factory singleton
 	private static ResourceFactory factory;
+	
+	
+	private LoadingProgress progress = new LoadingProgress();
 
 	// /////////////////////////////////////////////////////////////////////////////////////////////////////
 	/**
@@ -206,11 +213,14 @@ public class ResourceFactory
 	 *            execution time restriction
 	 * @return progress in range 0-1
 	 */
-	public float stepLoading( float seconds )
+	public LoadingProgress stepLoading( float seconds )
 	{
 		boolean isFinished = factory.manager.update((int) ( 1000 * seconds ));
 
-		return (float) ( isFinished ? 1.0 : factory.manager.getProgress() );
+		progress.update(factory.manager.getProgress(), "Loading assets...");
+		progress.setFinished(isFinished);
+		
+		return progress;
 	}
 
 	public void finishLoading()
