@@ -1,0 +1,20 @@
+{
+  "name": "Antineon",
+  "cyclicOrigin": -1,
+  "useInterpolation": true,
+  "colors": [
+    {
+      "color": "ff0000ff",
+      "value": 0.0
+    },
+    {
+      "color": "c3f500ff",
+      "value": 0.5
+    },
+    {
+      "color": "0969a2ff",
+      "value": 1.0
+    }
+  ],
+  "empty": "00000000"
+}

@@ -1,0 +1,32 @@
+{
+  "name": "Cloudy",
+  "cyclicOrigin": -1,
+  "useInterpolation": true,
+  "colors": [
+    {
+      "color": "1f0000ff",
+      "value": 0.0
+    },
+    {
+      "color": "6c6411ff",
+      "value": 0.6
+    },
+    {
+      "color": "8e9c40ff",
+      "value": 0.68
+    },
+    {
+      "color": "87e895ff",
+      "value": 0.72
+    },
+    {
+      "color": "b2eae4ff",
+      "value": 0.76
+    },
+    {
+      "color": "f0f0f0ff",
+      "value": 0.9
+    }
+  ],
+  "empty": "00000000"
+}
