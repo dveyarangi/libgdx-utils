@@ -8,7 +8,12 @@
 		</attributes>
 	</classpathentry>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8/"/>
-	<classpathentry exported="true" kind="lib" path="lib/ashley-core-modified.jar" sourcepath="/ashley-core">
+	<classpathentry exported="true" kind="lib" path="lib/ashley-core-modified.jar">
+		<attributes>
+			<attribute name="gradle_used_by_scope" value="main,test"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry exported="true" kind="lib" path="lib/pcolor.jar">
 		<attributes>
 			<attribute name="gradle_used_by_scope" value="main,test"/>
 		</attributes>
@@ -29,6 +34,11 @@
 		</attributes>
 	</classpathentry>
 	<classpathentry exported="true" kind="lib" path="D:/Dev/gradle-5.6.2/data/caches/modules-2/files-2.1/com.badlogicgames.gdx/gdx-ai/1.8.0/ec30677d8ab1a8b8aa4b853c5f4e4b1361f50bf5/gdx-ai-1.8.0.jar" sourcepath="D:/Dev/gradle-5.6.2/data/caches/modules-2/files-2.1/com.badlogicgames.gdx/gdx-ai/1.8.0/154b2fbb50894a944607cd74f7dba1073d31a967/gdx-ai-1.8.0-sources.jar">
+		<attributes>
+			<attribute name="gradle_used_by_scope" value="main,test"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry exported="true" kind="lib" path="D:/Dev/gradle-5.6.2/data/caches/modules-2/files-2.1/com.badlogicgames.gdx/gdx-freetype/1.9.10/8853e4f08589a9feb4b851187909cfde8810e491/gdx-freetype-1.9.10.jar" sourcepath="D:/Dev/gradle-5.6.2/data/caches/modules-2/files-2.1/com.badlogicgames.gdx/gdx-freetype/1.9.10/9aebbfa282735e9385d5c09a3a9f74152ee5a1dc/gdx-freetype-1.9.10-sources.jar">
 		<attributes>
 			<attribute name="gradle_used_by_scope" value="main,test"/>
 		</attributes>
@@ -58,6 +68,6 @@
 			<attribute name="gradle_used_by_scope" value="main,test"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry combineaccessrules="false" kind="src" path="/util"/>
+	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/util"/>
 	<classpathentry kind="output" path="bin/default"/>
 </classpath>

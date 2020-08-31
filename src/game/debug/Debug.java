@@ -281,7 +281,12 @@ public class Debug
 	}
 	
 	private static String LOG_TEMPLATE = "%s:%d >> %s";
-	
+
+	public static boolean log( int stackDepth, String tag,  final String format, Object ... args )
+	{
+		return log(stackDepth+1, tag, String.format(format, args));
+	}
+
 	public static boolean log( int stackDepth, String tag,  final String message )
 	{
 		StackTraceElement el = new Exception().getStackTrace()[stackDepth];

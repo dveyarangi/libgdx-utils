@@ -3,13 +3,14 @@ package game.screen;
 import com.badlogic.gdx.Game;
 
 import game.resources.ResourceFactory;
+import lombok.Getter;
 
 public abstract class AbstractGame extends Game
 {
 
 	protected IGameOverlay overlay;
 
-	ResourceFactory resourceFactory;
+	@Getter protected ResourceFactory resourceFactory;
 
 	public AbstractGame()
 	{
@@ -23,6 +24,4 @@ public abstract class AbstractGame extends Game
 
 	@Override
 	public abstract void create();
-
-	public ResourceFactory getResourceFactory() { return resourceFactory; }
 }

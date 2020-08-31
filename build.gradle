@@ -63,11 +63,13 @@ eclipse {
 
 dependencies {
 	compile name: "ashley-core-modified"
+	compile name: "pcolor"
 	compile "com.badlogicgames.gdx:gdx:$gdxVersion"
 	compile "com.badlogicgames.gdx:gdx-box2d:$gdxVersion"
 	compile "com.badlogicgames.box2dlights:box2dlights:$box2DLightsVersion"
 	compile "com.badlogicgames.gdx:gdx-controllers:$gdxVersion"
 	compile "com.badlogicgames.gdx:gdx-ai:$aiVersion"
+	compile "com.badlogicgames.gdx:gdx-freetype:$gdxVersion"
 	compile "org.projectlombok:lombok:1.16.2"
 	compile "org.yaml:snakeyaml:1.21"
 	compile "com.kotcrab.vis:vis-ui:$visuiVersion"
