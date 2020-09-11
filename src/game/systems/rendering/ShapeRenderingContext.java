@@ -1,8 +1,8 @@
 package game.systems.rendering;
 
-import game.resources.ResourceFactory;
-
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+
+import game.resources.ResourceFactory;
 
 public class ShapeRenderingContext implements IRenderingContext
 {
@@ -38,5 +38,7 @@ public class ShapeRenderingContext implements IRenderingContext
 	{
 		shaper.end();
 	}
+	
+	@Override public String toString() { return "shape rendering context"; }
 
 }

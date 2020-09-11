@@ -12,15 +12,18 @@ import lombok.Getter;
  */
 public class TextureRenderingContext implements IRenderingContext
 {
+
+	private String textureName;
 	@Getter private Texture texture;
 
 	private int contextId;
 
 	private IRenderer renderer;
 
-	public TextureRenderingContext( Texture texture )
+	public TextureRenderingContext( String textureName, Texture texture )
 	{
 		this.texture = texture;
+		this.textureName = textureName;
 		this.contextId = TextureID.genid(texture);
 	}
 
@@ -50,4 +53,6 @@ public class TextureRenderingContext implements IRenderingContext
 		return contextId;
 	}
 
+	@Override
+	public String toString() { return "texture " + textureName; }
 }

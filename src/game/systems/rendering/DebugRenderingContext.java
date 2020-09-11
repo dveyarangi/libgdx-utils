@@ -39,5 +39,7 @@ public class DebugRenderingContext implements IRenderingContext
 	{
 		return contextId;
 	}
+	
+	@Override public String toString() { return "debug rendering context"; }
 
 }

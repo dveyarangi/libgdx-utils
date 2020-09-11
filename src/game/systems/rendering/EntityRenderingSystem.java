@@ -6,7 +6,6 @@ import com.badlogic.ashley.core.Engine;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.EntityListener;
 import com.badlogic.ashley.core.EntitySystem;
-import com.badlogic.ashley.core.Family;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
@@ -18,6 +17,7 @@ import com.badlogic.gdx.utils.ObjectMap.Entry;
 import game.debug.Debug;
 import game.resources.ResourceFactory;
 import game.resources.TextureHandle;
+import game.systems.rendering.IRenderingContext.VoidContext;
 
 /**
  * <P>This system iterates over entities with {@link IRenderingComponent} and
@@ -43,6 +43,8 @@ public class EntityRenderingSystem extends EntitySystem implements EntityListene
 	 */
 	//private ComponentMapper<IRenderingComponent> props = ComponentMapper.getFor(IRenderingComponent.class);
 
+
+	
 	/**
 	 * Indexed set of rendering context.
 	 */
@@ -77,9 +79,10 @@ public class EntityRenderingSystem extends EntitySystem implements EntityListene
 	public EntityRenderingSystem( IRenderer renderer, ResourceFactory factory, List <Class <? extends IRenderingComponent>> rendererTypes )
 	{
 		this.factory = factory;
+		
 		this.renderer = renderer;
-		this.rendererTypes = (Class<IRenderingComponent>[]) new Class [rendererTypes.size()];
-		this.rendererTypes = rendererTypes.toArray(this.rendererTypes);
+		
+		this.rendererTypes = rendererTypes.toArray(new Class [rendererTypes.size()]);
 	}
 
 	@Override
@@ -115,35 +118,43 @@ public class EntityRenderingSystem extends EntitySystem implements EntityListene
 
 		// TODO: context rendering priorities
 
+		
 		// TODO: load and use several textures in the same time;
 		// may use combined contexts.
-		contextOrder = new int [factory.getTextures().size()+2];
+		contextOrder = new int [factory.getTextures().size()+3];
 		int idx = 0;
 		for( TextureHandle textureHandle : factory.getTextures() )
 		{
 			Texture texture = factory.getTexture( textureHandle.getTextureName() );
-			TextureRenderingContext ctx = new TextureRenderingContext(texture);
+			TextureRenderingContext ctx = new TextureRenderingContext(textureHandle.getTextureName(), texture);
 			this.registerContext(ctx);
 			contextOrder[idx ++] = ctx.id();
 		}
 
-		// TODO: this is debugging context, should be removed or ignored when in
-		// production:
+		// dummy context for entities without a context
+		this.registerContext(new VoidContext());
+		contextOrder[idx ++] = VoidContext.ID;
+		
+		// context for rendering shapes
 		this.registerContext(new ShapeRenderingContext(PROJECTED_SHAPER_ID, renderer.shaper()));
 		contextOrder[idx ++] = PROJECTED_SHAPER_ID;
+		
+		// TODO: this is debugging context, should be removed or ignored when in
+		// production:
 		this.registerContext(new DebugRenderingContext(DEBUG_ID));
 		contextOrder[idx ++] = DEBUG_ID;
+		
+		debugPrintContexts();
+		
+		//Family family = Family.one( rendererTypes ).get();
 
 		// registering as listener for all entities with renderer component:
-		Family family = Family.one( rendererTypes ).get();
-
 		for( IRenderingContext context : contexts.values() )
-		{
 			context.init(factory, renderer);
-		}
 
 		engine.addEntityListener(this);
 	}
+
 
 	/**
 	 * Called when entity with rendering component is added to the engine
@@ -158,8 +169,11 @@ public class EntityRenderingSystem extends EntitySystem implements EntityListene
 			if( component == null) continue;
 			// adding the entity to appropriate sub-list of the entity mapping:
 			int [] cids = component.cid();
-			for(int cid : cids)
-				this.entityAdded(cid, component, entity);
+			if( cids.length == 0)
+				this.entityAdded(VoidContext.ID, component, entity);
+			else
+				for(int cid : cids)
+					this.entityAdded(cid, component, entity);
 
 		}
 	}
@@ -230,7 +244,10 @@ public class EntityRenderingSystem extends EntitySystem implements EntityListene
 			// finishing context task:
 			context.end();
 		}	
+		
 	}
+	
+	
 
 	/**
 	 * Called when entity with rendering component is removed from engine
@@ -292,6 +309,14 @@ public class EntityRenderingSystem extends EntitySystem implements EntityListene
 	public void resize( int screenWidth, int screenHeight )
 	{
 		renderer.resize(screenWidth, screenHeight);
+	}
+	
+	private void debugPrintContexts()
+	{
+		Debug.log("= rendering contexts ====================");
+		for(int i = 0; i < contextOrder.length; i ++)
+			Debug.log(String.format("%10d: %s", contextOrder[i], contexts.get(contextOrder[i])));
+		Debug.log("=========================================");
 	}
 
 }
