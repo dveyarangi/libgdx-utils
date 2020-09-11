@@ -3,6 +3,7 @@ package game.resources;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetDescriptor;
@@ -29,8 +30,10 @@ public class JsonLoader extends
 	Gson postJson;
 	
 	Array<AssetDescriptor> dependencies = new Array <> ();
+	
+	Map <Class, JsonDeserializer> customDeserializers;
 
-	public JsonLoader( FileHandleResolver resolver, ResourceFactory factory )
+	public JsonLoader( ResourceFactory factory, FileHandleResolver resolver, Map <Class, JsonDeserializer> customDeserializers )
 	{
 		super(resolver);
 		
@@ -67,7 +70,8 @@ public class JsonLoader extends
 						String textureName = json.getAsString();
 						AssetDescriptor<Texture> desc = new AssetDescriptor<Texture>(Gdx.files.internal(textureName), Texture.class);
 						dependencies.add(desc);
-						factory.loadTexture(textureName, true);
+						System.out.println(textureName);
+						factory.loadTexture(textureName, true, 1);
 						return null;
 					}});
 		preJsonBuilder.registerTypeAdapter(TextureAtlas.class, new JsonDeserializer <TextureAtlas>() {
@@ -81,10 +85,14 @@ public class JsonLoader extends
 				return null;
 			}});		
 		
+		
+		if( customDeserializers != null)
+			for(Class type : customDeserializers.keySet() )
+				preJsonBuilder.registerTypeAdapter(type, customDeserializers.get(type));
+		
 		this.preJson = preJsonBuilder.create();
 		
-		this.postJson = postJsonBuilder
-				.registerTypeAdapter(TextureAtlas.class, new JsonDeserializer <TextureAtlas>() {
+		postJsonBuilder.registerTypeAdapter(TextureAtlas.class, new JsonDeserializer <TextureAtlas>() {
 			@Override
 			public TextureAtlas deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException
 			{
@@ -93,8 +101,8 @@ public class JsonLoader extends
 				return texture;
 			}
 
-		})
-				.registerTypeAdapter(Texture.class, new JsonDeserializer <Texture>()
+		});
+		postJsonBuilder.registerTypeAdapter(Texture.class, new JsonDeserializer <Texture>()
 		{
 			@Override
 			public Texture deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException
@@ -104,8 +112,13 @@ public class JsonLoader extends
 				return texture;
 			}
 
-		})
-		.create();
+		});
+		
+		if( customDeserializers != null)
+			for(Class type : customDeserializers.keySet() )
+				postJsonBuilder.registerTypeAdapter(type, customDeserializers.get(type));
+		
+		this.postJson = postJsonBuilder.create();
 
 	}
 

@@ -6,15 +6,19 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 import java.lang.reflect.Field;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.PriorityQueue;
 
+import com.badlogic.gdx.assets.AssetLoaderParameters;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.assets.loaders.FileHandleResolver;
 import com.badlogic.gdx.assets.loaders.TextureLoader;
 import com.badlogic.gdx.assets.loaders.resolvers.InternalFileHandleResolver;
 import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Sprite;
@@ -22,11 +26,13 @@ import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.utils.GdxRuntimeException;
+import com.google.gson.JsonDeserializer;
 
 import game.debug.Debug;
 import game.util.Angles;
 import game.util.LoadableModule;
 import game.util.LoadingProgress;
+import game.util.colors.Colormaps;
 
 /**
  * This factory looks for resource annotations on constants in provided resource
@@ -49,7 +55,7 @@ public class ResourceFactory implements LoadableModule
 	 * "images/menu/button_play.png";
 	 */
 	@Target( ElementType.FIELD ) @Retention( RetentionPolicy.RUNTIME ) public static @interface Texture {
-		boolean useMipMap() default false;
+		boolean useMipMap() default true;
 		int priority() default 1;
 	}
 
@@ -147,12 +153,15 @@ public class ResourceFactory implements LoadableModule
 
 	private PriorityQueue <TextureHandle> textures = new PriorityQueue <TextureHandle> ();
 	
+	private List <ResourceTypeFactory> customFactories = new ArrayList <> ();  
 	
-
 	// /////////////////////////////////////////////////////////////////////////////////////////////////////
 	// TODO factory singleton
 	private static ResourceFactory factory;
 	
+	
+	private JsonLoader jsonLoader;
+
 	
 	private LoadingProgress progress = new LoadingProgress();
 
@@ -167,6 +176,10 @@ public class ResourceFactory implements LoadableModule
 	 */
 	public static ResourceFactory init( Class<?> resourceSetType)
 	{
+		return init(resourceSetType, new HashMap <>());
+	}
+	public static ResourceFactory init( Class<?> resourceSetType, Map <Class, JsonDeserializer> customJsonDeserializers)
+	{
 
 		if( factory != null )
 		{
@@ -176,10 +189,17 @@ public class ResourceFactory implements LoadableModule
 		}
 
 		factory = new ResourceFactory(resourceSetType);
+		
+		// register colors deserializer
+		
+		customJsonDeserializers.put(Color.class, new Colormaps.LibGDXColorDeserializer());
+
 
 		// factory.manager.getLogger().setLevel(Logger.INFO);;
 		// add resources to assets manager:
 		factory.resolver = new InternalFileHandleResolver();
+		
+		factory.jsonLoader = new JsonLoader(factory, factory.resolver, customJsonDeserializers);
 		
 		factory.loadConfigurations();
 
@@ -198,11 +218,44 @@ public class ResourceFactory implements LoadableModule
 
 		factory.loadRegions();
 
-		// load colorfiles:
-		// TODO: to separate loader
-		// Colors.init();
+		//factory.loadCustomResources();
+
 
 		return factory;
+	}
+
+	/**
+	 * Register a custom resource factory
+	 * @param customFactory
+	 */
+	public void registerCustomResource(ResourceTypeFactory <?,?> customFactory)
+	{
+		customFactories.add(customFactory);
+	}
+
+	private void loadCustomResources()
+	{
+		
+		for(ResourceTypeFactory <Object, AssetLoaderParameters<Object>> rtFactory : customFactories)
+		{
+
+			Class <?> annoClass = rtFactory.getAnnotation();
+			manager.setLoader(rtFactory.getResourceType(), rtFactory.createLoader(resolver));
+			try
+			{
+				for( Field field : resourceSetType.getDeclaredFields() )
+				{
+					Annotation[] annos = field.getDeclaredAnnotations();
+					for( Annotation anno : annos )
+					{
+						if( anno.annotationType().equals(annoClass) )
+							manager.load((String) field.get(null), rtFactory.getResourceType());
+					}
+				}
+			} 
+			catch( IllegalArgumentException e ) { e.printStackTrace(); } 
+			catch( IllegalAccessException e ) { e.printStackTrace(); }			
+		}
 	}
 
 
@@ -226,10 +279,7 @@ public class ResourceFactory implements LoadableModule
 	public void finishLoading()
 	{
 		factory.manager.finishLoading();
-		;
-
 		// factory.sound.init(factory);
-
 	}
 
 	public static ResourceFactory getFactory()
@@ -262,13 +312,9 @@ public class ResourceFactory implements LoadableModule
 						manager.load((String) field.get(null), resourceType);
 				}
 			}
-		} catch( IllegalArgumentException e )
-		{
-			e.printStackTrace();
-		} catch( IllegalAccessException e )
-		{
-			e.printStackTrace();
-		}
+		} 
+		catch( IllegalArgumentException e ) { e.printStackTrace(); } 
+		catch( IllegalAccessException e ) { e.printStackTrace(); }
 	}
 	
 	public void loadTextures(Class<?> resourceSetType)
@@ -285,7 +331,7 @@ public class ResourceFactory implements LoadableModule
 						Texture texxanno = (Texture) anno;
 						String textureFile = (String) field.get(null);
 						
-						loadTexture(textureFile, texxanno.useMipMap());
+						loadTexture(textureFile, texxanno.useMipMap(), texxanno.priority());
 					}
 				}
 			}
@@ -293,17 +339,18 @@ public class ResourceFactory implements LoadableModule
 		} catch( IllegalAccessException e ){e.printStackTrace();}
 	}
 	
-	void loadTexture(String textureFile, boolean useMipMap)
+	void loadTexture(String textureFile, boolean useMipMap, int priority)
 	{
 		TextureLoader.TextureParameter p = new TextureLoader.TextureParameter();
 		p.genMipMaps = useMipMap;
 		
-		manager.load( textureFile, com.badlogic.gdx.graphics.Texture.class, p);
-
-		TextureHandle textureHandle = new TextureHandle(textureFile, 0);
+		TextureHandle textureHandle = new TextureHandle(textureFile, priority);
 
 		if(!textures.contains( textureHandle))
+		{
 			textures.offer( textureHandle );	
+			manager.load( textureFile, com.badlogic.gdx.graphics.Texture.class, p);
+		}
 	}
 
 
@@ -374,8 +421,7 @@ public class ResourceFactory implements LoadableModule
 	private void loadConfigurations()
 	{
 
-		JsonLoader loader = new JsonLoader(resolver, this);
-		manager.setLoader(Configuration.class, loader);
+		manager.setLoader(Configuration.class, jsonLoader);
 
 		try
 		{
@@ -392,7 +438,7 @@ public class ResourceFactory implements LoadableModule
 						Configuration.Parameter param = new Configuration.Parameter(cfganno.type());
 						FileHandle configFile = resolver.resolve(filename);
 						
-						loader.getDependencies(filename, configFile, param);
+						//jsonLoader.getDependencies(filename, configFile, param);
 						
 						manager.load(filename,
 								Configuration.class,
@@ -573,6 +619,19 @@ public class ResourceFactory implements LoadableModule
 
 		return region;
 
+	}
+	
+	@SuppressWarnings("unchecked")
+	public static <O> O getResource(String name)
+	{
+		try {
+			return (O) factory.manager.get(name);
+		}
+		catch(GdxRuntimeException e)
+		{
+			throw new GdxRuntimeException(e.getMessage() + "\n"
+					+ "Check whether it is defined in " + factory.resourceSetType.getCanonicalName() + " class.", e);
+		}
 	}
 
 }
