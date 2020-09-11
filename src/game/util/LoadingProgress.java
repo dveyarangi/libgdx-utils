@@ -11,6 +11,8 @@ public class LoadingProgress
 	@Setter @Getter private boolean isFinished;
 	int stackDepth = 3;
 	
+	@Getter private Throwable thr;
+	
 	public void update(float progress, String message)
 	{
 		update(stackDepth, progress, message);
@@ -42,11 +44,22 @@ public class LoadingProgress
 			this.progress = start + progress * (end-start);
 			LoadingProgress.this.update(stackDepth, this.progress, message);
 		}
+		
+		public void setFailed(Throwable thr)
+		{
+			LoadingProgress.this.setFailed(thr);
+		}
 	}
 
 	public LoadingProgress subprogress(float percent)
 	{
 		
 		return new LoadingSubprogress(progress, progress+percent, this.stackDepth+1);
+	}
+	
+	
+	public void setFailed(Throwable thr)
+	{
+		this.thr = thr;
 	}
 }

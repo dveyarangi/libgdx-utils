@@ -110,7 +110,9 @@ public class LoadingScreen<G extends AbstractGame> extends AbstractScreen<G>
 		// load some data:
 		LoadingProgress loadingProgress = loadable.stepLoading(0.02f);
 		float progress = loadingProgress.getProgress();
-		
+		if( loadingProgress.getThr() != null )
+			throw new RuntimeException(loadingProgress.getThr());
+			
 		if(progress == 1)
 		{
 			culloutTime += delta;

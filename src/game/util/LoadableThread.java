@@ -22,7 +22,11 @@ public abstract class LoadableThread implements LoadableModule
 	
 	protected void loadInternal(LoadingProgress loadingProgress)
 	{
-		load(loadingProgress);
+		try {
+			load(loadingProgress);
+		}
+		catch(Exception e) { loadingProgress.setFailed(e); }
+
 		loadingProgress.setFinished(true);
 	}
 
