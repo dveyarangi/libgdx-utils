@@ -7,6 +7,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class GraphicOptions
 {
+	public int windowWidth = 1024;
+	public int windowHeight = 768;
 /*	public int resX = 1024;
 	public int resY = 786;
 	

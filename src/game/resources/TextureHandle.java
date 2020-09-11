@@ -1,5 +1,8 @@
 package game.resources;
 
+import lombok.ToString;
+
+@ToString
 public class TextureHandle implements Comparable <TextureHandle>
 {
 	int priority;

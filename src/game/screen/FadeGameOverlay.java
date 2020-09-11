@@ -1,19 +1,22 @@
 package game.screen;
 
-import game.systems.rendering.Renderer;
-
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 
+import game.config.GraphicOptions;
+import game.systems.rendering.Renderer;
+
 public class FadeGameOverlay implements IGameOverlay
 {
 
+	private GraphicOptions options;
+
 	private AbstractScreen screen;
 
-	private static float INTERVAL = 0.5f;
+	public static float INTERVAL = 0.5f;
 	private float inTime;
-	private static float OUTERVAL = 0.5f;
+	public static float OUTERVAL = 0.5f;
 	private float ouTime;
 	private float fadePercentage;
 
@@ -21,6 +24,14 @@ public class FadeGameOverlay implements IGameOverlay
 
 	protected boolean inFade = false;
 	public boolean outFade = false;
+
+	private int screenWidth, screenHeight;
+	
+	FadeGameOverlay()
+	{
+		screenHeight = Gdx.graphics.getHeight();
+		screenWidth = Gdx.graphics.getWidth();
+	}
 
 	@Override
 	public void setFadeIn( AbstractScreen screen )
@@ -72,11 +83,12 @@ public class FadeGameOverlay implements IGameOverlay
 	{
 		if( doFade )
 		{
-			float alpha = outFade ? 0 : 1 - getFadePercentage();
+			float alpha = outFade ? getFadePercentage() : 1 - getFadePercentage();
+			//System.out.println(alpha);
 			Gdx.gl.glEnable(GL20.GL_BLEND);
 			renderer.shaper.begin(ShapeType.Filled);
-			renderer.shaper.setColor(0, 0, 0, fadePercentage);
-			renderer.shaper.rect(0, 0, screen.HUD_WIDTH, screen.HUD_HEIGHT);
+			renderer.shaper.setColor(0.1f, 0.1f, 0.1f, alpha);
+			renderer.shaper.rect(0, 0, screenWidth, screenHeight);
 			renderer.shaper.end();
 		}
 	}
