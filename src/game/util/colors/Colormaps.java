@@ -95,7 +95,7 @@ public class Colormaps
 		}
 	}
 	
-	private static GsonBuilder buildGson( GsonBuilder builder)
+	public static GsonBuilder buildGson( GsonBuilder builder)
 	{
 		return builder
 				// converts class name to Class objects:
@@ -114,10 +114,10 @@ public class Colormaps
 			if( element instanceof JsonObject)
 			{
 				JsonObject colorObject = (JsonObject) element;
-				float r = colorObject.get("r").getAsFloat();
-				float g = colorObject.get("g").getAsFloat();
-				float b = colorObject.get("b").getAsFloat();
-				float a = colorObject.get("a").getAsFloat();
+				float r = colorObject.get("r").getAsFloat()/255f;
+				float g = colorObject.get("g").getAsFloat()/255f;
+				float b = colorObject.get("b").getAsFloat()/255f;
+				float a = colorObject.has("a") ? colorObject.get("a").getAsFloat()/255f : 1;
 				color = new Color(r, g, b, a);
 			}
 			else 

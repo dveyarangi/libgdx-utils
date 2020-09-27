@@ -10,6 +10,7 @@ import com.badlogic.gdx.assets.AssetDescriptor;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.assets.loaders.AsynchronousAssetLoader;
 import com.badlogic.gdx.assets.loaders.FileHandleResolver;
+import com.badlogic.gdx.assets.loaders.TextureLoader;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
@@ -21,13 +22,16 @@ import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParseException;
 
+import game.util.colors.ColormapConf;
+import game.util.colors.Colormaps;
+
 public class JsonLoader extends
 		AsynchronousAssetLoader<Configuration, Configuration.Parameter>
 {
 	Configuration cfg;
 	
-	Gson preJson;
-	Gson postJson;
+	Gson dependenciesLoader;
+	Gson resourcesJson;
 	
 	Array<AssetDescriptor> dependencies = new Array <> ();
 	
@@ -68,10 +72,11 @@ public class JsonLoader extends
 					public Texture deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException
 					{
 						String textureName = json.getAsString();
-						AssetDescriptor<Texture> desc = new AssetDescriptor<Texture>(Gdx.files.internal(textureName), Texture.class);
+						TextureLoader.TextureParameter params = new TextureLoader.TextureParameter();
+						params.genMipMaps = true;
+						AssetDescriptor<Texture> desc = new AssetDescriptor<Texture>(Gdx.files.internal(textureName), Texture.class, params);
 						dependencies.add(desc);
-						System.out.println(textureName);
-						factory.loadTexture(textureName, true, 1);
+						//factory.loadTexture(textureName, true, 1);
 						return null;
 					}});
 		preJsonBuilder.registerTypeAdapter(TextureAtlas.class, new JsonDeserializer <TextureAtlas>() {
@@ -81,16 +86,32 @@ public class JsonLoader extends
 				String atlasName = json.getAsString();
 				AssetDescriptor<TextureAtlas> desc = new AssetDescriptor<TextureAtlas>(Gdx.files.internal(atlasName), TextureAtlas.class);
 				dependencies.add(desc);
-				factory.loadAtlas(atlasName, 1);
+				//factory.loadAtlas(atlasName, 1);
 				return null;
 			}});		
-		
+		preJsonBuilder.registerTypeAdapter(ColormapConf.class, new JsonDeserializer <ColormapConf>()
+		{
+			@Override
+			public ColormapConf deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException
+			{
+				if(json.isJsonObject())
+					return null;
+				Configuration.Parameter param = new Configuration.Parameter(typeOfT);
+				String cfgName = json.getAsString();
+				AssetDescriptor<Configuration> desc = new AssetDescriptor<Configuration>(Gdx.files.internal(cfgName), Configuration.class, param);
+				dependencies.add(desc);
+				return null;
+			}
+
+		});			
 		
 		if( customDeserializers != null)
 			for(Class type : customDeserializers.keySet() )
 				preJsonBuilder.registerTypeAdapter(type, customDeserializers.get(type));
 		
-		this.preJson = preJsonBuilder.create();
+		this.dependenciesLoader = preJsonBuilder.create();
+		
+		
 		
 		postJsonBuilder.registerTypeAdapter(TextureAtlas.class, new JsonDeserializer <TextureAtlas>() {
 			@Override
@@ -113,12 +134,23 @@ public class JsonLoader extends
 			}
 
 		});
-		
+		postJsonBuilder.registerTypeAdapter(ColormapConf.class, new JsonDeserializer <ColormapConf>()
+		{
+			@Override
+			public ColormapConf deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException
+			{
+				if(json.isJsonObject())
+					return Colormaps.buildGson(new GsonBuilder()).create().fromJson(json, ColormapConf.class);
+				else
+					return factory.getConfiguration(json.getAsString());
+			}
+
+		});		
 		if( customDeserializers != null)
 			for(Class type : customDeserializers.keySet() )
 				postJsonBuilder.registerTypeAdapter(type, customDeserializers.get(type));
 		
-		this.postJson = postJsonBuilder.create();
+		this.resourcesJson = postJsonBuilder.create();
 
 	}
 
@@ -138,7 +170,7 @@ public class JsonLoader extends
 		{
 			String jsonText = file.readString();
 		
-			Object cfg = postJson.fromJson(jsonText, parameter.getType());
+			Object cfg = resourcesJson.fromJson(jsonText, parameter.getType());
 
 			return new Configuration(cfg);
 		}
@@ -150,8 +182,7 @@ public class JsonLoader extends
 				
 				String jsonText = entry.readString();
 				
-				Object o = preJson.fromJson(jsonText, parameter.getType());
-				
+				Object o = resourcesJson.fromJson(jsonText, parameter.getType());
 				
 				cfgs.add(o);
 			}
@@ -169,7 +200,7 @@ public class JsonLoader extends
 		{
 			String jsonText = file.readString();
 		
-			Object o = preJson.fromJson(jsonText, parameter.getType());
+			Object o = dependenciesLoader.fromJson(jsonText, parameter.getType());
 			return new Array <AssetDescriptor>(dependencies);
 		}
 		else
@@ -178,7 +209,7 @@ public class JsonLoader extends
 			{
 				String jsonText = entry.readString();
 				
-				Object o = preJson.fromJson(jsonText, parameter.getType());
+				Object o = dependenciesLoader.fromJson(jsonText, parameter.getType());
 				
 			}
 			return new Array <AssetDescriptor>(dependencies);

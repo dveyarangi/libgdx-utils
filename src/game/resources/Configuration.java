@@ -1,5 +1,7 @@
 package game.resources;
 
+import java.lang.reflect.Type;
+
 import com.badlogic.gdx.assets.AssetLoaderParameters;
 import com.badlogic.gdx.assets.loaders.AssetLoader;
 
@@ -14,7 +16,7 @@ public class Configuration
 	 */
 	@AllArgsConstructor
 	public static class Parameter extends AssetLoaderParameters<Configuration> {
-		@Getter private Class <?> type;
+		@Getter private Type type;
 	}
 
 	Object o;

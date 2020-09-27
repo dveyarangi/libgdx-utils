@@ -15,6 +15,7 @@ import java.util.PriorityQueue;
 import com.badlogic.gdx.assets.AssetLoaderParameters;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.assets.loaders.FileHandleResolver;
+import com.badlogic.gdx.assets.loaders.PixmapLoader;
 import com.badlogic.gdx.assets.loaders.TextureLoader;
 import com.badlogic.gdx.assets.loaders.resolvers.InternalFileHandleResolver;
 import com.badlogic.gdx.files.FileHandle;
@@ -58,7 +59,17 @@ public class ResourceFactory implements LoadableModule
 		boolean useMipMap() default true;
 		int priority() default 1;
 	}
-
+	
+	/**
+	 * Annotation to mark textures:
+	 *
+	 * <p>
+	 * example: @Texture public static String PLAY_BUTTON_IMAGE =
+	 * "images/menu/button_play.png";
+	 */
+	@Target( ElementType.FIELD ) @Retention( RetentionPolicy.RUNTIME ) public static @interface Pixmap {
+		int priority() default 1;
+	}
 	/**
 	 * Annotation to mark texture atlases:
 	 *
@@ -338,12 +349,12 @@ public class ResourceFactory implements LoadableModule
 		} catch( IllegalArgumentException e ){e.printStackTrace();
 		} catch( IllegalAccessException e ){e.printStackTrace();}
 	}
-	
 	void loadTexture(String textureFile, boolean useMipMap, int priority)
 	{
 		TextureLoader.TextureParameter p = new TextureLoader.TextureParameter();
 		p.genMipMaps = useMipMap;
 		
+		System.out.println(textureFile + " : : " + useMipMap);
 		TextureHandle textureHandle = new TextureHandle(textureFile, priority);
 
 		if(!textures.contains( textureHandle))
@@ -353,6 +364,28 @@ public class ResourceFactory implements LoadableModule
 		}
 	}
 
+	public void loadPixmaps()
+	{
+		try
+		{
+			for( Field field : resourceSetType.getDeclaredFields() )
+			{
+				Annotation[] annos = field.getDeclaredAnnotations();
+				for( Annotation anno : annos )
+				{
+					if( anno instanceof Pixmap )
+					{
+						Pixmap pixanno = (Pixmap) anno;
+						String file = (String) field.get(null);
+
+						PixmapLoader.PixmapParameter p = new PixmapLoader.PixmapParameter();
+						manager.load( file, com.badlogic.gdx.graphics.Pixmap.class, p);
+					}
+				}
+			}
+		} catch( IllegalArgumentException e ){e.printStackTrace();
+		} catch( IllegalAccessException e ){e.printStackTrace();}
+	}
 
 	private void loadAtlases()
 	{
@@ -509,6 +542,18 @@ public class ResourceFactory implements LoadableModule
 	{
 		try {
 			return factory.manager.get(texture);
+		}
+		catch(GdxRuntimeException e)
+		{
+			Debug.log(e.getMessage() +"; check definitions in " + factory.resourceSetType.getName());
+			throw new IllegalArgumentException(e);
+		}
+	}
+	
+	public static com.badlogic.gdx.graphics.Pixmap getPixmap( String pixmap )
+	{
+		try {
+			return factory.manager.get(pixmap);
 		}
 		catch(GdxRuntimeException e)
 		{
