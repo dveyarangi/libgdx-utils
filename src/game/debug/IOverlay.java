@@ -18,5 +18,7 @@ public interface IOverlay<E>
 	 *
 	 * @return
 	 */
-	public boolean isProjected();
+	public boolean useWorldCoordinates();
+	
+	public String toDesc();
 }

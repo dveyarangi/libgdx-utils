@@ -180,14 +180,14 @@ public class Debug
 				level.getModules().getEnvironment().debugDraw(level.getModules().getCameraProvider().getCamera().combined);
 			}
 
-			@Override
-			public boolean isProjected()
-			{
-				return false;
-			}
+			@Override public boolean useWorldCoordinates() { return true; }
+
+			@Override public String toDesc() { return "physics debug"; }
 
 		});
-		this.addOverlay(Hotkeys.TOGGLE_FPS, new FPSOverlay());
+		
+		// NOTE: This should be added last to properly display overlay key bindings
+		this.addOverlay(Hotkeys.TOGGLE_FPS, new DebugInfoOverlay(debugOverlays));
 
 	}
 
@@ -249,7 +249,7 @@ public class Debug
 		for( Entry<OverlayBinding> entry : debugOverlays.entries() )
 		{
 			OverlayBinding binding = entry.value;
-			if( binding.overlay.isProjected() )
+			if( binding.overlay.useWorldCoordinates() )
 				binding.render( levelRenderer );
 			else
 				binding.render(uiRenderer);

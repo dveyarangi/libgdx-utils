@@ -41,7 +41,7 @@ public class CoordinateGrid implements IOverlay<Level>
 	}
 
 	Color backColor = new Color(0x3D75A00A);
-	Color lineColor = new Color(0x5EB2F22A);
+	Color lineColor = new Color(0x5EB2F233);
 
 	// Color lineColor = new Color( 0x8DA1AA0A );
 
@@ -63,7 +63,7 @@ public class CoordinateGrid implements IOverlay<Level>
 		float order;
 		for( order = 2048f; order > 0.000001; order /= 2f )
 		{
-			if( Math.round(order / cameraProvider.zoom()) == 0 )
+			if( Math.round(2*order / cameraProvider.zoom()) == 0 )
 			{
 				break;
 			}
@@ -115,10 +115,9 @@ public class CoordinateGrid implements IOverlay<Level>
 	}
 
 	@Override
-	public boolean isProjected()
-	{
-		// TODO Auto-generated method stub
-		return false;
-	}
+	public boolean useWorldCoordinates() { return true; }
+
+	@Override
+	public String toDesc() { return "coordinate grid"; }
 
 }

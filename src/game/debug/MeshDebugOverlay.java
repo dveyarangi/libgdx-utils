@@ -1,10 +1,10 @@
 package game.debug;
 
-import game.systems.rendering.IRenderer;
-import game.util.MeshDef;
-
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
+
+import game.systems.rendering.IRenderer;
+import game.util.MeshDef;
 
 public class MeshDebugOverlay implements IOverlay
 {
@@ -41,6 +41,9 @@ public class MeshDebugOverlay implements IOverlay
 		shaper.end();
 	}
 
-	@Override public boolean isProjected() { return false; }
+	@Override public boolean useWorldCoordinates() { return true; }
+
+	@Override
+	public String toDesc() { return "mesh debug"; }
 
 }

@@ -1,15 +1,15 @@
 package game.debug;
 
-import game.systems.rendering.IRenderer;
-import game.world.environment.nav.NavEdge;
-import game.world.environment.nav.NavMesh;
-import game.world.environment.nav.NavNode;
-
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.IntMap.Entry;
+
+import game.systems.rendering.IRenderer;
+import game.world.environment.nav.NavEdge;
+import game.world.environment.nav.NavMesh;
+import game.world.environment.nav.NavNode;
 
 public class NavMeshOverlay implements IOverlay<NavMesh>
 {
@@ -76,10 +76,13 @@ public class NavMeshOverlay implements IOverlay<NavMesh>
 	}
 
 	@Override
-	public boolean isProjected()
+	public boolean useWorldCoordinates()
 	{
 		// TODO Auto-generated method stub
-		return false;
+		return true;
 	}
+
+	@Override
+	public String toDesc() { return "navigation mesh"; }
 
 }
