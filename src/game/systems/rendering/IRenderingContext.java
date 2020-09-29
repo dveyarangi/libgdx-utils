@@ -1,6 +1,7 @@
 package game.systems.rendering;
 
 import game.resources.ResourceFactory;
+import lombok.AllArgsConstructor;
 
 /**
  * Contexts task is to set up parameters for batch of {@link IRenderingComponent}s
@@ -39,11 +40,10 @@ public interface IRenderingContext
 	/**
 	 * Dummy context for rendering components that do not specify context id
 	 */
-
+	@AllArgsConstructor
 	public static class VoidContext implements IRenderingContext
 	{
-		public static final int ID = 0;
-		private int id = ID;
+		private int id;
 		
 		@Override public int id() { return id;}
 		@Override public void init(ResourceFactory factory, IRenderer renderer) { }
