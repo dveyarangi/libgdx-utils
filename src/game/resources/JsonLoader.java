@@ -76,7 +76,7 @@ public class JsonLoader extends
 						params.genMipMaps = true;
 						AssetDescriptor<Texture> desc = new AssetDescriptor<Texture>(Gdx.files.internal(textureName), Texture.class, params);
 						dependencies.add(desc);
-						//factory.loadTexture(textureName, true, 1);
+						factory.loadTexture(textureName, true, 1);
 						return null;
 					}});
 		preJsonBuilder.registerTypeAdapter(TextureAtlas.class, new JsonDeserializer <TextureAtlas>() {
@@ -86,7 +86,7 @@ public class JsonLoader extends
 				String atlasName = json.getAsString();
 				AssetDescriptor<TextureAtlas> desc = new AssetDescriptor<TextureAtlas>(Gdx.files.internal(atlasName), TextureAtlas.class);
 				dependencies.add(desc);
-				//factory.loadAtlas(atlasName, 1);
+				factory.loadAtlas(atlasName, 1);
 				return null;
 			}});		
 		preJsonBuilder.registerTypeAdapter(ColormapConf.class, new JsonDeserializer <ColormapConf>()
