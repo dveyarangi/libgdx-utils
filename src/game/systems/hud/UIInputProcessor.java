@@ -32,7 +32,9 @@ public class UIInputProcessor implements InputProcessor
 		if( action == null )
 			return false;
 
-		activeActions.add(action);
+		action.execute(context);
+		if( action.isActivable() )
+			activeActions.add(action);
 
 		return true;
 	}
@@ -44,7 +46,8 @@ public class UIInputProcessor implements InputProcessor
 		if( action == null )
 			return false;
 
-		activeActions.removeValue(action, true);
+		if( action.isActivable() )
+			activeActions.removeValue(action, true);
 		return true;
 	}
 

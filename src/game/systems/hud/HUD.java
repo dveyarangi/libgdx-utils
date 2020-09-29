@@ -12,7 +12,9 @@ import lombok.Getter;
 
 public abstract class HUD
 {
-	protected Stage stage;
+	@Getter protected Stage stage;
+	
+	
 	
 	protected Table table;
 	

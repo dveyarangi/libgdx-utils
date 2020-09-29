@@ -5,28 +5,26 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 
-import game.config.GraphicOptions;
-import game.world.camera.ICameraProvider;
+import game.world.camera.FittingCameraProvider;
 
 /**
  * Rendering helper
  *
  */
-public class Renderer implements IRenderer
+public class OverlayRenderer implements IRenderer
 {
 
+	private FittingCameraProvider cameraProvider;
+	
 	public final SpriteBatch batch;
 
 	public final ShapeRenderer shaper;
 
-	private ICameraProvider cameraProvider;
-
-	public Renderer( ICameraProvider cameraProvider, GraphicOptions options )
+	public OverlayRenderer()
 	{
+		cameraProvider = new FittingCameraProvider(100, 100);
 
-		this.cameraProvider = cameraProvider;
-
-		batch = new SpriteBatch(options.spriteBatchSize);
+		batch = new SpriteBatch();
 
 		shaper = new ShapeRenderer();
 		shaper.setAutoShapeType(true);

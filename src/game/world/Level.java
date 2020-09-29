@@ -109,7 +109,7 @@ public class Level extends EntitySystem
 		// creating entity control systems:
 
 		// ////////////////////////////////////////////////////
-		Renderer rend = new Renderer( def.getWidth(), def.getHeight(), modules.getCameraProvider(), graphicOptions );
+		Renderer rend = new Renderer( modules.getCameraProvider(), graphicOptions );
 		// creating entity rendering system:
 		this.renderer = new EntityRenderingSystem( rend,
 				modules.getGameFactory(), modules.getRendererTypes() );

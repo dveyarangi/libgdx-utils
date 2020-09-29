@@ -127,6 +127,10 @@ public abstract class WorldScreen<G extends AbstractGame> extends AbstractScreen
 
 		// TODO: this is not the place
 		Gdx.gl.glEnable(GL20.GL_BLEND);
+
+        //4. enable depth writing
+        Gdx.gl.glEnable(GL20.GL_DEPTH_TEST);
+		Gdx.gl.glDepthFunc(GL20.GL_LESS);
 	}
 	
 	protected abstract LevelDef createLevel(LoadingProgress progress);
@@ -179,6 +183,8 @@ public abstract class WorldScreen<G extends AbstractGame> extends AbstractScreen
 
 		GameInputProcessor processor = level.getEngine().getSystem(GameInputProcessor.class);
 		processor.resize(screenWidth, screenHeight);
+		
+		Debug.debug.resize(screenWidth, screenHeight);
 	}
 
 	public void dispose()

@@ -17,7 +17,7 @@ public class UnityAtlasLoader {
 	public static void main(String [] args) throws IOException
 	{
 		Yaml yaml = new Yaml();
-		File inputFile = new File("D:\\Dev\\games_workspace\\retreat\\Assets\\Resources\\Images\\Flora\\dandan-liang-familyfarm-2d-environment.jpg.meta");
+		File inputFile = new File("D:\\Dev\\games_workspace\\retreat\\Assets\\Resources\\Images\\Tiles\\vegetation.png.meta");
 		InputStream inputStream = new FileInputStream(inputFile);
 		
 		String imageName = inputFile.getName().substring(0, inputFile.getName().length()-5);

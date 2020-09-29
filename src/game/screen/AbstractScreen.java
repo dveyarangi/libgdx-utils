@@ -66,7 +66,7 @@ public abstract class AbstractScreen<G extends AbstractGame> implements Screen
 	{
 		Gdx.app.debug(TAG, "Showing screen " + this);
 
-		this.renderer = new Renderer(worldWidth, worldHeight, cameraProvider, new GraphicOptions());
+		this.renderer = new Renderer(cameraProvider, new GraphicOptions());
 		renderer.init();
 
 		// set the stage as the input processor

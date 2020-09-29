@@ -10,9 +10,12 @@ import java.util.Map;
 import com.badlogic.ashley.core.Component;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.FPSLogger;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.utils.IntMap;
 import com.badlogic.gdx.utils.IntMap.Entry;
 
@@ -24,8 +27,9 @@ import game.systems.hud.UIInputProcessor;
 import game.systems.rendering.EntityRenderingSystem;
 import game.systems.rendering.IRenderer;
 import game.systems.rendering.IRenderingComponent;
-import game.systems.rendering.ShapeRenderingContext;
+import game.systems.rendering.OverlayRenderer;
 import game.world.Level;
+import lombok.experimental.var;
 
 /**
  * @author dveyarangi
@@ -41,12 +45,14 @@ public class Debug
 	public Level level;
 
 	IRenderer levelRenderer;
+	
+	IRenderer uiRenderer;
 
 	// private OrthographicCamera camera;
 
 	public static final int [] PROJECTED_SHAPER_ID = new int [] {-1};
 
-	public ShapeRenderingContext projectedShapeRenderer;
+	//public ShapeRenderingContext projectedShapeRenderer;
 
 	public static class OverlayBinding
 	{
@@ -94,8 +100,17 @@ public class Debug
 	/**
 	 * Font for debug labels hardloading TODO:set size!
 	 */
-	public static final BitmapFont FONT = new BitmapFont(Gdx.files.internal("fonts//debug.fnt"));
-
+	public static final BitmapFont FONT; 
+	static {
+		FileHandle font = Gdx.files.internal("fonts/VisOpenSans.ttf");
+	    FreeTypeFontGenerator generator = new FreeTypeFontGenerator(font);
+		var param = new FreeTypeFontGenerator.FreeTypeFontParameter();
+		param.size = 12;
+		param.color = new Color(1,1,1,1);
+		
+		FONT = generator.generateFont(param);
+	}
+	
 	private float[] deltas = new float[SAMPLES];
 	private float deltaPeak = 0;
 	private boolean isFirstBatch = true;
@@ -126,7 +141,8 @@ public class Debug
 
 		levelRenderer = level.getEngine().getSystem(EntityRenderingSystem.class);
 
-		projectedShapeRenderer = new ShapeRenderingContext(PROJECTED_SHAPER_ID[0], levelRenderer.shaper());
+		uiRenderer = new OverlayRenderer();
+		//projectedShapeRenderer = new ShapeRenderingContext(PROJECTED_SHAPER_ID[0], levelRenderer.shaper());
 
 		GameInputProcessor  inputController = level.getEngine().getSystem(GameInputProcessor.class);
 
@@ -155,6 +171,9 @@ public class Debug
 		//this.addOverlay(Hotkeys.TOGGLE_FACTION_COLORS, new UnitSymbol());
 
 		this.addOverlay(Hotkeys.TOGGLE_BOX2D_DEBUG, new IOverlay() {
+			
+			
+			
 			@Override
 			public void draw( IRenderer renderer )
 			{
@@ -168,6 +187,7 @@ public class Debug
 			}
 
 		});
+		this.addOverlay(Hotkeys.TOGGLE_FPS, new FPSOverlay());
 
 	}
 
@@ -229,7 +249,10 @@ public class Debug
 		for( Entry<OverlayBinding> entry : debugOverlays.entries() )
 		{
 			OverlayBinding binding = entry.value;
-			binding.render( levelRenderer );
+			if( binding.overlay.isProjected() )
+				binding.render( levelRenderer );
+			else
+				binding.render(uiRenderer);
 		}
 
 	}
@@ -332,5 +355,10 @@ public class Debug
 			sb.append(component.getClass()).append(": ").append(component.toString()).append("\n");
 		
 		return sb.toString();
+	}
+
+	public void resize(int screenWidth, int screenHeight)
+	{
+		uiRenderer.resize(screenWidth, screenHeight);
 	}
 }
