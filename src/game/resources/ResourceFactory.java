@@ -354,7 +354,6 @@ public class ResourceFactory implements LoadableModule
 		TextureLoader.TextureParameter p = new TextureLoader.TextureParameter();
 		p.genMipMaps = useMipMap;
 		
-		System.out.println(textureFile + " : : " + useMipMap);
 		TextureHandle textureHandle = new TextureHandle(textureFile, priority);
 
 		if(!textures.contains( textureHandle))
