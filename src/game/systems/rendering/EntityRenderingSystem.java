@@ -6,8 +6,11 @@ import com.badlogic.ashley.core.Engine;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.EntityListener;
 import com.badlogic.ashley.core.EntitySystem;
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g3d.decals.DecalBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.utils.IntMap;
 import com.badlogic.gdx.utils.ObjectMap;
@@ -17,6 +20,7 @@ import com.badlogic.gdx.utils.ObjectMap.Entry;
 import game.debug.Debug;
 import game.resources.ResourceFactory;
 import game.resources.TextureHandle;
+import game.systems.rendering.IRenderingContext.DecalContext;
 import game.systems.rendering.IRenderingContext.VoidContext;
 
 /**
@@ -71,6 +75,7 @@ public class EntityRenderingSystem extends EntitySystem implements EntityListene
 	public static final int POST_RENDERING = 1;
 	public static final int PROJECTED_SHAPER_ID = 2;
 	public static final int DEBUG_ID = 3;
+	public static final int DECAL_ID = 4; 
 	/**
 	 * Actual rendering toolbox
 	 */
@@ -123,7 +128,7 @@ public class EntityRenderingSystem extends EntitySystem implements EntityListene
 		
 		// TODO: load and use several textures in the same time;
 		// may use combined contexts.
-		contextOrder = new int [factory.getTextures().size()+4];
+		contextOrder = new int [factory.getTextures().size()+5];
 		int idx = 0;
 		
 		// dummy context for entities without a context
@@ -138,6 +143,10 @@ public class EntityRenderingSystem extends EntitySystem implements EntityListene
 			contextOrder[idx ++] = ctx.id();
 		}
 
+		// dummy context for entities without a context
+		this.registerContext(new DecalContext(DECAL_ID));
+		contextOrder[idx ++] = DECAL_ID;
+		
 		// dummy context for entities without a context
 		this.registerContext(new VoidContext(POST_RENDERING));
 		contextOrder[idx ++] = POST_RENDERING;
@@ -219,7 +228,8 @@ public class EntityRenderingSystem extends EntitySystem implements EntityListene
 	public void draw( float delta )
 	{
 		// rendering all units, grouped by rendering context:
-
+		Gdx.gl.glEnable(GL20.GL_DEPTH_TEST);
+		Gdx.gl.glDepthFunc(GL20.GL_LEQUAL);
 		for( int idx = 0; idx < contextOrder.length; idx ++ )
 		{
 
@@ -279,15 +289,21 @@ public class EntityRenderingSystem extends EntitySystem implements EntityListene
 	}
 
 	@Override
-	public SpriteBatch batch()
+	public SpriteBatch sprites()
 	{
-		return renderer.batch();
+		return renderer.sprites();
 	}
 
 	@Override
 	public ShapeRenderer shaper()
 	{
 		return renderer.shaper();
+	}
+	
+	@Override
+	public DecalBatch decals()
+	{
+		return renderer.decals();
 	}
 
 	@Override

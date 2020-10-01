@@ -11,6 +11,8 @@ public class RegionRenderingDef extends RendererDef<SpriteComponent>
 	public float oy = Float.NaN;
 	public float w = Float.NaN;
 	public float h = Float.NaN;
+	public boolean xFlip = false;
+	public boolean yFlip = false;
 
 	public RegionRenderingDef( TextureAtlas atlas, String regionName )
 	{
@@ -19,7 +21,7 @@ public class RegionRenderingDef extends RendererDef<SpriteComponent>
 		this.regionName = regionName;
 	}
 
-	public RegionRenderingDef(TextureAtlas atlas, String regionName, float ox, float oy, float w, float h)
+	public RegionRenderingDef(TextureAtlas atlas, String regionName, float ox, float oy, float w, float h, boolean xFlip, boolean yFlip)
 	{
 		super(SpriteComponent.class);
 		this.atlas = atlas;
@@ -28,6 +30,8 @@ public class RegionRenderingDef extends RendererDef<SpriteComponent>
 		this.oy = oy;
 		this.w = w;
 		this.h = h;
+		this.xFlip = xFlip;
+		this.yFlip = yFlip;
 	}
 	
 

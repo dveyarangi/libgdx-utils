@@ -21,7 +21,7 @@ import game.world.Level;
 import game.world.LevelDef;
 import game.world.LevelInitialSettings;
 import game.world.camera.ICameraProvider;
-import game.world.camera.PerspectiveCameraProvider;
+import game.world.camera.OrthoCameraProvider;
 
 public abstract class WorldScreen<G extends AbstractGame> extends AbstractScreen<G >
 {
@@ -101,8 +101,10 @@ public abstract class WorldScreen<G extends AbstractGame> extends AbstractScreen
 		if( settings == null )
 			throw new IllegalArgumentException("Missing level initial settings");
 
-		ICameraProvider worldCameraProvider = new PerspectiveCameraProvider(def.getWidth(), def.getHeight(),
+		ICameraProvider worldCameraProvider = new OrthoCameraProvider(def.getWidth(), def.getHeight(),
 				settings.getCameraPosition().x, settings.getCameraPosition().y, settings.getInitZoom());
+		//ICameraProvider worldCameraProvider = new PerspectiveCameraProvider(def.getWidth(), def.getHeight(),
+		//		settings.getCameraPosition().x, settings.getCameraPosition().y, settings.getInitZoom());
 
 		gameSetup = new GameboardModules(factory, def, environment, worldCameraProvider);
 		extendModules(gameSetup);

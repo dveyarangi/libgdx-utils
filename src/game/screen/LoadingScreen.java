@@ -158,11 +158,11 @@ public class LoadingScreen<G extends AbstractGame> extends AbstractScreen<G>
 		float h = loadingSprite.getHeight();
 		float cx = Gdx.graphics.getWidth()/2;
 		float cy = Gdx.graphics.getHeight()/2;
-		renderer.batch.begin();
-		renderer.batch.draw( loadingSprite, cx-w/2, cy-h/2, w/2,h/2, w,h,1,1,
+		renderer.sprites().begin();
+		renderer.sprites().draw( loadingSprite, cx-w/2, cy-h/2, w/2,h/2, w,h,1,1,
 				loadingSpriteAngle);
 		
-		renderer.batch.end();	
+		renderer.sprites().end();	
 	}
 	
 	private void animateBar(float delta, float progress)
@@ -171,13 +171,13 @@ public class LoadingScreen<G extends AbstractGame> extends AbstractScreen<G>
 		// smoothing a little:
 		barProgress += (progress - barProgress)/3;
 		
-		renderer.shaper.begin( ShapeType.Line );
-		renderer.shaper.setColor(1,1,1,1);
-		renderer.shaper.rect( pbarminx, pbarminy, pbarlw, pbarlh );
-		renderer.shaper.end();
-		renderer.shaper.begin( ShapeType.Filled );
-		renderer.shaper.rect( pbarminx, pbarminy, barProgress*pbarlw, pbarlh );
-		renderer.shaper.end();	
+		renderer.shaper().begin( ShapeType.Line );
+		renderer.shaper().setColor(1,1,1,1);
+		renderer.shaper().rect( pbarminx, pbarminy, pbarlw, pbarlh );
+		renderer.shaper().end();
+		renderer.shaper().begin( ShapeType.Filled );
+		renderer.shaper().rect( pbarminx, pbarminy, barProgress*pbarlw, pbarlh );
+		renderer.shaper().end();	
 	}
 
 	private void showMessage(LoadingProgress progress)
@@ -186,12 +186,12 @@ public class LoadingScreen<G extends AbstractGame> extends AbstractScreen<G>
 			return;
 		float cx = Gdx.graphics.getWidth()/2;
 		float cy = Gdx.graphics.getHeight()/2;
-		renderer.batch.begin();
+		renderer.sprites().begin();
 
 		fontLabel.setColor(1,1,1,1);
-		fontLabel.draw(renderer.batch, progress.getMessage(), pbarminx, pbarminy + 2*pbarlh);
+		fontLabel.draw(renderer.sprites(), progress.getMessage(), pbarminx, pbarminy + 2*pbarlh);
 		
-		renderer.batch.end();	
+		renderer.sprites().end();	
 	}
 
 	@Override

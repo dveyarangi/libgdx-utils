@@ -36,7 +36,7 @@ public class TextureRenderingContext implements IRenderingContext
 	@Override
 	public void begin()
 	{
-		renderer.batch().begin();
+		renderer.sprites().begin();
 		// TODO: i rely on SpriteBatch to not reload texture every render call afterward
 		// TODO: load or activate texture instead
 	}
@@ -44,7 +44,7 @@ public class TextureRenderingContext implements IRenderingContext
 	@Override
 	public void end()
 	{
-		renderer.batch().end();
+		renderer.sprites().end();
 	}
 
 	@Override

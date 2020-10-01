@@ -56,15 +56,19 @@ public class SpatialComponent implements ISpatialComponent
 	{ 
 		assert !Float.isNaN(x);
 		if( !Equals.eq(this.pos.x, x ))
+		{
 			isChanged = true;
-		this.pos.x = x; 
+			this.pos.x = x;
+		}
 	}
 	@Override public void y( float y ) 
 	{ 
 		assert !Float.isNaN(y);
 		if( !Equals.eq(this.pos.y, y ))
+		{
 			isChanged = true;
-		this.pos.y = y;
+			this.pos.y = y;
+		}
 	}
 
 	@Override
@@ -72,25 +76,32 @@ public class SpatialComponent implements ISpatialComponent
 	{
 		assert !Float.isNaN(a);
 		if( !Equals.eq(this.a, a ))
+		{
 			isChanged = true;
-		this.a = a;
-		this.uv.set(Angles.COS(this.a() * Angles.TO_RAD), Angles.SIN(this.a() * Angles.TO_RAD));
+			this.a = a;
+			this.uv.set(Angles.COS(this.a() * Angles.TO_RAD), Angles.SIN(this.a() * Angles.TO_RAD));
+		}
 	}
 
 
 	@Override
 	public void uv( float u, float v )
 	{
-		assert !Float.isNaN(u);assert !Float.isNaN(v);
-		this.uv.set(u, v);
-		this.a((float) Math.atan2(v, u) * Angles.TO_DEG); // causes isChanged update! 
+		assert !Float.isNaN(u); assert !Float.isNaN(v);
+		if( !Equals.eq(this.uv.x, u ) || !Equals.eq(this.uv.y, v ))
+		{
+			this.uv.set(u, v);
+			this.a((float) Math.atan2(v, u) * Angles.TO_DEG); // causes isChanged update!
+		}
 	}
 
 	public void r( float r ) 
 	{ 
 		if( !Equals.eq(this.r, r ))
+		{
 			isChanged = true;
-		this.r = r; 
+			this.r = r;
+		}
 	}
 
 

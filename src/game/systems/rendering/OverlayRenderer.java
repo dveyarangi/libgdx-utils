@@ -3,6 +3,7 @@ package game.systems.rendering;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g3d.decals.DecalBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 
 import game.world.camera.FittingCameraProvider;
@@ -16,7 +17,7 @@ public class OverlayRenderer implements IRenderer
 
 	private FittingCameraProvider cameraProvider;
 	
-	public final SpriteBatch batch;
+	public final SpriteBatch sprites;
 
 	public final ShapeRenderer shaper;
 
@@ -24,7 +25,7 @@ public class OverlayRenderer implements IRenderer
 	{
 		cameraProvider = new FittingCameraProvider(100, 100);
 
-		batch = new SpriteBatch();
+		sprites = new SpriteBatch();
 
 		shaper = new ShapeRenderer();
 		shaper.setAutoShapeType(true);
@@ -46,14 +47,9 @@ public class OverlayRenderer implements IRenderer
 		// TODO: ineffective? matrices are copied every frame
 		shaper.setProjectionMatrix(cameraProvider.getCamera().combined);
 
-		batch.setProjectionMatrix(cameraProvider.getCamera().combined);
+		sprites.setProjectionMatrix(cameraProvider.getCamera().combined);
 	}
 
-	@Override
-	public SpriteBatch batch()
-	{
-		return batch;
-	}
 
 	@Override
 	public ShapeRenderer shaper()
@@ -71,7 +67,21 @@ public class OverlayRenderer implements IRenderer
 	public void dispose()
 	{
 		shaper.dispose();
-		batch.dispose();
+		sprites.dispose();
+	}
+
+
+	@Override
+	public SpriteBatch sprites()
+	{
+		return sprites;
+	}
+
+
+	@Override
+	public DecalBatch decals()
+	{
+		throw new UnsupportedOperationException();
 	}
 
 }

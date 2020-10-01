@@ -4,6 +4,7 @@ import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.graphics.g3d.decals.Decal;
 
 import game.debug.Debug;
 import game.resources.ResourceFactory;
@@ -16,7 +17,7 @@ import lombok.Getter;
  *
  * @author Fima
  */
-public class SpriteComponent implements IRenderingComponent
+public class DecalComponent implements IRenderingComponent
 {
 	//static { ComponentType.registerFor(IRenderingComponent.class, SpriteRenderingComponent.class); }
 
@@ -24,12 +25,8 @@ public class SpriteComponent implements IRenderingComponent
 	@Getter float ox, oy, sx, sy;
 
 	protected int [] cid;
-	
-	
-	//protected Decal decal = Decal.newDecal(this.sx, this.sy, this.region);
 
-
-	public SpriteComponent()
+	public DecalComponent()
 	{
 		cid = new int[1];
 	}
@@ -65,10 +62,7 @@ public class SpriteComponent implements IRenderingComponent
 
 		this.cid[0] = TextureID.genid(region.getTexture());
 		
-		//this.cid[0] = EntityRenderingSystem.DECAL_ID;
-		//boolean hasTransparency = false;
-		//this.decal = Decal.newDecal(this.sx, this.sy, this.region, hasTransparency);
-
+		Decal decal = Decal.newDecal(this.sx, this.sy, this.region);
 	}
 
 	@Override
@@ -113,10 +107,6 @@ public class SpriteComponent implements IRenderingComponent
 					0 // orientation
 					);
 		}
-		
-		//decal.setPosition(spatial.x(), spatial.y(), 1);
-		//renderer.decals().add(decal);
-
 	}
 
 	public boolean render( float x, float y, float a, float r, Entity entity, IRenderer renderer, IRenderingContext context )

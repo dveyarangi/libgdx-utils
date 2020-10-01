@@ -1,6 +1,7 @@
 package game.systems.rendering;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g3d.decals.DecalBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 
 /**
@@ -11,16 +12,22 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 public interface IRenderer
 {
 	/**
-	 * Texture rendering batch
+	 * Sprites rendering batch
 	 * @return
 	 */
-	SpriteBatch batch();
+	SpriteBatch sprites();
 
 	/**
 	 * Shapes rendering batch
 	 * @return
 	 */
 	ShapeRenderer shaper();
+	
+	/**
+	 * Decals rendering batch
+	 * @return
+	 */
+	DecalBatch decals();
 
 	/**
 	 * Prepare rendering stuff

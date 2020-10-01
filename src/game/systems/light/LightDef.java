@@ -6,7 +6,11 @@ import com.badlogic.gdx.physics.box2d.Filter;
 
 import game.systems.IComponentDef;
 import game.world.Level;
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 
+@AllArgsConstructor
+@NoArgsConstructor
 public class LightDef implements IComponentDef<LightComponent>
 {
 	
@@ -34,5 +38,10 @@ public class LightDef implements IComponentDef<LightComponent>
 		component.distance = distance;
 		component.filter = filter;
 		component.isStatic = isStatic;
+	}
+	public LightDef copy()
+	{
+		return new LightDef(this.coneAngle, this.type, new Color(this.color), 
+				this.distance, this.filter, this.isStatic	);
 	}
 }

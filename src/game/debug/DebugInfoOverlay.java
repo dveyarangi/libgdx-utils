@@ -2,6 +2,7 @@ package game.debug;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.IntMap;
 import com.badlogic.gdx.utils.IntMap.Entry;
 import com.badlogic.gdx.utils.TimeUtils;
@@ -40,22 +41,23 @@ public class DebugInfoOverlay implements IOverlay
 			
 			sinceSampling = 0;
 			
+			SpriteBatch sprites = renderer.sprites();
 			float y = Gdx.graphics.getHeight() - 3;
-			renderer.batch().begin();
-	        Debug.FONT.draw(renderer.batch(), (int)averageFPS + " FPS", 3, y);
+			sprites.begin();
+	        Debug.FONT.draw(sprites, (int)averageFPS + " FPS", 3, y);
 	        
 	        y -= ystep;
-	        Debug.FONT.draw(renderer.batch(), "Overlay hotkeys: ", 3, y);
+	        Debug.FONT.draw(sprites, "Overlay hotkeys: ", 3, y);
 	        
 			for( Entry<OverlayBinding> entry : debugOverlays.entries() )
 			{
 				y -= ystep;
 				String key = Keys.toString(entry.key);
 
-				Debug.FONT.draw(renderer.batch(), " * " + key, 3, y);
-				Debug.FONT.draw(renderer.batch(), " - " + entry.value.overlay.toDesc(), 25, y);
+				Debug.FONT.draw(sprites, " * " + key, 3, y);
+				Debug.FONT.draw(sprites, " - " + entry.value.overlay.toDesc(), 25, y);
 			}	        
-	        renderer.batch().end();
+			sprites.end();
 		}
 		
 	}

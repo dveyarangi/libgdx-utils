@@ -82,7 +82,7 @@ public class AnimationRenderingComponent implements IRenderingComponent
 	{
 		ISpatialComponent spatial = ISpatialComponent.get(entity);
 
-		SpriteBatch batch = renderer.batch();
+		SpriteBatch sprites = renderer.sprites();
 
 		lifetime += deltaTime;
 
@@ -93,7 +93,7 @@ public class AnimationRenderingComponent implements IRenderingComponent
 		if( context.id() != TextureID.genid(region.getTexture()))
 			return;
 
-		batch.draw(region,
+		sprites.draw(region,
 				spatial.x() - region.getRegionWidth() / 2, // lower right angle
 				spatial.y() - region.getRegionHeight() / 2,
 

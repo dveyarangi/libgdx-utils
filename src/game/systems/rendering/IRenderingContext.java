@@ -1,5 +1,7 @@
 package game.systems.rendering;
 
+import com.badlogic.gdx.graphics.g3d.decals.DecalBatch;
+
 import game.resources.ResourceFactory;
 import lombok.AllArgsConstructor;
 
@@ -50,5 +52,17 @@ public interface IRenderingContext
 		@Override public void begin() { }
 		@Override public void end() { }
 		@Override public String toString() { return "void context"; }
+	}
+	
+	public static class DecalContext implements IRenderingContext
+	{
+		private int id;
+		private DecalBatch decals;
+		public DecalContext(int id) { this.id = id; }
+		@Override public int id() { return id;}
+		@Override public void init(ResourceFactory factory, IRenderer renderer) { this.decals = renderer.decals(); }
+		@Override public void begin() { }
+		@Override public void end() { decals.flush(); }
+		@Override public String toString() { return "decals context"; }
 	}
 }

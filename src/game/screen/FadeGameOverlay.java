@@ -86,10 +86,10 @@ public class FadeGameOverlay implements IGameOverlay
 			float alpha = outFade ? getFadePercentage() : 1 - getFadePercentage();
 			//System.out.println(alpha);
 			Gdx.gl.glEnable(GL20.GL_BLEND);
-			renderer.shaper.begin(ShapeType.Filled);
-			renderer.shaper.setColor(0.1f, 0.1f, 0.1f, alpha);
-			renderer.shaper.rect(0, 0, screenWidth, screenHeight);
-			renderer.shaper.end();
+			renderer.shaper().begin(ShapeType.Filled);
+			renderer.shaper().setColor(0.1f, 0.1f, 0.1f, alpha);
+			renderer.shaper().rect(0, 0, screenWidth, screenHeight);
+			renderer.shaper().end();
 		}
 	}
 

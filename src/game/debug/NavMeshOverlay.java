@@ -29,7 +29,7 @@ public class NavMeshOverlay implements IOverlay<NavMesh>
 		if( navMesh.getNodesNum() == 0 )
 			return;
 		ShapeRenderer shape = renderer.shaper();
-		SpriteBatch batch = renderer.batch();
+		SpriteBatch sprites = renderer.sprites();
 		NavNode srcNode;
 
 		shape.begin(ShapeType.Filled);
@@ -42,13 +42,13 @@ public class NavMeshOverlay implements IOverlay<NavMesh>
 		}
 		shape.end();
 
-		batch.begin();
+		sprites.begin();
 		for( int fidx = 0; fidx < navMesh.getNodesNum(); fidx++ )
 		{
 			srcNode = navMesh.getNode(fidx);
-			Debug.FONT.draw(batch, String.valueOf(fidx), srcNode.getPoint().x + 1, srcNode.getPoint().y + 1);
+			Debug.FONT.draw(sprites, String.valueOf(fidx), srcNode.getPoint().x + 1, srcNode.getPoint().y + 1);
 		}
-		batch.end();
+		sprites.end();
 
 		shape.begin(ShapeType.Line);
 		shape.setColor(0, 1, 0, 0.5f);
