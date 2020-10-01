@@ -3,8 +3,13 @@ package game.util.rendering;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Mesh;
 import com.badlogic.gdx.graphics.VertexAttributes;
+import com.badlogic.gdx.graphics.g3d.Material;
+import com.badlogic.gdx.graphics.g3d.Model;
+import com.badlogic.gdx.graphics.g3d.model.MeshPart;
+import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
 
 import lombok.Getter;
 import yarangi.arrays.FloatArrayWindow;
@@ -44,6 +49,7 @@ public class TileMultiMesh
 	 */
 	public TileMultiMesh(int w, int h, int verticesPerTile, int trianglesPerTile, VertexAttributes attrs)
 	{
+
 		this.w = w;
 		this.h = h;
 		this.verticesPerTile = verticesPerTile;
@@ -96,8 +102,8 @@ public class TileMultiMesh
 				// fill current tile
 				FloatArrayWindow vertexBufferView = new FloatArrayWindow(vertexBuffer, vidx, componentsPerTile);
 				ShortArrayWindow indexBufferView = new ShortArrayWindow(indexBuffer, iidx, indicesPerTile);
-				
-				fill.fillTile(x, y, tileIdx, vertexBufferView, indexBufferView);	
+				TriangleIndicesWindow trianglesView = new TriangleIndicesWindow(indexBufferView);
+				fill.fillTile(x, y, tileIdx, vertexBufferView, trianglesView);	
 				
 				
 				/////////////////////////////
@@ -151,7 +157,7 @@ public class TileMultiMesh
 		/////////////////////////////
 		// update tile
 		
-		update.updateTile(x, y,  vertexBufferUpdate);
+		update.updateVertexBuffer(x, y, vertexBufferUpdate);
 
 		mesh.updateVertices(vidx, vertexBufferUpdate);
 
@@ -159,10 +165,46 @@ public class TileMultiMesh
 
 	public static interface TileFill
 	{
-		public void fillTile(int x, int y, int tileIdx, FloatArrayWindow vertexBuffer, ShortArrayWindow indexBuffer);
+		public void fillTile(int x, int y, int tileIdx, FloatArrayWindow vertexBuffer, TriangleIndicesWindow triangles);
 	}
+	
 	public static interface TileUpdate
 	{
-		public void updateTile(int x, int y, float [] vertexBufferUpdate);
+		public void updateVertexBuffer(int x, int y, float [] vertexBufferUpdate);
+	}
+	
+	public static class VertexWindow
+	{
+		FloatArrayWindow vertexBuffer;
+	}
+	
+	public static class TriangleIndicesWindow 
+	{
+		ShortArrayWindow indexBuffer;
+		public TriangleIndicesWindow(ShortArrayWindow indexBuffer) { this.indexBuffer = indexBuffer; }
+		int iidx = 0;
+		public void addTriangle(int i1, int i2, int i3)
+		{
+			indexBuffer.set(iidx++, (short)i1);
+			indexBuffer.set(iidx++, (short)i2);
+			indexBuffer.set(iidx++, (short)i3);
+		}
+	}
+	
+	public Model buildModel(String modelName, Material material)
+	{
+		ModelBuilder modelBuilder = new ModelBuilder();
+		modelBuilder.begin();
+		
+		int meshIdx = 0;
+		for(Mesh mesh : getMeshes())
+		{
+			MeshPart part = new MeshPart(modelName + "_" + (meshIdx++), mesh, 0, mesh.getNumIndices(), GL20.GL_TRIANGLES);
+			modelBuilder.part(part, material);
+		}
+		
+		Model model = modelBuilder.end();
+		
+		return model;
 	}
 }
