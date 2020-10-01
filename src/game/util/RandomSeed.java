@@ -1,5 +1,6 @@
 package game.util;
 
+import java.util.List;
 import java.util.Random;
 
 import lombok.Getter;
@@ -156,6 +157,14 @@ public class RandomSeed
 		return e[pick];
 
 	}
+	
+	public <E> E random( List <E> list )
+	{
+		int pick = this.N(list.size());
+		return list.get(pick);
+
+	}
+
 
 	public <E> E pick(float [] dist, E [] elements)
 	{
