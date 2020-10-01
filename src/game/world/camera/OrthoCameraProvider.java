@@ -42,7 +42,8 @@ public class OrthoCameraProvider implements ICameraProvider
 
 		camera.position.x = startX;
 		camera.position.y = startY;
-		camera.near = 1f;
+		camera.near = 100f;
+		camera.far = -100f;
 		camera.zoom = startZoom;
 	}
 
