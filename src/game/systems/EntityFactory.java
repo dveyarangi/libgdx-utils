@@ -103,10 +103,17 @@ public class EntityFactory
 			
 			if(componentDef.getComponentClass() == null) // TODO: validate component type is not null
 				throw new IllegalArgumentException("No class defined for component def " + componentDef);
-
-			// create component for the speficied def:
-			Component component = engine.createComponent(componentDef.getComponentClass());
-
+			
+			Component component;
+			if( componentDef instanceof SystemDef)
+			{
+				component = (Component)engine.getSystem(componentDef.getComponentClass());
+			}
+			else
+			{
+				// create component for the speficied def:
+				component = engine.createComponent(componentDef.getComponentClass());
+			}
 			// init the component:
 			componentDef.initComponent( component, entity, level );
 			// attach the component to the entity:

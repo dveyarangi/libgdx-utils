@@ -52,7 +52,9 @@ public class PerspectiveCameraProvider implements ICameraProvider
 		//camera.zoom = startZoom;
 		camera.position.x = startX;
 		camera.position.y = startY;
-		camera.position.z = 0;
+		camera.position.z = -10;
+		camera.up.set(0, 0, 1);
+		camera.lookAt(startX,startY,0);
 		//camera.lookAt(0,0,1);
 		//camera.near = 0.0001f;
 		//camera.far = 300f;
@@ -86,8 +88,8 @@ public class PerspectiveCameraProvider implements ICameraProvider
 		this.zoom = zoom;
 		camera.up.set(0,1,0);
 		camera.update();
-		//camera.lookAt(0,1,0);
-		camera.position.z = 100*zoom;
+		
+		camera.position.z = -100*zoom;
 
 		//System.out.println(camera.position.z);
 		camera.update();
