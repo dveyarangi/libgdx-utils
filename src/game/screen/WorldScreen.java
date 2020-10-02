@@ -22,6 +22,7 @@ import game.world.LevelDef;
 import game.world.LevelInitialSettings;
 import game.world.camera.ICameraProvider;
 import game.world.camera.OrthoCameraProvider;
+import game.world.camera.PerspectiveCameraProvider;
 
 public abstract class WorldScreen<G extends AbstractGame> extends AbstractScreen<G >
 {
@@ -101,10 +102,21 @@ public abstract class WorldScreen<G extends AbstractGame> extends AbstractScreen
 		if( settings == null )
 			throw new IllegalArgumentException("Missing level initial settings");
 
-		ICameraProvider worldCameraProvider = new OrthoCameraProvider(def.getWidth(), def.getHeight(),
-				settings.getCameraPosition().x, settings.getCameraPosition().y, settings.getInitZoom());
-		//ICameraProvider worldCameraProvider = new PerspectiveCameraProvider(def.getWidth(), def.getHeight(),
-		//		settings.getCameraPosition().x, settings.getCameraPosition().y, settings.getInitZoom());
+		ICameraProvider worldCameraProvider = null;
+		
+		switch(settings.getCameraMode())
+		{
+		default:
+		case ORTHOGONAL:
+			worldCameraProvider= new OrthoCameraProvider(def.getWidth(), def.getHeight(),
+					settings.getCameraPosition().x, settings.getCameraPosition().y, settings.getInitZoom());
+			break;
+		case PERSPECTIVE:
+			worldCameraProvider = new PerspectiveCameraProvider(def.getWidth(), def.getHeight(),
+					settings.getCameraPosition().x, settings.getCameraPosition().y, settings.getInitZoom());
+			break;
+		
+		}
 
 		gameSetup = new GameboardModules(factory, def, environment, worldCameraProvider);
 		extendModules(gameSetup);
@@ -130,9 +142,6 @@ public abstract class WorldScreen<G extends AbstractGame> extends AbstractScreen
 		// TODO: this is not the place
 		Gdx.gl.glEnable(GL20.GL_BLEND);
 
-        //4. enable depth writing
-        Gdx.gl.glEnable(GL20.GL_DEPTH_TEST);
-		Gdx.gl.glDepthFunc(GL20.GL_LESS);
 	}
 	
 	protected abstract LevelDef createLevel(LoadingProgress progress);

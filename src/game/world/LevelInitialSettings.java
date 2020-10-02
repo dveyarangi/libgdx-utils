@@ -2,6 +2,8 @@ package game.world;
 
 import com.badlogic.gdx.math.Vector2;
 
+import lombok.Getter;
+
 /**
  * Defines initial settings for a level.
  * 
@@ -10,38 +12,27 @@ import com.badlogic.gdx.math.Vector2;
 public class LevelInitialSettings
 {
 
-	private Vector2 cameraPosition;
+	public enum CameraMode {
+		ORTHOGONAL,
+		PERSPECTIVE
+	}
+	
+	@Getter private CameraMode cameraMode;
+	
+	@Getter private Vector2 cameraPosition;
 
-	private float initZoom;
+	@Getter private float initZoom;
 
-	private float minZoom, maxZoom;
+	@Getter private float minZoom, maxZoom;
 
-	public LevelInitialSettings( final Vector2 cameraPosition, float initZoom, float minZoom, float maxZoom )
+	public LevelInitialSettings( CameraMode cameraMode,final Vector2 cameraPosition, float initZoom, float minZoom, float maxZoom )
 	{
+		this.cameraMode = cameraMode;
 		this.cameraPosition = cameraPosition;
 		this.initZoom = initZoom;
 		this.minZoom = minZoom;
 		this.maxZoom = maxZoom;
 	}
 
-	public Vector2 getCameraPosition()
-	{
-		return cameraPosition;
-	}
-
-	public float getInitZoom()
-	{
-		return initZoom;
-	}
-
-	public float getMinZoom()
-	{
-		return minZoom;
-	}
-
-	public float getMaxZoom()
-	{
-		return maxZoom;
-	}
 
 }
