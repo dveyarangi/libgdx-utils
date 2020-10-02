@@ -5,10 +5,10 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 
+import game.systems.IComponentDef;
 import game.systems.faction.FactionComponent;
 import game.systems.rendering.IRenderer;
 import game.systems.rendering.IRenderingContext;
-import game.systems.rendering.RendererDef;
 import game.systems.rendering.ShapeRenderingComponent;
 import game.systems.spatial.ISpatialComponent;
 import game.world.Level;
@@ -22,7 +22,7 @@ public class UnitSymbol extends ShapeRenderingComponent
 {
 
 	@Override
-	public void init( Entity entity, RendererDef def, Level level )
+	public void init( Entity entity, IComponentDef def, Level level )
 	{
 		// TODO Auto-generated method stub
 

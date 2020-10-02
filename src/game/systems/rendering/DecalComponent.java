@@ -8,6 +8,7 @@ import com.badlogic.gdx.graphics.g3d.decals.Decal;
 
 import game.debug.Debug;
 import game.resources.ResourceFactory;
+import game.systems.IComponentDef;
 import game.systems.spatial.ISpatialComponent;
 import game.world.Level;
 import lombok.Getter;
@@ -32,7 +33,7 @@ public class DecalComponent implements IRenderingComponent
 	}
 
 	@Override
-	public void init( Entity entity, RendererDef def, Level level )
+	public void init( Entity entity, IComponentDef def, Level level )
 	{
 		ResourceFactory factory = level.getModules().getGameFactory();
 		if(def instanceof TextureRenderingDef)

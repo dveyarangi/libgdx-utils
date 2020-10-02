@@ -6,8 +6,6 @@ import com.badlogic.ashley.core.Engine;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.EntityListener;
 import com.badlogic.ashley.core.EntitySystem;
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g3d.decals.DecalBatch;
@@ -189,13 +187,17 @@ public class EntityRenderingSystem extends EntitySystem implements EntityListene
 				this.entityAdded(POST_RENDERING, component, entity);
 			else
 				for(int cid : cids)
+				{
 					this.entityAdded(cid, component, entity);
+				}
 
 		}
 	}
 
 	private void entityAdded( int cid, IRenderingComponent component, Entity entity )
 	{
+		//IRenderingContext context = contexts.get(cid);
+		//context.entityAdded(entity);
 		// add ing the entity to appropriate sub-list of the entity mapping:
 		ObjectMap<IRenderingComponent, Entity> renderables = contextRenderables.get(cid);
 		if(renderables == null)
@@ -228,8 +230,7 @@ public class EntityRenderingSystem extends EntitySystem implements EntityListene
 	public void draw( float delta )
 	{
 		// rendering all units, grouped by rendering context:
-		Gdx.gl.glEnable(GL20.GL_DEPTH_TEST);
-		Gdx.gl.glDepthFunc(GL20.GL_LEQUAL);
+
 		for( int idx = 0; idx < contextOrder.length; idx ++ )
 		{
 
@@ -270,7 +271,12 @@ public class EntityRenderingSystem extends EntitySystem implements EntityListene
 			int [] cids = component.cid();
 
 			for( int cid : cids)
+			{
 				contextRenderables.get(cid).remove( component );
+				//IRenderingContext context = contexts.get(cid);
+				//context.entityRemoved(entity);
+
+			}
 		}
 	}
 
@@ -285,7 +291,7 @@ public class EntityRenderingSystem extends EntitySystem implements EntityListene
 		contextRenderables = null;
 		contexts.clear();
 		contexts = null;
-
+		super.removedFromEngine(engine);
 	}
 
 	@Override

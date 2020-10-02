@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
 import game.debug.Debug;
 import game.resources.ResourceFactory;
+import game.systems.IComponentDef;
 import game.systems.spatial.ISpatialComponent;
 import game.world.Level;
 import lombok.Getter;
@@ -20,8 +21,9 @@ public class SpriteComponent implements IRenderingComponent
 {
 	//static { ComponentType.registerFor(IRenderingComponent.class, SpriteRenderingComponent.class); }
 
-	@Getter protected TextureRegion region;
+	@Getter protected TextureRegion region = new TextureRegion();
 	@Getter float ox, oy, sx, sy;
+	@Getter float dx, dy;
 
 	protected int [] cid;
 	
@@ -35,13 +37,14 @@ public class SpriteComponent implements IRenderingComponent
 	}
 
 	@Override
-	public void init( Entity entity, RendererDef def, Level level )
+	public void init( Entity entity, IComponentDef def, Level level )
 	{
 		ResourceFactory factory = level.getModules().getGameFactory();
 		if(def instanceof TextureRenderingDef)
 		{
 			TextureRenderingDef tdef = (TextureRenderingDef) def;
-			this.region = factory.getTextureRegion(tdef.textureName);
+			TextureRegion origRegion = factory.getTextureRegion(tdef.textureName);
+			this.region.setRegion(origRegion);
 			this.ox = tdef.ox; this.oy = tdef.oy; this.sx = tdef.w; this.sy = tdef.h;
 			
 		}
@@ -49,19 +52,44 @@ public class SpriteComponent implements IRenderingComponent
 		{
 			RegionRenderingDef tdef = (RegionRenderingDef) def;
 			TextureAtlas atlas = tdef.atlas;
+			TextureRegion origRegion;
 			if( tdef.regionName == null)
 			{
-				this.region = atlas.getRegions().get(0);
+				origRegion = atlas.getRegions().get(0);
 				Debug.warn("RegionRenderingDef does not specify regionName");
 			}
 			else
-				this.region = atlas.findRegion(tdef.regionName);
+				origRegion = atlas.findRegion(tdef.regionName);
 			
-			this.region = new TextureRegion(this.region);
+			this.region.setRegion(origRegion);
 			this.region.flip(tdef.xFlip, tdef.yFlip);
+			
+			float rw = region.getRegionWidth();
+			float rh = region.getRegionHeight();
+		
+			float width = tdef.w;
+			float height = rh / rw * tdef.w; 
+			
+			switch(tdef.hAlign)
+			{
+			case LEFT: dx = 0.5f; break;
+			default: case CENTER:dx = 0.5f*width; break;
+			case RIGHT: dx = width-0.5f; break;
+			}
+			
+			switch(tdef.vAlign)
+			{
+			case TOP: dy = height - 0.5f; break;
+			default: case CENTER: dy = 0.5f*height; break;
+			case BOTTOM: dy =  0.5f; break;
+			}
 			
 			this.ox = tdef.ox; this.oy = tdef.oy; this.sx = tdef.w; this.sy = tdef.h;
 		}
+		
+		
+
+
 
 		this.cid[0] = TextureID.genid(region.getTexture());
 		
@@ -103,9 +131,9 @@ public class SpriteComponent implements IRenderingComponent
 			float rh = region.getRegionHeight();
 			float scale = rw > rh ? (2*spatial.r() / rw) : (2*spatial.r()/rh);
 			renderer.sprites().draw(region,
-					spatial.x(), // lower right angle
+					spatial.x()-dx, // lower right angle
 					// position
-					spatial.y(),
+					spatial.y()-dy,
 					ox, oy, // origin
 					// coordinate
 					sx, sy, // dimensions

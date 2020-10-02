@@ -1,5 +1,6 @@
 package game.systems.rendering;
 
+import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.graphics.g3d.decals.DecalBatch;
 
 import game.resources.ResourceFactory;
@@ -65,4 +66,7 @@ public interface IRenderingContext
 		@Override public void end() { decals.flush(); }
 		@Override public String toString() { return "decals context"; }
 	}
+
+	public default void entityAdded(Entity entity) {};
+	public default void entityRemoved(Entity entity) {};
 }

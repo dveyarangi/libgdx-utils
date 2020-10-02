@@ -4,6 +4,7 @@ import com.badlogic.ashley.core.Component;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.utils.Pool.Poolable;
 
+import game.systems.IComponentDef;
 import game.world.Level;
 
 /**
@@ -32,7 +33,7 @@ public interface IRenderingComponent extends Component, Poolable
 	 * @param def
 	 * @param factory
 	 */
-	public abstract void init( Entity entity, RendererDef<?>def, Level level );
+	public abstract void init( Entity entity, IComponentDef<?>def, Level level );
 
 	/**
 	 * @param entity

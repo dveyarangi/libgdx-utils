@@ -3,6 +3,7 @@ package game.systems.rendering;
 import com.badlogic.ashley.core.ComponentType;
 import com.badlogic.ashley.core.Entity;
 
+import game.systems.IComponentDef;
 import game.world.Level;
 
 public class ComposedRenderingComponent implements IRenderingComponent
@@ -30,7 +31,7 @@ public class ComposedRenderingComponent implements IRenderingComponent
 	}
 
 	@Override
-	public void init( Entity entity, RendererDef def, Level leve )
+	public void init( Entity entity, IComponentDef def, Level leve )
 	{
 		// TODO Auto-generated method stub
 

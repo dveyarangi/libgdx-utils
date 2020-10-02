@@ -11,6 +11,7 @@ import com.badlogic.gdx.graphics.VertexAttributes.Usage;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 
 import game.resources.ResourceFactory;
+import game.systems.IComponentDef;
 import game.util.MeshDef;
 import game.world.Level;
 
@@ -36,7 +37,7 @@ public class MeshRenderingComponent implements IRenderingComponent
 	}
 
 	@Override
-	public void init( Entity entity, RendererDef def, Level level )
+	public void init( Entity entity, IComponentDef def, Level level )
 	{
 		this.cam = level.getModules().getCameraProvider().getCamera();
 		

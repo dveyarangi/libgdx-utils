@@ -2,6 +2,9 @@ package game.systems.rendering;
 
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 
+import game.util.rendering.HAlign;
+import game.util.rendering.VAlign;
+
 public class RegionRenderingDef extends RendererDef<SpriteComponent>
 {
 	public TextureAtlas atlas;
@@ -13,6 +16,8 @@ public class RegionRenderingDef extends RendererDef<SpriteComponent>
 	public float h = Float.NaN;
 	public boolean xFlip = false;
 	public boolean yFlip = false;
+	public HAlign hAlign = HAlign.CENTER;
+	public VAlign vAlign = VAlign.CENTER;
 
 	public RegionRenderingDef( TextureAtlas atlas, String regionName )
 	{
@@ -21,7 +26,7 @@ public class RegionRenderingDef extends RendererDef<SpriteComponent>
 		this.regionName = regionName;
 	}
 
-	public RegionRenderingDef(TextureAtlas atlas, String regionName, float ox, float oy, float w, float h, boolean xFlip, boolean yFlip)
+	public RegionRenderingDef(TextureAtlas atlas, String regionName, float ox, float oy, float w, float h, boolean xFlip, boolean yFlip, HAlign hAlign, VAlign vAlign)
 	{
 		super(SpriteComponent.class);
 		this.atlas = atlas;
@@ -32,6 +37,8 @@ public class RegionRenderingDef extends RendererDef<SpriteComponent>
 		this.h = h;
 		this.xFlip = xFlip;
 		this.yFlip = yFlip;
+		this.hAlign = hAlign;
+		this.vAlign = vAlign;
 	}
 	
 

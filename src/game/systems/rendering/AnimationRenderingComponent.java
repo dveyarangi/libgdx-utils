@@ -5,6 +5,7 @@ import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
+import game.systems.IComponentDef;
 import game.systems.spatial.ISpatialComponent;
 import game.util.IntArrayPool;
 import game.world.Level;
@@ -45,7 +46,7 @@ public class AnimationRenderingComponent implements IRenderingComponent
 	}
 
 	@Override
-	public void init( Entity entity, RendererDef def, Level level )
+	public void init( Entity entity, IComponentDef def, Level level )
 	{
 		
 		

@@ -1,5 +1,7 @@
 package game.systems.rendering;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 
 import game.resources.ResourceFactory;
@@ -30,6 +32,7 @@ public class ShapeRenderingContext implements IRenderingContext
 	@Override
 	public void begin()
 	{
+		Gdx.gl.glDisable(GL20.GL_DEPTH_TEST);
 		shaper.begin();
 	}
 
