@@ -79,9 +79,9 @@ public class JsonLoader extends
 						factory.loadTexture(textureName, true, 1);
 						return null;
 					}});
-		preJsonBuilder.registerTypeAdapter(TextureAtlas.class, new JsonDeserializer <TextureAtlas>() {
+		preJsonBuilder.registerTypeAdapter(NamedTextureAtlas.class, new JsonDeserializer <NamedTextureAtlas>() {
 			@Override
-			public TextureAtlas deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException
+			public NamedTextureAtlas deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException
 			{
 				String atlasName = json.getAsString();
 				AssetDescriptor<TextureAtlas> desc = new AssetDescriptor<TextureAtlas>(Gdx.files.internal(atlasName), TextureAtlas.class);
@@ -113,13 +113,13 @@ public class JsonLoader extends
 		
 		
 		
-		postJsonBuilder.registerTypeAdapter(TextureAtlas.class, new JsonDeserializer <TextureAtlas>() {
+		postJsonBuilder.registerTypeAdapter(NamedTextureAtlas.class, new JsonDeserializer <NamedTextureAtlas>() {
 			@Override
-			public TextureAtlas deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException
+			public NamedTextureAtlas deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException
 			{
 				String atlasName = json.getAsString();
-				TextureAtlas texture = factory.getTextureAtlas(atlasName);
-				return texture;
+				TextureAtlas atlas = factory.getTextureAtlas(atlasName);
+				return new NamedTextureAtlas(atlasName, atlas);
 			}
 
 		});

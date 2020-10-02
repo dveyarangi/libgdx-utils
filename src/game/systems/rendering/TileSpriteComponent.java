@@ -19,7 +19,16 @@ public class TileSpriteComponent implements IRenderingComponent
 	float dx;
 	float dy;
 	
+	float width;
+	float height;
+	
 	private int [] cid = new int [] {};
+
+
+	public TileSpritesRenderer renderer;
+
+
+	private Entity entity;
 
 	public static TileSpriteComponent get( Entity entity )
 	{
@@ -39,9 +48,9 @@ public class TileSpriteComponent implements IRenderingComponent
 	public void init(Entity entity, IComponentDef<?> rendererDef, Level level)
 	{
 		this.def = (TileSpriteDef) rendererDef;
+		this.entity = entity;
 		
-		
-		TextureRegion origRegion = def.atlas.findRegion(def.regionName);
+		TextureRegion origRegion = def.atlas.getAtlas().findRegion(def.regionName);
 		
 		region.setRegion(origRegion);
 		region.flip(def.xFlip, def.yFlip);
@@ -50,8 +59,8 @@ public class TileSpriteComponent implements IRenderingComponent
 		float rw = region.getRegionWidth();
 		float rh = region.getRegionHeight();
 	
-		float width = def.w;
-		float height = rh / rw * def.w; 
+		width = def.w;
+		height = rh / rw * def.w; 
 		
 		switch(def.hAlign)
 		{
@@ -76,5 +85,11 @@ public class TileSpriteComponent implements IRenderingComponent
 		
 	}
 
+	public void setRegion(TextureRegion region)
+	{
+		this.region.setRegion(region);;
+		
+		renderer.entityUpdated(this.entity);
+	}
 
 }

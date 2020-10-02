@@ -1,14 +1,15 @@
 package game.systems.rendering;
 
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 
+import game.resources.NamedTextureAtlas;
 import game.util.rendering.HAlign;
 import game.util.rendering.VAlign;
 
 public class TileSpriteDef extends RendererDef<TileSpriteComponent>
 {
-	public TextureAtlas atlas;
+
+	public NamedTextureAtlas atlas;
 	public String regionName;
 	public Color color;
 	public int tx, ty;
@@ -21,14 +22,14 @@ public class TileSpriteDef extends RendererDef<TileSpriteComponent>
 	public VAlign vAlign;
 	public HAlign hAlign;
 
-	public TileSpriteDef( TextureAtlas atlas, String regionName )
+	public TileSpriteDef( NamedTextureAtlas atlas, String regionName )
 	{
 		super( TileSpriteComponent.class );
 		this.atlas = atlas;
 		this.regionName = regionName;
 	}
 
-	public TileSpriteDef(TextureAtlas atlas, String regionName, Color color, int tx, int ty, float w, float h, boolean xFlip, boolean yFlip, HAlign hAlign, VAlign vAlign)
+	public TileSpriteDef(NamedTextureAtlas atlas, String regionName, Color color, int tx, int ty, float w, float h, boolean xFlip, boolean yFlip, HAlign hAlign, VAlign vAlign)
 	{
 		super(TileSpriteComponent.class);
 		this.atlas = atlas;

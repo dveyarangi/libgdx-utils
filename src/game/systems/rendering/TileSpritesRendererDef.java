@@ -1,7 +1,6 @@
 package game.systems.rendering;
 
 import com.badlogic.ashley.core.Entity;
-import com.badlogic.gdx.graphics.Texture;
 
 import game.systems.IComponentDef;
 import game.systems.SystemDef;
@@ -12,9 +11,9 @@ public class TileSpritesRendererDef extends SystemDef <TileSpritesRenderer>  imp
 	public int width;
 	public int height;
 
-	public String shaderName;
+	public String [] shaders;
 	
-	public Texture texture; 
+	public String [] textures; 
 
 	public TileSpritesRendererDef()
 	{
