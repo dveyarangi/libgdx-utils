@@ -357,6 +357,7 @@ public class GameInputProcessor extends EntitySystem implements InputProcessor
 		{
 			camController.moveBy(dx*context.dt*camController.zoom(), dy*context.dt*camController.zoom());
 		}
+		public boolean isActivable() { return true; }
 	}
 	
 	@Override
