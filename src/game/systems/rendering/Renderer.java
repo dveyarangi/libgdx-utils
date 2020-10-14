@@ -3,7 +3,6 @@ package game.systems.rendering;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g3d.decals.CameraGroupStrategy;
 import com.badlogic.gdx.graphics.g3d.decals.DecalBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 
@@ -34,8 +33,8 @@ public class Renderer implements IRenderer
 
 		shapes = new ShapeRenderer();
 		shapes.setAutoShapeType(true);
-		
-		decals = new DecalBatch(new CameraGroupStrategy(cameraProvider.getCamera()));
+		DecalGroupStrategy strategy = new DecalGroupStrategy(cameraProvider.getCamera());
+		decals = new DecalBatch(strategy);
 	}
 
 

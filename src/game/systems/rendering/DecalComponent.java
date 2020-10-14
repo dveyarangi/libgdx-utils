@@ -36,16 +36,16 @@ public class DecalComponent implements IRenderingComponent
 	public void init( Entity entity, IComponentDef def, Level level )
 	{
 		ResourceFactory factory = level.getModules().getGameFactory();
-		if(def instanceof TextureRenderingDef)
+		if(def instanceof SpriteTextureDef)
 		{
-			TextureRenderingDef tdef = (TextureRenderingDef) def;
-			this.region = factory.getTextureRegion(tdef.textureName);
+			SpriteTextureDef tdef = (SpriteTextureDef) def;
+			this.region = factory.getTextureRegion(tdef.textureName.getName());
 			this.ox = tdef.ox; this.oy = tdef.oy; this.sx = tdef.w; this.sy = tdef.h;
 			
 		}
 		else
 		{
-			RegionRenderingDef tdef = (RegionRenderingDef) def;
+			SpriteRegionDef tdef = (SpriteRegionDef) def;
 			TextureAtlas atlas = tdef.atlas;
 			if( tdef.regionName == null)
 			{

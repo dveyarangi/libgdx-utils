@@ -5,16 +5,16 @@ import com.badlogic.ashley.core.Entity;
 import game.systems.IComponentDef;
 import game.systems.SystemDef;
 import game.world.Level;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
 
 public class TileSpritesRendererDef extends SystemDef <TileSpritesRenderer>  implements IComponentDef <TileSpritesRenderer>
 {
 	public int width;
 	public int height;
 
-	public String [] shaders;
+	public MeshDef [] meshes;
 	
-	public String [] textures; 
-
 	public TileSpritesRendererDef()
 	{
 		super(TileSpritesRenderer.class);
@@ -23,7 +23,7 @@ public class TileSpritesRendererDef extends SystemDef <TileSpritesRenderer>  imp
 	public void initSystem( Level level, TileSpritesRenderer system )
 	{
 		system.cam = level.getModules().getCameraProvider().getCamera();
-		system.meshDef = this;
+		system.rendererDef = this;
 
 	}
 
@@ -37,6 +37,15 @@ public class TileSpritesRendererDef extends SystemDef <TileSpritesRenderer>  imp
 	public void initComponent(TileSpritesRenderer component, Entity entity, Level level)
 	{
 		component.init( entity, this, level );
+	}
+	
+	@AllArgsConstructor
+	public static class MeshDef 
+	{
+		@Getter String shaderName;
+		@Getter String textureName;
+		@Getter int unitsPerTile = 1;
+		
 	}
 
 }

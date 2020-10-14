@@ -1,9 +1,11 @@
 package game.systems.rendering;
 
 import com.badlogic.ashley.core.Entity;
+import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.graphics.g3d.decals.Decal;
 
 import game.debug.Debug;
 import game.resources.ResourceFactory;
@@ -24,11 +26,12 @@ public class SpriteComponent implements IRenderingComponent
 	@Getter protected TextureRegion region = new TextureRegion();
 	@Getter float ox, oy, sx, sy;
 	@Getter float dx, dy;
+	@Getter float priority;
 
 	protected int [] cid;
 	
 	
-	//protected Decal decal = Decal.newDecal(this.sx, this.sy, this.region);
+	protected Decal decal = Decal.newDecal(this.sx, this.sy, this.region, true);
 
 
 	public SpriteComponent()
@@ -39,20 +42,20 @@ public class SpriteComponent implements IRenderingComponent
 	@Override
 	public void init( Entity entity, IComponentDef def, Level level )
 	{
+		SpriteDef sdef = (SpriteDef) def;
 		ResourceFactory factory = level.getModules().getGameFactory();
-		if(def instanceof TextureRenderingDef)
+		TextureRegion origRegion;
+		if(def instanceof SpriteTextureDef)
 		{
-			TextureRenderingDef tdef = (TextureRenderingDef) def;
-			TextureRegion origRegion = factory.getTextureRegion(tdef.textureName);
-			this.region.setRegion(origRegion);
-			this.ox = tdef.ox; this.oy = tdef.oy; this.sx = tdef.w; this.sy = tdef.h;
+			SpriteTextureDef tdef = (SpriteTextureDef) def;
+			
+			origRegion = factory.getTextureRegion(tdef.textureName.getName());
 			
 		}
 		else
 		{
-			RegionRenderingDef tdef = (RegionRenderingDef) def;
+			SpriteRegionDef tdef = (SpriteRegionDef) def;
 			TextureAtlas atlas = tdef.atlas;
-			TextureRegion origRegion;
 			if( tdef.regionName == null)
 			{
 				origRegion = atlas.getRegions().get(0);
@@ -61,41 +64,58 @@ public class SpriteComponent implements IRenderingComponent
 			else
 				origRegion = atlas.findRegion(tdef.regionName);
 			
-			this.region.setRegion(origRegion);
-			this.region.flip(tdef.xFlip, tdef.yFlip);
-			
-			float rw = region.getRegionWidth();
-			float rh = region.getRegionHeight();
-		
-			float width = tdef.w;
-			float height = rh / rw * tdef.w; 
-			
-			switch(tdef.hAlign)
-			{
-			case LEFT: dx = 0.5f; break;
-			default: case CENTER:dx = 0.5f*width; break;
-			case RIGHT: dx = width-0.5f; break;
-			}
-			
-			switch(tdef.vAlign)
-			{
-			case TOP: dy = height - 0.5f; break;
-			default: case CENTER: dy = 0.5f*height; break;
-			case BOTTOM: dy =  0.5f; break;
-			}
-			
-			this.ox = tdef.ox; this.oy = tdef.oy; this.sx = tdef.w; this.sy = tdef.h;
 		}
 		
 		
-
-
-
-		this.cid[0] = TextureID.genid(region.getTexture());
+		this.region.setRegion(origRegion);
+		this.region.flip(sdef.xFlip, sdef.yFlip);
 		
-		//this.cid[0] = EntityRenderingSystem.DECAL_ID;
+		float rw = region.getRegionWidth();
+		float rh = region.getRegionHeight();
+		region.getTexture().setFilter(TextureFilter.MipMap, TextureFilter.MipMap);
+	
+		float width = sdef.w;
+		float height = rh / rw * sdef.w; 
+		
+		/* FOR SPRITE BATCH:
+		switch(sdef.hAlign)
+		{
+		case LEFT: dx = 0.5f; break;
+		default: case CENTER:dx = 0.5f*width; break;
+		case RIGHT: dx = width-0.5f; break;
+		}
+		
+		switch(sdef.vAlign)
+		{
+		case TOP: dy = height - 0.5f; break;
+		default: case CENTER: dy = 0.5f*height; break;
+		case BOTTOM: dy =  0.5f; break;
+		}*/
+		
+		// FOR DECAL BATCH:
+		switch(sdef.hAlign)
+		{
+		case LEFT: dx = -0.5f*width+0.5f; break;
+		default: case CENTER:dx = 0; break;
+		case RIGHT: dx = 0.5f*width-0.5f; break;
+		}
+		
+		switch(sdef.vAlign)
+		{
+		case TOP: dy = height-0.5f; break;
+		default: case CENTER: dy =0; break;
+		case BOTTOM: dy = -0.5f*height+0.5f; break;
+		}		
+		this.ox = sdef.ox; this.oy = sdef.oy; this.sx = sdef.w; this.sy = sdef.h;
+		
+		priority = sdef.priority;
+		this.cid[0] = EntityRenderingSystem.DECAL_ID;
 		//boolean hasTransparency = false;
-		//this.decal = Decal.newDecal(this.sx, this.sy, this.region, hasTransparency);
+		//this.decal.setPosition(spatial.x()-dx, spatial.y()-dy, -50);
+		this.decal.setDimensions(this.sx, this.sy);
+		this.decal.setTextureRegion(region);
+
+
 
 	}
 
@@ -112,7 +132,7 @@ public class SpriteComponent implements IRenderingComponent
 	@Override
 	public void reset()
 	{
-		region = null;
+		region = new TextureRegion();
 		cid[0] = IRenderingContext.INVALID_ID;
 	}
 
@@ -121,7 +141,7 @@ public class SpriteComponent implements IRenderingComponent
 	{
 		ISpatialComponent spatial = ISpatialComponent.get(entity);
 
-		if( useSpatialDimensions())
+		/*if( useSpatialDimensions())
 			this.render( spatial.x(), spatial.y(), spatial.a(), spatial.r(), entity, renderer, context );
 		else
 		{
@@ -140,10 +160,11 @@ public class SpriteComponent implements IRenderingComponent
 					1, 1,// scaling
 					0 // orientation
 					);
-		}
-		
-		//decal.setPosition(spatial.x(), spatial.y(), 1);
-		//renderer.decals().add(decal);
+		}*/
+		renderer.decals();
+		decal.setPosition(spatial.x()-dx, spatial.y()-dy, priority);
+
+		renderer.decals().add(decal);
 
 	}
 

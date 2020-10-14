@@ -6,7 +6,6 @@ import com.badlogic.ashley.core.Engine;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.EntityListener;
 import com.badlogic.ashley.core.EntitySystem;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g3d.decals.DecalBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
@@ -17,7 +16,6 @@ import com.badlogic.gdx.utils.ObjectMap.Entry;
 
 import game.debug.Debug;
 import game.resources.ResourceFactory;
-import game.resources.TextureHandle;
 import game.systems.rendering.IRenderingContext.DecalContext;
 import game.systems.rendering.IRenderingContext.VoidContext;
 
@@ -126,28 +124,29 @@ public class EntityRenderingSystem extends EntitySystem implements EntityListene
 		
 		// TODO: load and use several textures in the same time;
 		// may use combined contexts.
-		contextOrder = new int [factory.getTextures().size()+5];
+		contextOrder = new int [5];
 		int idx = 0;
 		
 		// dummy context for entities without a context
 		this.registerContext(new VoidContext(PRE_RENDERING));
 		contextOrder[idx ++] = PRE_RENDERING;
 		
-		for( TextureHandle textureHandle : factory.getTextures() )
+		/*for( TextureHandle textureHandle : factory.getTextures() )
 		{
 			Texture texture = factory.getTexture( textureHandle.getTextureName() );
 			TextureRenderingContext ctx = new TextureRenderingContext(textureHandle.getTextureName(), texture);
 			this.registerContext(ctx);
 			contextOrder[idx ++] = ctx.id();
-		}
+		}*/
 
+		// dummy context for entities without a context
+		this.registerContext(new VoidContext(POST_RENDERING));
+		contextOrder[idx ++] = POST_RENDERING;
+		
 		// dummy context for entities without a context
 		this.registerContext(new DecalContext(DECAL_ID));
 		contextOrder[idx ++] = DECAL_ID;
 		
-		// dummy context for entities without a context
-		this.registerContext(new VoidContext(POST_RENDERING));
-		contextOrder[idx ++] = POST_RENDERING;
 		
 		// context for rendering shapes
 		this.registerContext(new ShapeRenderingContext(PROJECTED_SHAPER_ID, renderer.shaper()));

@@ -2,8 +2,10 @@ package game.systems.rendering;
 
 import com.badlogic.ashley.core.ComponentMapper;
 import com.badlogic.ashley.core.Entity;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
+import game.resources.ResourceFactory;
 import game.systems.IComponentDef;
 import game.world.Level;
 
@@ -27,9 +29,6 @@ public class TileSpriteComponent implements IRenderingComponent
 
 	public TileSpritesRenderer renderer;
 
-
-	private Entity entity;
-
 	public static TileSpriteComponent get( Entity entity )
 	{
 		return MAPPER.get(entity);
@@ -48,9 +47,9 @@ public class TileSpriteComponent implements IRenderingComponent
 	public void init(Entity entity, IComponentDef<?> rendererDef, Level level)
 	{
 		this.def = (TileSpriteDef) rendererDef;
-		this.entity = entity;
 		
-		TextureRegion origRegion = def.atlas.getAtlas().findRegion(def.regionName);
+		TextureAtlas atlas = ResourceFactory.getTextureAtlas(def.atlas.getName());
+		TextureRegion origRegion = atlas.findRegion(def.regionName);
 		
 		region.setRegion(origRegion);
 		region.flip(def.xFlip, def.yFlip);
@@ -62,20 +61,21 @@ public class TileSpriteComponent implements IRenderingComponent
 		width = def.w;
 		height = rh / rw * def.w; 
 		
-		switch(def.hAlign)
+		/*switch(def.hAlign)
 		{
 		case LEFT: dx = 0.5f; break;
 		default: case CENTER:dx = 0.5f*width; break;
 		case RIGHT: dx = width-0.5f; break;
-		}
-		
-		switch(def.vAlign)
+		}*/
+		dx = 0.5f*width - def.xOffset;
+	
+		/*switch(def.vAlign)
 		{
 		case TOP: dy = height - 0.5f; break;
 		default: case CENTER: dy = 0.5f*height; break;
 		case BOTTOM: dy =  0.5f; break;
-		}
-
+		}*/
+		dy = 0.5f*height - def.yOffset;
 	}
 
 	@Override
@@ -89,7 +89,7 @@ public class TileSpriteComponent implements IRenderingComponent
 	{
 		this.region.setRegion(region);;
 		
-		renderer.entityUpdated(this.entity);
+		renderer.entityUpdated(this);
 	}
 
 }

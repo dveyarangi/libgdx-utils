@@ -1,6 +1,8 @@
 package game.systems.rendering;
 
 import com.badlogic.ashley.core.Entity;
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g3d.decals.DecalBatch;
 
 import game.resources.ResourceFactory;
@@ -62,7 +64,11 @@ public interface IRenderingContext
 		public DecalContext(int id) { this.id = id; }
 		@Override public int id() { return id;}
 		@Override public void init(ResourceFactory factory, IRenderer renderer) { this.decals = renderer.decals(); }
-		@Override public void begin() { }
+		@Override public void begin() { 
+			Gdx.gl.glEnable(GL20.GL_DEPTH_TEST);
+			Gdx.gl.glDepthFunc(GL20.GL_LEQUAL);
+
+		}
 		@Override public void end() { decals.flush(); }
 		@Override public String toString() { return "decals context"; }
 	}
