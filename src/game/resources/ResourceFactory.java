@@ -158,7 +158,7 @@ public class ResourceFactory implements LoadableModule
 	 */
 	private final Map<String, Animation> animationCache = new HashMap<String, Animation>();
 
-	private final Map<String, TextureRegion> regionCache = new HashMap<String, TextureRegion>();
+	private final Map<Object, TextureRegion> regionCache = new HashMap<Object, TextureRegion>();
 
 	private final Map<String, Region> regionList = new HashMap<String, Region>();
 
@@ -537,10 +537,11 @@ public class ResourceFactory implements LoadableModule
 		return ((Configuration)factory.manager.get(id)).getObject();
 	}
 
-	public static com.badlogic.gdx.graphics.Texture getTexture( String texture )
+	public static com.badlogic.gdx.graphics.Texture getTexture( String textureName )
 	{
 		try {
-			return factory.manager.get(texture);
+			com.badlogic.gdx.graphics.Texture texture = factory.manager.get(textureName);
+			return texture;
 		}
 		catch(GdxRuntimeException e)
 		{
@@ -663,6 +664,17 @@ public class ResourceFactory implements LoadableModule
 
 		return region;
 
+	}
+	
+	public static com.badlogic.gdx.graphics.g2d.TextureRegion getTextureRegion( TextureRegionName regionName )
+	{
+		TextureRegion region = factory.regionCache.get(regionName);
+		if( region != null)
+			return region;
+		TextureAtlas atlas = factory.manager.get(regionName.atlasName);
+		region = atlas.findRegion(regionName.regionName);
+		factory.regionCache.put(regionName, region);
+		return region;
 	}
 	
 	@SuppressWarnings("unchecked")

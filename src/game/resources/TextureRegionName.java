@@ -1,15 +1,15 @@
 package game.resources;
 
-import com.badlogic.gdx.graphics.g2d.TextureAtlas;
-
 import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @AllArgsConstructor
 @NoArgsConstructor
-public class NamedTextureAtlas 
+@EqualsAndHashCode
+public class TextureRegionName 
 {
-	@Getter String name;
-	@Getter TextureAtlas atlas;
+	@Getter String atlasName;
+	@Getter String regionName;
 }
