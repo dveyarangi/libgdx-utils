@@ -51,6 +51,7 @@ public class SpatialFabric extends EntitySystem implements IFabric, EntityListen
 	public void entityAdded(Entity e)
 	{
 		SpatialIndexComponent sic = mapper.get(e);
+		sic.getArea().translate(-space.getWidth()/2, -space.getHeight()/2);
 		space.add( sic );
 		if( !sic.isStatic )
 			dynamicEntities.add(sic.getEntity());
@@ -111,17 +112,32 @@ public class SpatialFabric extends EntitySystem implements IFabric, EntityListen
 	{
 		private PooledLinkedList<Entity> sensed = new PooledLinkedList<Entity>( Constants.SENSOR_POOL_SIZE );
 		
+		private float pickRadius = 1;
 		private AABB cursor = AABB.createSquare(0, 0, 1, 0);
-
+		
+		
 		@Setter private IEntityFilter entityFilter;
+		
 
 		@Override
 		public Entity pick(float x, float y, float pickRadius)
 		{
-			cursor.translate(x, y);
-
+			assert pickRadius > 0 : "Invalid pick radius";
+			sensed.clear();
+			// preparing querying cursor location and size
+			cursor.move(x-space.getWidth()/2, y-space.getHeight()/2);
+			if( this.pickRadius != pickRadius )
+			{
+				cursor.fitTo(pickRadius);
+				this.pickRadius = pickRadius;
+			}
 			space.queryAABB(this, cursor);
-			return sensed.size() > 0 ? sensed.next() : null;
+			
+			if( sensed.size() == 0)
+				return null;
+
+			sensed.iter();
+			return sensed.next();
 		}
 
 		@Override

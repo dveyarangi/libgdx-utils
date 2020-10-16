@@ -16,7 +16,7 @@ public class SpatialIndexComponent implements ISpatialObject, Component, Poolabl
 	
 	//@Getter SpatialIndexDef def;
 	
-	@Getter AABB area = AABB.createFromCenter(0, 0, 0, 0, 0);
+	@Getter AABB area = AABB.createFromCenter(0, 0, 1, 1, 0);
 
 	@Getter public boolean isStatic;
 	

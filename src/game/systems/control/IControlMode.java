@@ -46,7 +46,7 @@ public interface IControlMode extends EntityListener
 	 *
 	 * @param pickedObject
 	 */
-	void objectUnpicked( Entity pickedObject );
+	void objectPicked( Entity pickedObject );
 
 
 	/**

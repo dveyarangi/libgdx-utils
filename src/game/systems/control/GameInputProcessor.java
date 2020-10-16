@@ -220,11 +220,15 @@ public class GameInputProcessor extends EntitySystem implements InputProcessor
 
 		// testing for units under mouse cursor:
 		Entity newPickedObject = picker.pick(worldPos.x, worldPos.y, pickRadius);
-
+		//if( newPickedObject != null && pickedObject == null)
+		//	System.out.println(newPickedObject);
+		//if( newPickedObject == null && pickedObject != null)
+		//	System.out.println("unpicked");
 		// informing controllers of change of object picking:
 		if( newPickedObject != pickedObject )
 		{
-			controlModes.objectUnpicked(pickedObject);
+			//Debug.printEntity(newPickedObject);
+			controlModes.objectPicked(newPickedObject);
 			pickedObject = newPickedObject;
 		}
 
