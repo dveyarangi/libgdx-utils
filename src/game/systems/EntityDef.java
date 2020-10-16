@@ -25,6 +25,8 @@ public class EntityDef implements Component, Poolable
 	{
 		return MAPPER.get(entity);
 	}
+	
+	public String id;
 
 	public boolean isPickable = false;
 
@@ -35,8 +37,9 @@ public class EntityDef implements Component, Poolable
 
 	public Array <IComponentDef<?>> genericAspects = new Array <IComponentDef<?>> ();
 
-	public EntityDef()
+	public EntityDef(String id)
 	{
+		this.id = id;
 	}
 
 	//	@Override public int getFactionId() { return faction;}

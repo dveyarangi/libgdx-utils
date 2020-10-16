@@ -19,6 +19,7 @@ import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.utils.IntMap;
 import com.badlogic.gdx.utils.IntMap.Entry;
 
+import game.systems.IDComponent;
 import game.systems.control.GameInputProcessor;
 import game.systems.control.Hotkeys;
 import game.systems.control.InputAction;
@@ -51,6 +52,13 @@ public class Debug
 	// private OrthographicCamera camera;
 
 	public static final int [] PROJECTED_SHAPER_ID = new int [] {-1};
+	
+	
+	// TODO: turn off in production
+	public static final boolean DEBUG_IDS = true;
+	
+	public static boolean DEBUG_UI = false;
+
 
 	//public ShapeRenderingContext projectedShapeRenderer;
 
@@ -118,8 +126,6 @@ public class Debug
 	private FPSLogger fpsLogger = new FPSLogger();
 
 	UIInputProcessor uiProcessor;
-	
-	public static boolean DEBUG_UI = false;
 
 	// private static InvokationMapper mapper = new InvokationMapper();
 
@@ -360,5 +366,22 @@ public class Debug
 	public void resize(int screenWidth, int screenHeight)
 	{
 		uiRenderer.resize(screenWidth, screenHeight);
+	}
+
+	public static void printEntity(Entity entity)
+	{
+		if( entity == null )
+		{
+			log("Entity: null");
+			return;
+		}
+		IDComponent id = entity.getComponent(IDComponent.class);
+		if( id == null)
+		{
+			log("Entity: No id");
+			return;
+		}
+		
+		log("Entity: " + id);
 	}
 }

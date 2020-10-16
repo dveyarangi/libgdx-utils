@@ -1,26 +1,27 @@
 package game.systems.lifecycle;
 
-import game.systems.IComponentDef;
+import com.badlogic.ashley.core.Entity;
+
 import game.systems.EntityDef;
+import game.systems.IComponentDef;
 import game.systems.movement.IMovementDef;
 import game.systems.rendering.RendererDef;
 import game.systems.spatial.SpatialDef;
 import game.util.dist.Distribution;
 import game.world.Level;
 
-import com.badlogic.ashley.core.Entity;
-
 public class BirthTrailDeathDef implements IComponentDef <LifeAuraComponent>
 {
+	
 	public static class Aspect
 	{
 		public Distribution sizeDist, angleDist;
 		public EntityDef def;
 
-		public Aspect( IMovementDef movementDef,
+		public Aspect( String id, IMovementDef movementDef,
 				RendererDef renderingDef, float lifeDuration, Distribution sizeDist, Distribution angleDist )
 		{
-			def = new EntityDef();
+			def = new EntityDef(id);
 			def.addDef( new LifecycleDef( lifeDuration ));
 			def.addDef( new SpatialDef(0, 0, 0, 0) );
 			def.addDef( movementDef );
@@ -44,28 +45,30 @@ public class BirthTrailDeathDef implements IComponentDef <LifeAuraComponent>
 	{
 
 	}
-
+	public static final String BIRTH_ID = "birth-effect";
 	public void defineBirth( IMovementDef movementDef,
 			RendererDef renderingDef, float lifeDuration, Distribution sizeDist, Distribution angleDist )
 	{
-		birth = new Aspect(movementDef, renderingDef, lifeDuration, sizeDist, angleDist);
+		birth = new Aspect(BIRTH_ID, movementDef, renderingDef, lifeDuration, sizeDist, angleDist);
 	}
 
+	public static final String TRAIL_ID = "trail-effect";
 	public void defineTrail( IMovementDef movementDef,
 			RendererDef renderingDef, float lifeDuration, Distribution sizeDist, Distribution angleDist,
 			float trailInterval,
 			float trailTotalDuration )
 	{
-		trail = new Aspect(movementDef, renderingDef, lifeDuration, sizeDist, angleDist);
+		trail = new Aspect(TRAIL_ID, movementDef, renderingDef, lifeDuration, sizeDist, angleDist);
 
 		this.trailInterval = trailInterval;
 		this.trailTotalDuration = trailTotalDuration;
 	}
 
+	public static final String DEATH_ID = "death-effect";
 	public void defineDeath( IMovementDef movementDef,
 			RendererDef renderingDef, float lifeDuration, Distribution sizeDist, Distribution angleDist )
 	{
-		death = new Aspect(movementDef,
+		death = new Aspect(DEATH_ID, movementDef,
 				renderingDef, lifeDuration, sizeDist, angleDist);
 	}
 

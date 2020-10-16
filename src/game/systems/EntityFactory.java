@@ -7,6 +7,7 @@ import com.badlogic.ashley.core.Component;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.PooledEngine;
 
+import game.debug.Debug;
 import game.systems.lifecycle.LifecycleComponent;
 import game.systems.lifecycle.LifecycleSystem;
 import game.systems.spatial.SpatialComponent;
@@ -89,6 +90,12 @@ public class EntityFactory
 		Entity entity = engine.createEntity();
 
 		entity.add(def);
+		if( Debug.DEBUG_IDS && def.id != null)
+		{
+			IDComponent id = engine.createComponent(IDComponent.class);
+			id.id = def.id;
+			entity.add(id);
+		}
 
 		if( def.hasDescendants() )
 		{
