@@ -16,7 +16,7 @@ public abstract class HUD
 	
 	
 	
-	protected Table table;
+	protected Table canvas;
 	
 	@Getter private int screenWidth, screenHeight;
 
@@ -32,11 +32,11 @@ public abstract class HUD
 
 		this.input = gameInputProcessor;
 		
-		this.table = new Table();
+		this.canvas = new Table();
 		
-		table.setFillParent(true);
-		stage.addActor(table);
-		table.setDebug(Debug.DEBUG_UI);
+		canvas.setFillParent(true);
+		stage.addActor(canvas);
+		canvas.setDebug(Debug.DEBUG_UI);
 	}
 
 	
