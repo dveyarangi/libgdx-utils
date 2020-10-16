@@ -63,10 +63,10 @@ public class ControlModes extends EntitySystem
 			currControlMode.setWorldPointer(worldPos, zoom);
 	}
 
-	public void objectUnpicked( Entity pickedObject )
+	public void objectPicked( Entity pickedObject )
 	{
 		if( !controlModes.isEmpty() )
-			currControlMode.objectUnpicked(pickedObject);
+			currControlMode.objectPicked(pickedObject);
 	}
 
 	public void next()
