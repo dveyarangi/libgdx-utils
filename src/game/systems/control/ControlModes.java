@@ -1,14 +1,14 @@
 package game.systems.control;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.EntitySystem;
 import com.badlogic.ashley.core.Family;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.scenes.scene2d.ui.Table;
 
+import game.debug.Debug;
 import game.systems.order.ControlComponent;
 import game.systems.rendering.IRenderer;
 import game.world.Level;
@@ -16,18 +16,18 @@ import game.world.Level;
 public class ControlModes extends EntitySystem
 {
 	private Level level;
-	private List<IControlMode> controlModes;
-	private int controlModeIdx;
+	private Map <String, IControlMode> controlModes;
 	private IControlMode currControlMode;
 
 	public ControlModes()
 	{
-		controlModes = new ArrayList<IControlMode>();
+		controlModes = new TreeMap<>();
 	}
+	
 
-	public void addMode( IControlMode mode )
+	public void addMode( String name, IControlMode mode )
 	{
-		controlModes.add(mode);
+		controlModes.put(name, mode);
 	}
 
 	public void init( Level level )
@@ -36,17 +36,11 @@ public class ControlModes extends EntitySystem
 
 		if( !controlModes.isEmpty() )
 		{
-			currControlMode = controlModes.get(0);
-			currControlMode.reset( level );
-			controlModeIdx = 0;
+			switchToMode(controlModes.keySet().iterator().next(), null);
 
 			Family family = Family.one( ControlComponent.class ).get();
-
-			for(int cidx = 0; cidx < controlModes.size(); cidx ++)
-			{
-				IControlMode mode = controlModes.get(0);
+			for(IControlMode mode : controlModes.values())
 				level.getEngine().addEntityListener( family, mode );
-			}
 		}
 	}
 
@@ -69,14 +63,20 @@ public class ControlModes extends EntitySystem
 			currControlMode.objectPicked(pickedObject);
 	}
 
-	public void next()
+	public void switchToMode(String modeName, Object parameter)
 	{
-		if( !controlModes.isEmpty() )
-		{
-			controlModeIdx = ( controlModeIdx + 1 ) % controlModes.size();
-			currControlMode = controlModes.get(controlModeIdx);
-			currControlMode.reset( level );
-		}
+		IControlMode newMode = controlModes.get(modeName);
+		if( newMode == null )
+			throw new IllegalArgumentException("Unknown mode " + modeName);
+		
+		if(currControlMode != null)
+			currControlMode.modeDeactivated();
+		
+		currControlMode = newMode;
+		
+		Debug.log("New control mode: " + currControlMode);
+		
+		newMode.modeActivated(parameter);
 	}
 
 	public void keyDown( int keycode )
@@ -130,11 +130,6 @@ public class ControlModes extends EntitySystem
 	{
 		if( !controlModes.isEmpty() )
 			currControlMode.render(renderer);
-	}
-	
-	public Table createUI()
-	{
-		return currControlMode.createUI();
 	}
 
 	public IControl control() {

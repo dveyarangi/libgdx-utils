@@ -241,10 +241,6 @@ public class GameInputProcessor extends EntitySystem implements InputProcessor
 		switch( keycode )
 		{
 
-		case Hotkeys.NEXT_CONTROL_MODE:
-			controlModes.next();
-			break;
-
 			/*
 			 * case Input.Keys.SPACE: if(camController == freeController) {
 			 * autoController.zoomTarget = camController.getCamera().zoom;
@@ -256,8 +252,6 @@ public class GameInputProcessor extends EntitySystem implements InputProcessor
 			controlModes.keyDown(keycode);
 			return false;
 		}
-
-		return false;
 	}
 
 	@Override
@@ -452,10 +446,6 @@ public class GameInputProcessor extends EntitySystem implements InputProcessor
 		return timeController.getModifier();
 	}
 
-	public void addMode( IControlMode mode )
-	{
-		controlModes.addMode(mode);
-	}
 
 	public void dispose()
 	{
