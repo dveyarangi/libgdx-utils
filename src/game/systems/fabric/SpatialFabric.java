@@ -77,7 +77,11 @@ public class SpatialFabric extends EntitySystem implements IFabric, EntityListen
 			ISpatialComponent spatial = ISpatialComponent.get(entity);
 			SpatialIndexComponent index = mapper.get(entity);
 			if( spatial.isChanged() )
+			{
+				index.update();
+				index.getArea().translate(-space.getWidth()/2, -space.getHeight()/2);
 				space.update( index );
+			}
 		}
 
 		// update sensors

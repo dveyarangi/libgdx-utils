@@ -12,7 +12,7 @@ import game.world.Level;
 public class SpatialIndexDef implements IComponentDef<SpatialIndexComponent>
 {
 	public int collisionMask = 0;
-	public boolean isStatic = false;
+	public boolean isStatic = true;
 
 	@Override
 	public Class<SpatialIndexComponent> getComponentClass() { return SpatialIndexComponent.class; } 

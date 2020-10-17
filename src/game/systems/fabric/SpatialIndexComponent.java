@@ -18,18 +18,22 @@ public class SpatialIndexComponent implements ISpatialObject, Component, Poolabl
 	
 	@Getter AABB area = AABB.createFromCenter(0, 0, 1, 1, 0);
 
-	@Getter public boolean isStatic;
+	@Getter public boolean isStatic = true;
 	
 	public void init(Entity entity)
 	{
 		this.entity = entity;
-		
+
+		update();
+	}
+	
+	public void update()
+	{
 		ISpatialComponent spatial = ISpatialComponent.get(entity);
 		
 		area.move(spatial.x(), spatial.y());
 		area.fitTo(spatial.r());
 	}
-
 	@Override
 	public void reset()
 	{
