@@ -29,6 +29,7 @@ public class TileSpriteComponent implements IRenderingComponent
 
 	public TileSpritesRenderer renderer;
 
+
 	public static TileSpriteComponent get( Entity entity )
 	{
 		return MAPPER.get(entity);
@@ -89,6 +90,22 @@ public class TileSpriteComponent implements IRenderingComponent
 	{
 		this.region.setRegion(region);;
 		
+		renderer.entityUpdated(this);
+	}
+
+	public void directRight()
+	{
+		if( this.region.isFlipX())
+			return;
+		this.region.flip(true, false);
+		renderer.entityUpdated(this);
+	}
+	
+	public void directLeft()
+	{
+		if( !this.region.isFlipX())
+			return;
+		this.region.flip(false, false);
 		renderer.entityUpdated(this);
 	}
 
