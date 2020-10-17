@@ -3,7 +3,6 @@ package game.systems.control;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.EntityListener;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.scenes.scene2d.ui.Table;
 
 import game.systems.rendering.IRenderer;
 import game.world.Level;
@@ -20,6 +19,11 @@ public interface IControlMode extends EntityListener
 	 * Called before the mode is activated.
 	 */
 	void reset( Level level );
+	
+	
+	public void switchToMode(String modeName, Object parameter);
+	void modeActivated(Object parameter);
+	void modeDeactivated();
 
 	/**
 	 * Inform control mode of touch event
@@ -69,8 +73,6 @@ public interface IControlMode extends EntityListener
 	public void update( float delta );
 
 	IControl control();
-
-	Table createUI();
 
 
 }
