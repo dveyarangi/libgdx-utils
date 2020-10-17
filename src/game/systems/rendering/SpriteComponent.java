@@ -194,4 +194,22 @@ public class SpriteComponent implements IRenderingComponent
 	{
 		return Float.isNaN(ox);
 	}
+	
+	public void directRight()
+	{
+		if( this.region.isFlipX())
+			return;
+		this.region.flip(true, false);
+		decal.setTextureRegion(region);
+	}
+	
+	public void directLeft()
+	{
+		if( !this.region.isFlipX())
+			return;
+		this.region.flip(true, false);
+		decal.setTextureRegion(this.region);
+		//renderer.entityUpdated(this);
+	}
+
 }
