@@ -86,7 +86,7 @@ public class GameInputProcessor extends EntitySystem implements InputProcessor
 	protected int lastButton;
 	// private boolean pointerChanged = true;
 
-	public static float ZOOM_SPEED_COEF = 0.1f;
+	public static float ZOOM_SPEED_COEF = 0.025f;
 
 	public GameInputProcessor( HUD ui )
 	{
@@ -338,10 +338,10 @@ public class GameInputProcessor extends EntitySystem implements InputProcessor
 
 		consumed = controlModes.drag(worldPos.x, worldPos.y, camController.zoom(), pickedObject, lastButton);
 
-		if(! consumed && lastButton == Input.Buttons.RIGHT)
+		/*if(! consumed && lastButton == Input.Buttons.RIGHT)
 		{
 			camController.moveBy(prevWorldPos.x - worldPos.x, prevWorldPos.y - worldPos.y);
-		}
+		}*/
 
 		return true;
 	}

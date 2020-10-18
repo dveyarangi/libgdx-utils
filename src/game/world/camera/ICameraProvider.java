@@ -2,6 +2,7 @@ package game.world.camera;
 
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.viewport.Viewport;
 
 /**
@@ -16,6 +17,7 @@ public interface ICameraProvider
 
 	public Viewport getViewport();
 	
+	public default Vector3 position() { return getCamera().position; }
 	public float zoom();
 	public void zoom(float zoom);
 

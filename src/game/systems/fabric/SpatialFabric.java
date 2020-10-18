@@ -80,7 +80,7 @@ public class SpatialFabric extends EntitySystem implements IFabric, EntityListen
 			{
 				index.update();
 				index.getArea().translate(-space.getWidth()/2, -space.getHeight()/2);
-				space.update( index );
+				space.update( index, null );
 			}
 		}
 

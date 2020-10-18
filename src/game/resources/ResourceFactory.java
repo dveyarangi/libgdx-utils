@@ -643,22 +643,22 @@ public class ResourceFactory implements LoadableModule
 
 	// public SoundProvider getSoundProvider() { return sound; }
 
-	public com.badlogic.gdx.graphics.g2d.TextureRegion getTextureRegion( String name )
+	public static com.badlogic.gdx.graphics.g2d.TextureRegion getTextureRegion( String name )
 	{
 		TextureRegion region;
-		if( regionList.containsKey(name) )
+		if( factory.regionList.containsKey(name) )
 		{
-			Region regianno = regionList.get(name);
-			TextureAtlas atlas = manager.get(regianno.atlas());
+			Region regianno = factory.regionList.get(name);
+			TextureAtlas atlas = factory.manager.get(regianno.atlas());
 			region = atlas.findRegion(regianno.name());
 		}
 		else
 		{
-			region = regionCache.get(name);
+			region = factory.regionCache.get(name);
 			if( region == null )
 			{
 				region = new TextureRegion(getTexture(name));
-				regionCache.put(name, region);
+				factory.regionCache.put(name, region);
 			}
 		}
 

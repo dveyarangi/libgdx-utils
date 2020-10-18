@@ -12,7 +12,6 @@ import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.FPSLogger;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
@@ -123,8 +122,6 @@ public class Debug
 	private float deltaPeak = 0;
 	private boolean isFirstBatch = true;
 
-	private FPSLogger fpsLogger = new FPSLogger();
-
 	UIInputProcessor uiProcessor;
 
 	// private static InvokationMapper mapper = new InvokationMapper();
@@ -200,7 +197,6 @@ public class Debug
 
 	public boolean update( final float delta )
 	{
-		fpsLogger.log();
 		int sampleIdx = frameCount++ % SAMPLES;
 		deltas[sampleIdx] = delta;
 		if( sampleIdx >= SAMPLES - 1 )

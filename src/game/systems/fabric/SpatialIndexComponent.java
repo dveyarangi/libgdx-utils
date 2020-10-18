@@ -16,6 +16,7 @@ public class SpatialIndexComponent implements ISpatialObject, Component, Poolabl
 	
 	//@Getter SpatialIndexDef def;
 	
+	@Getter AABB oldArea = AABB.createFromCenter(0, 0, 1, 1, 0);
 	@Getter AABB area = AABB.createFromCenter(0, 0, 1, 1, 0);
 
 	@Getter public boolean isStatic = true;
@@ -30,7 +31,7 @@ public class SpatialIndexComponent implements ISpatialObject, Component, Poolabl
 	public void update()
 	{
 		ISpatialComponent spatial = ISpatialComponent.get(entity);
-		
+		oldArea.paste(area);
 		area.move(spatial.x(), spatial.y());
 		area.fitTo(spatial.r());
 	}

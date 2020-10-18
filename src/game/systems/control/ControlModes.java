@@ -17,6 +17,7 @@ public class ControlModes extends EntitySystem
 {
 	private Level level;
 	private Map <String, IControlMode> controlModes;
+	private String currModeName;
 	private IControlMode currControlMode;
 
 	public ControlModes()
@@ -65,6 +66,8 @@ public class ControlModes extends EntitySystem
 
 	public void switchToMode(String modeName, Object parameter)
 	{
+		if(modeName.equals(currModeName))
+			return;
 		IControlMode newMode = controlModes.get(modeName);
 		if( newMode == null )
 			throw new IllegalArgumentException("Unknown mode " + modeName);
@@ -77,6 +80,8 @@ public class ControlModes extends EntitySystem
 		Debug.log("New control mode: " + currControlMode);
 		
 		newMode.modeActivated(parameter);
+		
+		currModeName = modeName;
 	}
 
 	public void keyDown( int keycode )

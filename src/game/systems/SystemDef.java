@@ -11,6 +11,8 @@ public class SystemDef <S extends EntitySystem>
 
 	private S system;
 
+	private ISystemRenderer renderer;
+
 	public SystemDef()
 	{
 	}
@@ -22,6 +24,11 @@ public class SystemDef <S extends EntitySystem>
 	public SystemDef( S system )
 	{
 		this.system = system;
+	}
+	public SystemDef( S system, ISystemRenderer renderer )
+	{
+		this.system = system;
+		this.renderer = renderer;
 	}
 
 	public S createSystem()
@@ -47,6 +54,6 @@ public class SystemDef <S extends EntitySystem>
 
 	}
 	
-	public ISystemRenderer createRenderer(S system) { return null; }
+	public ISystemRenderer createRenderer() { return renderer; }
 
 }
