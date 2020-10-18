@@ -126,7 +126,7 @@ public class Level extends EntitySystem
 			EntitySystem system = systemDef.createSystem();
 			systemDef.initSystem( this, system );
 			engine.addSystem( system );
-			ISystemRenderer systemRenderer = systemDef.createRenderer( system );
+			ISystemRenderer systemRenderer = systemDef.createRenderer();
 			if( systemRenderer != null )
 				systemRenderers.add(systemRenderer);
 		}
@@ -175,7 +175,7 @@ public class Level extends EntitySystem
 		
 		for(int idx = 0; idx < systemRenderers.size(); idx ++)
 		{
-			systemRenderers.get(idx).render();
+			systemRenderers.get(idx).render(renderer);
 		}
 		
 		GameInputProcessor processor = getEngine().getSystem(GameInputProcessor.class);
@@ -234,7 +234,7 @@ public class Level extends EntitySystem
 	{
 		if( timeSinceProfiling > PROFILE_INTERVAL )
 		{
-			assert this.log("Level update: active units: " + engine.getEntities().size());
+			//assert this.log("Level update: active units: " + engine.getEntities().size());
 
 			timeSinceProfiling = 0;
 		}

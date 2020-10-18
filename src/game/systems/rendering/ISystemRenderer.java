@@ -2,5 +2,5 @@ package game.systems.rendering;
 
 public interface ISystemRenderer 
 {
-	public void render();
+	public void render(IRenderer renderer);
 }
