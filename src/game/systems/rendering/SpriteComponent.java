@@ -126,7 +126,8 @@ public class SpriteComponent implements IRenderingComponent
 	public void setRegion(TextureRegion region)
 	{
 		this.region = region;
-		this.cid[0] = TextureID.genid(region.getTexture());
+		this.decal.setTextureRegion(region);
+		//this.cid[0] = TextureID.genid(region.getTexture());
 	}
 
 	@Override
