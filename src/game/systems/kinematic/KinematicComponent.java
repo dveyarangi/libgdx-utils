@@ -32,7 +32,7 @@ public class KinematicComponent implements IMovementComponent
 	@Override
 	public void reset()
 	{
-		vx = vy = va = vr;
+		vx = vy = va = vr = 0;
 	}
 	
 	protected boolean areStatic()
@@ -42,6 +42,7 @@ public class KinematicComponent implements IMovementComponent
 	
 	public void setLinearVelocity(float vx, float vy)
 	{
+		assert !Double.isNaN(vx);
 		this.vx = vx; 
 		this.vy = vy;
 		isStatic = areStatic();

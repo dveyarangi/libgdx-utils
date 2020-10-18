@@ -26,8 +26,8 @@ public class KinematicMovementDef implements IMovementDef<KinematicComponent>
 
 	public KinematicMovementDef()
 	{
-		this.vx = Float.NaN;
-		this.vy = Float.NaN;
+		this.vx = 0;
+		this.vy = 0;
 		this.va = 0;
 	}
 
