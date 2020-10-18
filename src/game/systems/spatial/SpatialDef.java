@@ -7,13 +7,14 @@ import game.world.Level;
 
 public class SpatialDef implements ISpatialDef<SpatialComponent>
 {
-	public float x, y, a, r;
+	public float x, y, z, a, r;
 
-	public SpatialDef( float x, float y, float a, float r )
+	public SpatialDef( float x, float y, float z, float a, float r )
 	{
 		super();
 		this.x = x;
 		this.y = y;
+		this.z = z;
 		this.a = a;
 		this.r = r;
 	}
@@ -25,25 +26,22 @@ public class SpatialDef implements ISpatialDef<SpatialComponent>
 	{
 		component.x(this.x());
 		component.y(this.y());
-		component.a(this.a());
+		
 		component.r(this.r());
+		component.a(this.a());
 		component.setChanged(false);
 	}
 
 	@Override public float x() { return x; }
-
 	@Override public float y() { return y; }
-
+	@Override public float z() { return z; }
 	@Override public float a() { return a; }
-
 	@Override public float r() { return r; }
 
 	@Override public void x( float x ) { this.x = x; }
-
 	@Override public void y( float y ) { this.y = y; }
-
+	@Override public void z( float z ) { this.z = z; }
 	@Override public void a( float a ) { this.a = a; }
-
 	@Override public void r( float r ) { this.r = r; }
 
 	@Override

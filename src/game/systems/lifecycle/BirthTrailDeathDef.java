@@ -23,7 +23,7 @@ public class BirthTrailDeathDef implements IComponentDef <LifeAuraComponent>
 		{
 			def = new EntityDef(id);
 			def.addDef( new LifecycleDef( lifeDuration ));
-			def.addDef( new SpatialDef(0, 0, 0, 0) );
+			def.addDef( new SpatialDef(0, 0, 0, 0, 0) );
 			def.addDef( movementDef );
 			def.addDef( renderingDef );
 			this.sizeDist = sizeDist;

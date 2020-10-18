@@ -10,17 +10,21 @@ import game.world.Level;
 
 public class AnchorDef implements ISpatialDef<AnchorComponent>
 {
-	public float x, y, a, r;
+	public float x, y, z, a, r;
 
 	public EntityDef parent;
 
-	public AnchorDef( final EntityDef parent, final float x, final float y, final float a, final float r )
+	public AnchorDef( final EntityDef parent, final float x, final float y, final float z, final float a, final float r )
 	{
 		super();
 		this.x = x;
 		this.y = y;
+		this.z = z;
 		this.a = a;
 		this.r = r;
+		
+		if(!parent.hasDescendants())
+			throw new IllegalArgumentException("Parent entity is not defined to have descendants");
 
 		this.parent = parent;
 	}
@@ -62,6 +66,11 @@ public class AnchorDef implements ISpatialDef<AnchorComponent>
 	{
 		return y;
 	}
+	@Override
+	public float z()
+	{
+		return z;
+	}
 
 	@Override
 	public float a()
@@ -85,6 +94,11 @@ public class AnchorDef implements ISpatialDef<AnchorComponent>
 	public void y( final float y )
 	{
 		this.y = y;
+	}
+	@Override
+	public void z( final float z )
+	{
+		this.z = z;
 	}
 
 	@Override

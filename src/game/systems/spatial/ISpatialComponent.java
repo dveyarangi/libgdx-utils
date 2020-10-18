@@ -25,6 +25,9 @@ public interface ISpatialComponent extends Component, Poolable
 
 	/** gets y coordinate */
 	public abstract float y();
+	
+	/** gets z coordinate */
+	public abstract float z();
 
 	/** gets angle */
 	public abstract float a();
@@ -45,6 +48,9 @@ public interface ISpatialComponent extends Component, Poolable
 	public abstract void x( float x );
 	/** sets y coordinate */
 	public abstract void y( float y );
+	/** sets y coordinate */
+	public abstract void z( float z );
+	
 	/** moves the entity to specified position */
 	public abstract void transpose( float x, float y );
 

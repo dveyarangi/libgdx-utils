@@ -26,11 +26,13 @@ public class SpatialComponent implements ISpatialComponent
 	 * Unit coordinates
 	 */
 	private Vector2 pos = new Vector2();
+	
+	private float z;
 
 	/**
 	 * Unit orientation
 	 */
-	protected float a;
+	protected float a = Float.NaN;
 
 	/**
 	 * Orientated space component
@@ -42,10 +44,11 @@ public class SpatialComponent implements ISpatialComponent
 	 */
 	private float r;
 	
-	@Getter @Setter private boolean isChanged = false;
+	@Getter @Setter private boolean isChanged = true;
 
 	@Override public float x() { return pos.x; }
 	@Override public float y() { return pos.y; }
+	@Override public float z() { return z; }
 	@Override public float a() { return a; }
 	@Override public float u() { return uv.x; }
 	@Override public float v() { return uv.y; }
@@ -68,6 +71,15 @@ public class SpatialComponent implements ISpatialComponent
 		{
 			isChanged = true;
 			this.pos.y = y;
+		}
+	}
+	@Override public void z( float z ) 
+	{ 
+		assert !Float.isNaN(z);
+		if( !Equals.eq(this.pos.y, z ))
+		{
+			isChanged = true;
+			this.pos.y = z;
 		}
 	}
 
