@@ -80,7 +80,7 @@ public abstract class WorldScreen<G extends AbstractGame> extends AbstractScreen
 		// this provides entity-entity and UI-entity interaction methods
 		//
 		Debug.startTiming("level creation");
-		LevelDef def = createLevel(progress);
+		LevelDef def = createLevel(progress.subprogress(0.8f));
 		Debug.stopTiming("level creation");
 		
 
@@ -121,8 +121,10 @@ public abstract class WorldScreen<G extends AbstractGame> extends AbstractScreen
 		gameSetup = new GameboardModules(factory, def, environment, worldCameraProvider);
 		extendModules(gameSetup);
 		
+
 		progress.update(1, "Populating world...");
 		progress.setFinished(true);
+
 
 	}
 	
@@ -132,12 +134,11 @@ public abstract class WorldScreen<G extends AbstractGame> extends AbstractScreen
 	{
 		super.show();
 
-
+		//progress.update(0.8f, "Populating world...");
 		level = new Level( gameSetup, options );
 
 		// TODO: remove
 		Debug.init(level);
-
 
 		// TODO: this is not the place
 		Gdx.gl.glEnable(GL20.GL_BLEND);
