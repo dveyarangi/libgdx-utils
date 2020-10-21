@@ -93,7 +93,7 @@ public class SpriteComponent implements IRenderingComponent
 		}*/
 		
 		// FOR DECAL BATCH:
-		switch(sdef.hAlign)
+		/*switch(sdef.hAlign)
 		{
 		case LEFT: dx = -0.5f*width+0.5f; break;
 		default: case CENTER:dx = 0; break;
@@ -105,9 +105,12 @@ public class SpriteComponent implements IRenderingComponent
 		case TOP: dy = height-0.5f; break;
 		default: case CENTER: dy =0; break;
 		case BOTTOM: dy = -0.5f*height+0.5f; break;
-		}		
+		}		*/
 		this.ox = sdef.ox; this.oy = sdef.oy; this.sx = sdef.w; this.sy = sdef.h;
 		
+		
+		this.dx = width*ox;
+		this.dy = height*oy;
 		priority = sdef.priority;
 		this.cid[0] = EntityRenderingSystem.DECAL_ID;
 		//boolean hasTransparency = false;

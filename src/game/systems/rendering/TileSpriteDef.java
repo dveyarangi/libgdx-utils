@@ -3,8 +3,6 @@ package game.systems.rendering;
 import com.badlogic.gdx.graphics.Color;
 
 import game.resources.TextureAtlasName;
-import game.util.rendering.HAlign;
-import game.util.rendering.VAlign;
 
 public class TileSpriteDef extends RendererDef<TileSpriteComponent>
 {
@@ -17,12 +15,11 @@ public class TileSpriteDef extends RendererDef<TileSpriteComponent>
 	
 
 	public float w = Float.NaN;
+	public float dw = 1;
 	public float priority = 0;
 	public float xOffset = 0, yOffset = 0;
 	public boolean xFlip = false;
 	public boolean yFlip = false;
-	public VAlign vAlign;
-	public HAlign hAlign;
 
 	public TileSpriteDef( TextureAtlasName atlas, String regionName )
 	{
@@ -31,7 +28,7 @@ public class TileSpriteDef extends RendererDef<TileSpriteComponent>
 		this.regionName = regionName;
 	}
 
-	public TileSpriteDef(TextureAtlasName atlas, String regionName, float x, float y, float priority, Color color, int tx, int ty, float w, float xOffset, float yOffset,boolean xFlip, boolean yFlip, HAlign hAlign, VAlign vAlign)
+	public TileSpriteDef(TextureAtlasName atlas, String regionName, float x, float y, float priority, Color color, int tx, int ty, float w, float dw, float xOffset, float yOffset,boolean xFlip, boolean yFlip)
 	{
 		super(TileSpriteComponent.class);
 		this.atlas = atlas;
@@ -47,8 +44,7 @@ public class TileSpriteDef extends RendererDef<TileSpriteComponent>
 		this.yOffset = yOffset;
 		this.xFlip = xFlip;
 		this.yFlip = yFlip;
-		this.hAlign = hAlign;
-		this.vAlign = vAlign;
+
 	}
 	
 }

@@ -1,8 +1,5 @@
 package game.systems.rendering;
 
-import game.util.rendering.HAlign;
-import game.util.rendering.VAlign;
-
 public abstract class SpriteDef  extends RendererDef<SpriteComponent>
 {
 	public float priority = Float.NaN;
@@ -12,10 +9,9 @@ public abstract class SpriteDef  extends RendererDef<SpriteComponent>
 	public float h = Float.NaN;
 	public boolean xFlip = false;
 	public boolean yFlip = false;
-	public HAlign hAlign = HAlign.CENTER;
-	public VAlign vAlign = VAlign.CENTER;
+
 	
-	public SpriteDef(float priority, float ox, float oy, float w, float h, boolean xFlip, boolean yFlip, HAlign hAlign, VAlign vAlign)
+	public SpriteDef(float priority, float ox, float oy, float w, float h, boolean xFlip, boolean yFlip)
 	{
 		super(SpriteComponent.class);
 		this.priority = priority;
@@ -25,7 +21,6 @@ public abstract class SpriteDef  extends RendererDef<SpriteComponent>
 		this.h = h;
 		this.xFlip = xFlip;
 		this.yFlip = yFlip;
-		this.hAlign = hAlign;
-		this.vAlign = vAlign;
+
 	}
 }

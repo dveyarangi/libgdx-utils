@@ -29,6 +29,11 @@ public class TileSpriteComponent implements IRenderingComponent
 
 	public TileSpritesRenderer renderer;
 
+	/**
+	 * Size scale
+	 */
+	float dw = 1;
+
 
 	public static TileSpriteComponent get( Entity entity )
 	{
@@ -68,7 +73,7 @@ public class TileSpriteComponent implements IRenderingComponent
 		default: case CENTER:dx = 0.5f*width; break;
 		case RIGHT: dx = width-0.5f; break;
 		}*/
-		dx = 0.5f*width - def.xOffset;
+		dx = (0.5f - def.xOffset)*width;
 	
 		/*switch(def.vAlign)
 		{
@@ -76,7 +81,10 @@ public class TileSpriteComponent implements IRenderingComponent
 		default: case CENTER: dy = 0.5f*height; break;
 		case BOTTOM: dy =  0.5f; break;
 		}*/
-		dy = 0.5f*height - def.yOffset;
+		dy = (0.5f - def.yOffset)*height;
+		
+		this.dw = def.dw;
+
 	}
 
 	@Override
@@ -84,6 +92,17 @@ public class TileSpriteComponent implements IRenderingComponent
 	{
 		// TODO Auto-generated method stub
 		
+	}
+	
+	public void scale(float dw)
+	{
+		this.dw = dw;
+		
+		dx = (0.5f - def.xOffset)*dw*width;
+		
+		dy = (0.5f - def.yOffset)*dw*height;
+		
+		renderer.entityUpdated(this);
 	}
 
 	public void setRegion(TextureRegion region)

@@ -128,7 +128,7 @@ public class TileSpritesRenderer extends EntitySystem implements EntityListener,
 		//z = -ty;
 		int vidx = 0;
 		buffer[vidx++] = x;
-		buffer[vidx++] = y+sprite.height;
+		buffer[vidx++] = y+sprite.dw*sprite.height;
 		buffer[vidx++] = z;
 		buffer[vidx++] = clear ? 0 : sprite.region.getU();
 		buffer[vidx++] = clear ? 0 : sprite.region.getV();
@@ -157,8 +157,8 @@ public class TileSpritesRenderer extends EntitySystem implements EntityListener,
 		buffer[vidx++] = sprite.def.color.b;
 		buffer[vidx++] = clear ? 0 : 1;	
 		
-		buffer[vidx++] = x+sprite.width;
-		buffer[vidx++] = y+sprite.height;
+		buffer[vidx++] = x+sprite.dw*sprite.width;
+		buffer[vidx++] = y+sprite.dw*sprite.height;
 		buffer[vidx++] = z;
 		buffer[vidx++] = clear ? 0 : sprite.region.getU2();
 		buffer[vidx++] = clear ? 0 : sprite.region.getV();
@@ -172,7 +172,7 @@ public class TileSpritesRenderer extends EntitySystem implements EntityListener,
 		buffer[vidx++] = sprite.def.color.b;
 		buffer[vidx++] = clear ? 0 : 1;
 		
-		buffer[vidx++] = x+sprite.width;
+		buffer[vidx++] = x+sprite.dw*sprite.width;
 		buffer[vidx++] = y;
 		buffer[vidx++] = z;
 		buffer[vidx++] = clear ? 0 : sprite.region.getU2();
@@ -201,7 +201,7 @@ public class TileSpritesRenderer extends EntitySystem implements EntityListener,
 		TileMultiSpriteComponent tileMultiSprite = entity.getComponent( TileMultiSpriteComponent.class );
 		if( tileMultiSprite != null )
 		{
-			for(int i = 0; i < tileMultiSprite.sprites.size(); i ++)
+			for(int i = 0; i < tileMultiSprite.sprites.size; i ++)
 			{
 				TileSpriteComponent sprite = tileMultiSprite.sprites.get(i);
 				updateSprite( sprite);
@@ -269,7 +269,7 @@ public class TileSpritesRenderer extends EntitySystem implements EntityListener,
 		TileMultiSpriteComponent tileMultiSprite = entity.getComponent( TileMultiSpriteComponent.class );
 		if( tileMultiSprite != null )
 		{
-			for(int i = 0; i < tileMultiSprite.sprites.size(); i ++)
+			for(int i = 0; i < tileMultiSprite.sprites.size; i ++)
 			{
 				TileSpriteComponent sprite = tileMultiSprite.sprites.get(i);
 				removeSprite(sprite);

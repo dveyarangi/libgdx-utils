@@ -1,9 +1,7 @@
 package game.systems.rendering;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.badlogic.ashley.core.Entity;
+import com.badlogic.gdx.utils.Array;
 
 import game.systems.IComponentDef;
 import game.world.Level;
@@ -11,7 +9,7 @@ import game.world.Level;
 public class TileMultiSpriteComponent  implements IRenderingComponent
 {
 	TileMultiSpriteDef def;
-	List <TileSpriteComponent> sprites = new ArrayList <> ();
+	Array <TileSpriteComponent> sprites = new Array <> ();
 
 	@Override
 	public void init(Entity entity, IComponentDef<?> def, Level level)
@@ -46,5 +44,11 @@ public class TileMultiSpriteComponent  implements IRenderingComponent
 
 	@Override
 	public int[] cid() { return cid; }
+
+	public void scale(float size)
+	{
+		for(int idx = 0; idx < sprites.size; idx ++)
+			sprites.get(idx).scale(size);
+	}
 
 }
