@@ -19,6 +19,5 @@ public interface IOverlay<E>
 	 * @return
 	 */
 	public boolean useWorldCoordinates();
-	
-	public String toDesc();
+
 }

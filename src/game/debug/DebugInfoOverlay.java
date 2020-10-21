@@ -74,7 +74,7 @@ public class DebugInfoOverlay implements IOverlay
 				String key = Keys.toString(entry.key);
 
 				Debug.FONT.draw(sprites, " * " + key, 3, y);
-				Debug.FONT.draw(sprites, " - " + entry.value.overlay.toDesc(), 25, y);
+				Debug.FONT.draw(sprites, " - " + entry.value.name, 25, y);
 			}	        
 			sprites.end();
 		}
@@ -84,10 +84,5 @@ public class DebugInfoOverlay implements IOverlay
 	@Override
 	public boolean useWorldCoordinates() { return false; }
 
-	@Override
-	public String toDesc()
-	{
-		return "debug info";
-	}
 
 }

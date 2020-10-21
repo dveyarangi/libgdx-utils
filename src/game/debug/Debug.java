@@ -29,6 +29,7 @@ import game.systems.rendering.IRenderer;
 import game.systems.rendering.IRenderingComponent;
 import game.systems.rendering.OverlayRenderer;
 import game.world.Level;
+import lombok.AllArgsConstructor;
 import lombok.experimental.var;
 
 /**
@@ -40,7 +41,7 @@ public class Debug
 
 	public static final String TAG = "debug";
 
-	public static Debug debug;
+	public static Debug debug = new Debug();
 
 	public Level level;
 
@@ -61,12 +62,15 @@ public class Debug
 
 	//public ShapeRenderingContext projectedShapeRenderer;
 
+	@AllArgsConstructor
 	public static class OverlayBinding
 	{
+		int keyCode;
+		String name;
 		boolean isOn;
 		IOverlay overlay;
 
-		public OverlayBinding( IOverlay overlay )
+		/*public OverlayBinding( IOverlay overlay )
 		{
 			this(overlay, false);
 		}
@@ -75,7 +79,7 @@ public class Debug
 		{
 			this.overlay = overlay;
 			this.isOn = isOn;
-		}
+		}*/
 
 		public void toggle()
 		{
@@ -129,19 +133,18 @@ public class Debug
 	public static void init( final Level level)
 	{
 
-		debug = new Debug(level);
-		debug.setup();
+		debug.setup(level);
 	}
 
-	private Debug( final Level level )
+	private Debug(  )
+	{
+
+	}
+
+	public void setup(final Level level)
 	{
 
 		this.level = level;
-	}
-
-	public void setup()
-	{
-
 		levelRenderer = level.getEngine().getSystem(EntityRenderingSystem.class);
 
 		uiRenderer = new OverlayRenderer();
@@ -152,9 +155,8 @@ public class Debug
 		uiProcessor = inputController.getInputRegistry();
 
 		// coordinate grid:
-		this.addOverlay(Hotkeys.TOGGLE_COORDINATE_GRID,
-				new CoordinateGrid(level.getDef().getCenterX(), level.getDef().getCenterY(), level.def().getHalfWidth(), level.def().getHalfHeight(),
-						level.getModules().getCameraProvider())
+		this.addOverlay(Hotkeys.TOGGLE_COORDINATE_GRID, "Coordinate Grid",
+				new CoordinateGrid(level.getDef().getCenterX(), level.getDef().getCenterY(), level.def().getHalfWidth(), level.def().getHalfHeight())
 				);
 
 		// navigation mesh
@@ -173,25 +175,38 @@ public class Debug
 		 
 		//this.addOverlay(Hotkeys.TOGGLE_FACTION_COLORS, new UnitSymbol());
 
-		this.addOverlay(Hotkeys.TOGGLE_BOX2D_DEBUG, new IOverlay() {
-			
-			
+		this.addOverlay(Hotkeys.TOGGLE_BOX2D_DEBUG, "Physics Debug", new WorldOverlay() {
 			
 			@Override
 			public void draw( IRenderer renderer )
 			{
-				level.getModules().getEnvironment().debugDraw(level.getModules().getCameraProvider().getCamera().combined);
+				level.getModules().getEnvironment().debugDraw(cameraProvider.getCamera().combined);
 			}
-
-			@Override public boolean useWorldCoordinates() { return true; }
-
-			@Override public String toDesc() { return "physics debug"; }
 
 		});
 		
 		// NOTE: This should be added last to properly display overlay key bindings
-		this.addOverlay(Hotkeys.TOGGLE_FPS, new DebugInfoOverlay(debugOverlays));
+		this.addOverlay(Hotkeys.TOGGLE_FPS, "Debug Info", new DebugInfoOverlay(debugOverlays));
+		
+		for(OverlayBinding binding : debugOverlays.values())
+		{
+			if(binding.overlay instanceof WorldOverlay)
+			{
+				((WorldOverlay) binding.overlay).setCameraProvider(level.getModules().getCameraProvider());
+			}
+			
+			uiProcessor.registerAction(binding.keyCode, new InputAction() {
+				@Override
+				public void execute( final InputContext context )
+				{
+					binding.toggle();
+				}
+			});
+		}
 
+		
+		
+		
 	}
 
 
@@ -323,17 +338,11 @@ public class Debug
 		return true;
 	}
 
-	public void addOverlay(  int keyCode, final IOverlay overlay )
+	public void addOverlay(  int keyCode, String name, final IOverlay overlay )
 	{
-		final OverlayBinding binding = new OverlayBinding( overlay );
+		final OverlayBinding binding = new OverlayBinding( keyCode, name, false, overlay );
 		debugOverlays.put( keyCode, binding );
-		uiProcessor.registerAction(keyCode, new InputAction() {
-			@Override
-			public void execute( final InputContext context )
-			{
-				binding.toggle();
-			}
-		});
+
 	}
 
 	public static final int FACTION_OID = -10;

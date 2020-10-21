@@ -82,7 +82,5 @@ public class NavMeshOverlay implements IOverlay<NavMesh>
 		return true;
 	}
 
-	@Override
-	public String toDesc() { return "navigation mesh"; }
 
 }

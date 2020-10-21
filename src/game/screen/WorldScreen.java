@@ -108,7 +108,7 @@ public abstract class WorldScreen<G extends AbstractGame> extends AbstractScreen
 		{
 		default:
 		case ORTHOGONAL:
-			worldCameraProvider= new OrthoCameraProvider(def.getWidth(), def.getHeight(),
+			worldCameraProvider = new OrthoCameraProvider(def.getWidth(), def.getHeight(),
 					settings.getCameraPosition().x, settings.getCameraPosition().y, settings.getInitZoom());
 			break;
 		case PERSPECTIVE:

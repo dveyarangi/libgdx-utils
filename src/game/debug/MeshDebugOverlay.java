@@ -43,7 +43,5 @@ public class MeshDebugOverlay implements IOverlay
 
 	@Override public boolean useWorldCoordinates() { return true; }
 
-	@Override
-	public String toDesc() { return "mesh debug"; }
 
 }

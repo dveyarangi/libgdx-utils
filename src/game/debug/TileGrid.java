@@ -21,25 +21,35 @@ import game.util.FastMath;
  * @author dveyarangi
  *
  */
-public class CoordinateGrid extends WorldOverlay
+public abstract class TileGrid extends WorldOverlay
 {
-	private final float cx, cy;
-	private final float halfWidth;
-	private final float halfHeight;
-
-	public CoordinateGrid( float cx, float cy, float halfWidth, float halfHeight)
+	private final float width;
+	private final float height;
+	private final float tileWidth = 1; 
+	
+	public TileGrid( int width, int height )
 	{
-		this.cx = cx;
-		this.cy = cy;
-		this.halfWidth = halfWidth;
-		this.halfHeight = halfHeight;
+		this.width = width;
+		this.height = height;
 	}
+
+	/**
+	 * Provide color for the tile
+	 * Returns color.a == 0 if the tile is to be omitted
+	 * @param x
+	 * @param y
+	 * @param out color output buffer
+	 * @return
+	 */
+	protected abstract Color getColor(int x, int y, Color out);
 
 	Color backColor = new Color(0x3D75A00A);
 	Color lineColor = new Color(0x5EB2F233);
 
 	// Color lineColor = new Color( 0x8DA1AA0A );
 
+	Color color = new Color();
+	
 	@Override
 	public void draw( final IRenderer renderer )
 	{
@@ -54,15 +64,6 @@ public class CoordinateGrid extends WorldOverlay
 
 		Camera camera = cameraProvider.getCamera();
 
-		// TODO: dont be lazy, use sqrt
-		float order;
-		for( order = 2048f; order > 0.000001; order /= 2f )
-		{
-			if( Math.round(2*order / cameraProvider.zoom()) == 0 )
-			{
-				break;
-			}
-		}
 
 		// lower left screen corner in world coordinates
 		float screenMinX = camera.position.x - camera.viewportWidth / 2 * cameraProvider.zoom();
@@ -70,40 +71,29 @@ public class CoordinateGrid extends WorldOverlay
 		// higher right screen corner in world coordinates
 		float screenMaxX = camera.position.x + camera.viewportWidth / 2 * cameraProvider.zoom();
 		float screenMaxY = camera.position.y + camera.viewportHeight / 2 * cameraProvider.zoom();
+		
+		int rminx = FastMath.floor(Math.max(0, screenMinX));
+		int rmaxx = FastMath.ceil(Math.min(width, screenMaxX));
+		int rminy = FastMath.floor(Math.max(0, screenMinY));
+		int rmaxy = FastMath.ceil(Math.min(height, screenMaxY));
 
 		int steps = 8;
-		shape.set(ShapeType.Line);
+		shape.set(ShapeType.Filled);
 		shape.setColor(lineColor);
-
-		for( int i = 1; i <= steps; i++ )
-		{
-
-			int magnitude = (int) Math.pow(2, i);
-			float step = order * magnitude * 16;
+		
+		
+		for(int x = rminx; x < rmaxx; x ++)
+			for(int y = rminy; y < rmaxy; y ++)
+			{
+				color = getColor(x, y, color);
+				if(color.a == 0)
+					continue;
+				
+				shape.setColor(color.r, color.g, color.b, color.a);
+				shape.rect(x, y, 1, 1);
 			
-			float rminx = Math.max(cx-halfWidth, screenMinX);
-			float rmaxx = Math.min(cx+halfWidth, screenMaxX);
-			float rminy = Math.max(cy-halfHeight, screenMinY);
-			float rmaxy = Math.min(cy+halfHeight, screenMaxY);
-			float minx = FastMath.toGrid(rminx, step, cx);
-			float maxx = FastMath.toGrid(rmaxx, step, cx);
-			float miny = FastMath.toGrid(rminy, step, cy);
-			float maxy = FastMath.toGrid(rmaxy, step, cy);
-
-			for( float x = minx; x <= maxx; x += step )
-			{
-				if( x >= rminx && x <= rmaxx )
-					shape.line(x, rminy, x, rmaxy);
 			}
-			for( float y = miny; y <= maxy; y += step )
-			{
-				if( y >= rminy && y <= rmaxy )
-				shape.line(rminx, y, rmaxx, y);
-			}
-		}
 
-		shape.setColor(lineColor.r, lineColor.g, lineColor.b, 1f);
-		shape.rect(cx-halfWidth, cy-halfHeight, 2 * halfWidth, 2 * halfHeight);
 
 		shape.end();
 
