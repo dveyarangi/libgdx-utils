@@ -21,6 +21,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 
+import game.systems.IComponentDef;
 import game.util.colors.ColormapConf;
 import game.util.colors.Colormaps;
 
@@ -116,6 +117,9 @@ public class JsonLoader extends
 
 		});			
 		
+		// allows to load lists of component defs
+		preJsonBuilder.registerTypeAdapter(IComponentDef.class, new JsonInterfaceAdapter<IComponentDef<?>>());
+		
 		if( customDeserializers != null)
 			for(Class type : customDeserializers.keySet() )
 				preJsonBuilder.registerTypeAdapter(type, customDeserializers.get(type));
@@ -155,6 +159,9 @@ public class JsonLoader extends
 			}
 
 		});		
+		
+		postJsonBuilder.registerTypeAdapter(IComponentDef.class, new JsonInterfaceAdapter<IComponentDef<?>>());
+		
 		if( customDeserializers != null)
 			for(Class type : customDeserializers.keySet() )
 				postJsonBuilder.registerTypeAdapter(type, customDeserializers.get(type));
