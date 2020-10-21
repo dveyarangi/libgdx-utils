@@ -1,6 +1,5 @@
 package game.util.textures;
 
-import game.util.textures.TileQuery.Treshold;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;

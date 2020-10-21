@@ -20,4 +20,7 @@ public interface IComponentDef<C extends Component>
 	 * @param level
 	 */
 	public void initComponent( C component, Entity entity, Level level );
+	
+	
+	//public IComponentDef<C> copy();
 }

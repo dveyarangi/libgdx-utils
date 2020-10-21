@@ -8,6 +8,7 @@ import com.badlogic.gdx.graphics.Color;
 
 import game.util.colors.ColormapConf.ColoredValue;
 import lombok.Getter;
+import yarangi.math.Pair;
 
 /**
  * Maps float values to colors.
@@ -49,6 +50,16 @@ public class Colormap
 	{
 		this( min, max, conf.colors );
 		this.conf = conf;
+	}
+	/**
+	 * @param min
+	 * @param max
+	 * @param isSmooth
+	 * @param colors
+	 */
+	public Colormap(Pair<Float> minmax, ColormapConf conf)
+	{
+		this( minmax.first(), minmax.second(), conf );
 	}
 	
 	public Colormap(float min, float max, List <ColoredValue> colors)

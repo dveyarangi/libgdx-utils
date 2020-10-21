@@ -12,8 +12,6 @@ import com.badlogic.gdx.utils.Pool.Poolable;
  */
 public class LifecycleComponent implements Component, Poolable
 {
-
-
 	/**
 	 * Entity group
 	 */
@@ -69,6 +67,7 @@ public class LifecycleComponent implements Component, Poolable
 	{
 		this.isAlive = false;
 	}
+
 
 	@Override
 	public void reset()
