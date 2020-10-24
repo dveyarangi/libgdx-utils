@@ -33,11 +33,21 @@ public class TileSpritesRenderer extends EntitySystem implements EntityListener,
 
 	Camera cam;
 	
+	boolean [] isOn;
 	TileMultiMesh [] meshes;
 	ObjectIntMap<String> meshIndices = new ObjectIntMap<> ();
 
 	public TileSpritesRenderer()
 	{
+	}
+	
+	
+	public void toggleMeshVisibility(String meshName)
+	{
+		int idx = meshIndices.get(meshName, -1);
+		assert idx >= 0;
+		
+		isOn[idx] = !isOn[idx];
 	}
 	
 	@Override
@@ -59,6 +69,7 @@ public class TileSpritesRenderer extends EntitySystem implements EntityListener,
 		textures = new Texture[meshNum];
 		shaders = new ShaderProgram[meshNum];
 		meshes = new TileMultiMesh[meshNum];
+		isOn = new boolean[meshNum];
 		for(int idx = 0; idx < meshNum; idx ++)
 		{
 			MeshDef meshDef = rendererDef.meshes[idx];
@@ -66,6 +77,8 @@ public class TileSpritesRenderer extends EntitySystem implements EntityListener,
 			TextureAtlas atlas = ResourceFactory.getTextureAtlas(meshDef.textureName);
 			textures[idx] = atlas.getTextures().iterator().next();
 			meshIndices.put(meshDef.textureName, idx);
+			
+			isOn[idx] = true;
 			//textures[idx].setWrap(TextureWrap.Repeat, TextureWrap.Repeat);
 			//textures[idx].setFilter(TextureFilter.MipMap, TextureFilter.MipMap);
 		}
@@ -212,9 +225,6 @@ public class TileSpritesRenderer extends EntitySystem implements EntityListener,
 
 	public void updateSprite(TileSpriteComponent tileSprite)
 	{
-		tileSprite.renderer = this;
-		
-		//final SpatialComponent spatial = entity.getComponent( SpatialComponent.class );
 		
 		int meshIndex = meshIndices.get(tileSprite.def.atlas.getName(), -1);
 		if( meshIndex < 0)
@@ -354,6 +364,8 @@ public class TileSpritesRenderer extends EntitySystem implements EntityListener,
 		//ctx.getTexture().bind();
 		for(int tidx = 0; tidx < textures.length; tidx ++)
 		{
+			if( ! isOn[tidx] )
+				continue;
 			textures[tidx].bind();
 	
 			ShaderProgram shader = shaders[tidx];

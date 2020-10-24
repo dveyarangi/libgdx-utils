@@ -2,6 +2,7 @@ package game.systems.rendering;
 
 import com.badlogic.ashley.core.ComponentMapper;
 import com.badlogic.ashley.core.Entity;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
@@ -60,6 +61,8 @@ public class TileSpriteComponent implements IRenderingComponent
 		region.setRegion(origRegion);
 		region.flip(def.xFlip, def.yFlip);
 		
+		this.renderer = level.getEngine().getSystem(TileSpritesRenderer.class);
+		
 		
 		float rw = region.getRegionWidth();
 		float rh = region.getRegionHeight();
@@ -102,14 +105,24 @@ public class TileSpriteComponent implements IRenderingComponent
 		
 		dy = (0.5f - def.yOffset)*dw*height;
 		
-		renderer.entityUpdated(this);
+		if( renderer != null)
+			renderer.entityUpdated(this);
+	}
+	
+	public void setColor(Color color)
+	{
+		this.def.color.set(color);
+		
+		if( renderer != null)
+			renderer.entityUpdated(this);
 	}
 
 	public void setRegion(TextureRegion region)
 	{
 		this.region.setRegion(region);;
 		
-		renderer.entityUpdated(this);
+		if( renderer != null)
+			renderer.entityUpdated(this);
 	}
 
 	public void directRight()

@@ -17,19 +17,21 @@ public class TileSpritesRendererDef extends SystemDef <TileSpritesRenderer>  imp
 	
 	public TileSpritesRendererDef()
 	{
-		super(TileSpritesRenderer.class);
+		super();
+		
+		this.system = new TileSpritesRenderer();
+		
 	}
 	
 	public void initSystem( Level level, TileSpritesRenderer system )
 	{
 		system.cam = level.getModules().getCameraProvider().getCamera();
 		system.rendererDef = this;
-
+		
 	}
 
 	@Override
-	public Class<TileSpritesRenderer> getComponentClass()
-	{
+	public Class<TileSpritesRenderer> getComponentClass() {
 		return TileSpritesRenderer.class;
 	}
 

@@ -1,6 +1,7 @@
 package game.systems.rendering;
 
 import com.badlogic.ashley.core.Entity;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.utils.Array;
 
 import game.systems.IComponentDef;
@@ -49,6 +50,12 @@ public class TileMultiSpriteComponent  implements IRenderingComponent
 	{
 		for(int idx = 0; idx < sprites.size; idx ++)
 			sprites.get(idx).scale(size);
+	}
+
+	public void setColor(Color color)
+	{
+		for(int idx = 0; idx < sprites.size; idx ++)
+			sprites.get(idx).setColor(color);
 	}
 
 }
