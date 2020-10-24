@@ -32,6 +32,8 @@ public abstract class TileGrid extends WorldOverlay
 		this.width = width;
 		this.height = height;
 	}
+	
+	protected abstract float getValue(int x, int y);
 
 	/**
 	 * Provide color for the tile

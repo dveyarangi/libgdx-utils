@@ -31,4 +31,11 @@ public class HeatmapOverlay extends TileGrid
 		return out;
 	}
 
+	@Override
+	protected float getValue(int x, int y)
+	{
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
 }
