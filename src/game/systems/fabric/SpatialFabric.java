@@ -39,8 +39,6 @@ public class SpatialFabric extends EntitySystem implements IFabric, EntityListen
 	@Setter private IEntityFilter entityFilter;
 
 	
-	//Pool pool = 
-	
 	public SpatialFabric(int width, int height)
 	{
 		space = new SpatialHashMap<SpatialIndexComponent>("spatial-index", width*height, 1, width, height);

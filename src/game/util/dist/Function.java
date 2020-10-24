@@ -8,17 +8,21 @@ public interface Function
 
 	public static class Gaussian implements Function
 	{
-		float sigma;
+		private float sigma;
+		private float sigmaSqr;
+		private float mean;
 
-		public Gaussian( float sigma )
+		public Gaussian( float mean, float sigma )
 		{
+			this.mean = mean;
 			this.sigma = sigma;
+			this.sigmaSqr = sigma*sigma;
 		}
 
 		@Override
-		public float eval( float mean )
+		public float eval( float x )
 		{
-			return RandomUtil.STD(mean, sigma);
+			return mean + (float) (Math.exp( x * x / ( -2 * sigmaSqr ) ) / ( Math.sqrt( 2 * Math.PI ) * sigma ));
 		}
 	}
 

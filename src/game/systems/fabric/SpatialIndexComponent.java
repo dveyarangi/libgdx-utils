@@ -32,7 +32,7 @@ public class SpatialIndexComponent implements ISpatialObject, Component, Poolabl
 	{
 		ISpatialComponent spatial = ISpatialComponent.get(entity);
 		oldArea.paste(area);
-		area.move(spatial.x(), spatial.y());
+			area.move(spatial.x(), spatial.y());
 		area.fitTo(spatial.r());
 	}
 	@Override

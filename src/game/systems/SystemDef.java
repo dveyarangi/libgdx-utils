@@ -4,14 +4,15 @@ import com.badlogic.ashley.core.EntitySystem;
 
 import game.systems.rendering.ISystemRenderer;
 import game.world.Level;
+import lombok.Getter;
 
 public class SystemDef <S extends EntitySystem>
 {
-	private Class <S> systemClass;
+	protected Class <S> systemClass;
 
-	private S system;
+	@Getter protected S system;
 
-	private ISystemRenderer renderer;
+	protected ISystemRenderer renderer;
 
 	public SystemDef()
 	{
