@@ -76,10 +76,10 @@ public class SpatialComponent implements ISpatialComponent
 	@Override public void z( float z ) 
 	{ 
 		assert !Float.isNaN(z);
-		if( !Equals.eq(this.pos.y, z ))
+		if( !Equals.eq(this.z, z ))
 		{
 			isChanged = true;
-			this.pos.y = z;
+			this.z = z;
 		}
 	}
 

@@ -31,7 +31,8 @@ public class SpriteComponent implements IRenderingComponent
 	protected int [] cid;
 	
 	
-	protected Decal decal = Decal.newDecal(this.sx, this.sy, this.region, true);
+	protected Decal decal = Decal.newDecal(this.sx, this.sy, this.region, false);
+	@Getter private float dz;
 
 
 	public SpriteComponent()
@@ -111,11 +112,13 @@ public class SpriteComponent implements IRenderingComponent
 		
 		this.dx = width*ox;
 		this.dy = height*oy;
+		this.dz = sdef.zOffset;
 		priority = sdef.priority;
 		this.cid[0] = EntityRenderingSystem.DECAL_ID;
 		//boolean hasTransparency = false;
 		//this.decal.setPosition(spatial.x()-dx, spatial.y()-dy, -50);
 		this.decal.setDimensions(this.sx, this.sy);
+		
 		this.decal.setTextureRegion(region);
 
 
@@ -166,7 +169,7 @@ public class SpriteComponent implements IRenderingComponent
 					);
 		}*/
 		renderer.decals();
-		decal.setPosition(spatial.x()-dx, spatial.y()-dy, priority);
+		decal.setPosition(spatial.x()-dx, spatial.y()-dy, spatial.z()-dz);
 
 		renderer.decals().add(decal);
 

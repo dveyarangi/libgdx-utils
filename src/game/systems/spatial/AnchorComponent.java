@@ -1,10 +1,10 @@
 package game.systems.spatial;
 
-import game.util.Angles;
-
 import com.badlogic.ashley.core.ComponentMapper;
 import com.badlogic.ashley.core.ComponentType;
 import com.badlogic.ashley.core.Entity;
+
+import game.util.Angles;
 
 /**
  * Entity positional component, anchored relatively to some parent's spatial
@@ -20,12 +20,13 @@ public class AnchorComponent extends SpatialComponent
 	public Entity parent;
 	public ISpatialComponent parentSpatial;
 
-	public void setParent( float x, float y, float a, float r, Entity parent )
+	public void setParent( float x, float y, float z, float a, float r, Entity parent )
 	{
 		this.parent = parent;
 		this.parentSpatial = parent.getComponent(ISpatialComponent.class);
 		this.x(x);
 		this.y(y);
+		this.z(z);
 		this.a(a);
 		this.r(r);
 	}
@@ -63,6 +64,11 @@ public class AnchorComponent extends SpatialComponent
 	public float y()
 	{
 		return parentSpatial.y() + parentSpatial.v() * super.x() + parentSpatial.u() * super.y();
+	}
+	
+	public float z()
+	{
+		return parentSpatial.z() + super.z();
 	}
 
 	/**
