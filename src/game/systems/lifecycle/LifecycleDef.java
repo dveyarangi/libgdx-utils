@@ -5,6 +5,7 @@ import com.badlogic.ashley.core.Entity;
 import game.systems.IComponentDef;
 import game.world.Level;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 /**
  * Holds definitions for entity type and life length.
@@ -20,6 +21,8 @@ public class LifecycleDef implements IComponentDef <LifecycleComponent>
 	 * Total life duration.
 	 */
 	public float lifeDuration = Float.POSITIVE_INFINITY;
+	
+	@Setter private DeathHook deathHook;
 
 	public LifecycleDef( float lifeDuration )
 	{
@@ -46,6 +49,7 @@ public class LifecycleDef implements IComponentDef <LifecycleComponent>
 	{
 		component.lifelen = lifeDuration;
 		component.type = type;
+		component.deathHook = deathHook;
 	}
 
 }

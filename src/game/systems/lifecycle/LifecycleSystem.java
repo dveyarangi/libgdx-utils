@@ -203,6 +203,9 @@ public class LifecycleSystem extends EntitySystem implements EntityListener
 			if( aura != null)
 				configurer.addEntity(aura.createDeathDef( corpse ));
 
+			LifecycleComponent lifecycle = LifecycleComponent.get(corpse);
+			if( lifecycle.deathHook != null )
+				lifecycle.deathHook.entityDead( corpse );
 
 			// thats it:
 			getEngine().removeEntity(corpse);
