@@ -118,6 +118,12 @@ public class Level extends EntitySystem
 		// lifecyctem works closely with units factory
 		engine.addSystem( new LifecycleSystem( unitsFactory ) );
 
+		////////////////////////////////////////////////////
+		// this system controls the physical environment and dispatches damage
+		// messages:
+		engine.addSystem( (EntitySystem) modules.getEnvironment() );
+
+		engine.addSystem( this.renderer );
 
 		////////////////////////////////////////////////////
 		// initalize and add a generic entity system from definitions:
@@ -131,12 +137,6 @@ public class Level extends EntitySystem
 				systemRenderers.add(systemRenderer);
 		}
 
-		////////////////////////////////////////////////////
-		// this system controls the physical environment and dispatches damage
-		// messages:
-		engine.addSystem( (EntitySystem) modules.getEnvironment() );
-
-		engine.addSystem( this.renderer );
 
 		unitsFactory.createUnits( def );
 
