@@ -21,7 +21,7 @@ public class LevelDef
 {
 	private String name;
 	
-	@Getter @Setter private int centerX, centerY;
+	@Getter @Setter private float centerX, centerY;
 
 	@Getter private int width, halfWidth;
 	@Getter private int height, halfHeight;
