@@ -57,6 +57,8 @@ public class TileSpriteComponent implements IRenderingComponent
 		
 		TextureAtlas atlas = ResourceFactory.getTextureAtlas(def.atlas.getName());
 		TextureRegion origRegion = atlas.findRegion(def.regionName);
+		if( origRegion == null )
+			throw new IllegalArgumentException("Cannot find region " + def.regionName + " in atlas " + def.atlas.getName());
 		
 		region.setRegion(origRegion);
 		region.flip(def.xFlip, def.yFlip);

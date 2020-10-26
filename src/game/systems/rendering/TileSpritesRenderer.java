@@ -352,12 +352,14 @@ public class TileSpritesRenderer extends EntitySystem implements EntityListener,
 	}
 
 	int [] cid = new int [] {};
+	private float time;
 	@Override
 	public int[] cid() { return cid; }
 
 	@Override
 	public void render(Entity entity, IRenderer renderer, IRenderingContext context, float deltaTime)
 	{
+		this.time += deltaTime;
 		Gdx.gl.glEnable(GL20.GL_DEPTH_TEST);
 		Gdx.gl.glDepthFunc(GL20.GL_LEQUAL);
 		//TextureRenderingContext ctx = (TextureRenderingContext)context;
@@ -370,7 +372,12 @@ public class TileSpritesRenderer extends EntitySystem implements EntityListener,
 	
 			ShaderProgram shader = shaders[tidx];
 			shader.begin();
-	
+			
+			
+			if( rendererDef.meshes[tidx].context != null)
+				rendererDef.meshes[tidx].context.updateShader(shader);
+
+
 			shader.setUniformMatrix("u_projTrans", cam.combined);
 			//		Color color1 = ceilingWallMesh.color1;
 			//		Color color2 = Color.BLACK;
@@ -382,7 +389,8 @@ public class TileSpritesRenderer extends EntitySystem implements EntityListener,
 				multimesh.getMeshes().get(midx).render( shader, GL20.GL_TRIANGLES );
 	
 			shader.end();
-	}	
+		}	
+		
 	}
 
 }

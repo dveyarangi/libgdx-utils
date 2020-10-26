@@ -1,6 +1,7 @@
 package game.systems.rendering;
 
 import com.badlogic.ashley.core.Entity;
+import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 
 import game.systems.IComponentDef;
 import game.systems.SystemDef;
@@ -47,7 +48,12 @@ public class TileSpritesRendererDef extends SystemDef <TileSpritesRenderer>  imp
 		@Getter String shaderName;
 		@Getter String textureName;
 		@Getter int unitsPerTile = 1;
+		@Getter ShaderContext context;
 		
+	}
+	
+	public static class ShaderContext {
+		public void updateShader(ShaderProgram shader) {}
 	}
 
 }

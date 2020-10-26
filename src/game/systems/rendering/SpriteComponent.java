@@ -112,7 +112,7 @@ public class SpriteComponent implements IRenderingComponent
 		
 		this.dx = width*ox;
 		this.dy = height*oy;
-		this.dz = sdef.zOffset;
+		this.dz = width*sdef.zOffset;
 		priority = sdef.priority;
 		this.cid[0] = EntityRenderingSystem.DECAL_ID;
 		//boolean hasTransparency = false;
