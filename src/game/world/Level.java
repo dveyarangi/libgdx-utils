@@ -108,12 +108,6 @@ public class Level extends EntitySystem
 
 		// creating entity control systems:
 
-		// ////////////////////////////////////////////////////
-		Renderer rend = new Renderer( modules.getCameraProvider(), graphicOptions );
-		// creating entity rendering system:
-		this.renderer = new EntityRenderingSystem( rend,
-				modules.getGameFactory(), modules.getRendererTypes() );
-
 		////////////////////////////////////////////////////
 		// lifecyctem works closely with units factory
 		engine.addSystem( new LifecycleSystem( unitsFactory ) );
@@ -122,8 +116,6 @@ public class Level extends EntitySystem
 		// this system controls the physical environment and dispatches damage
 		// messages:
 		engine.addSystem( (EntitySystem) modules.getEnvironment() );
-
-		engine.addSystem( this.renderer );
 
 		////////////////////////////////////////////////////
 		// initalize and add a generic entity system from definitions:
@@ -136,6 +128,14 @@ public class Level extends EntitySystem
 			if( systemRenderer != null )
 				systemRenderers.add(systemRenderer);
 		}
+
+		// ////////////////////////////////////////////////////
+		Renderer rend = new Renderer( modules.getCameraProvider(), graphicOptions );
+		// creating entity rendering system:
+		this.renderer = new EntityRenderingSystem( rend,
+				modules.getGameFactory(), modules.getRendererTypes() );
+
+		engine.addSystem( this.renderer );
 
 
 		unitsFactory.createUnits( def );
