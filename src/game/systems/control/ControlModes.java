@@ -12,6 +12,8 @@ import game.debug.Debug;
 import game.systems.order.ControlComponent;
 import game.systems.rendering.IRenderer;
 import game.world.Level;
+import lombok.Getter;
+import lombok.Setter;
 
 public class ControlModes extends EntitySystem
 {
@@ -19,6 +21,8 @@ public class ControlModes extends EntitySystem
 	private Map <String, IControlMode> controlModes;
 	private String currModeName;
 	private IControlMode currControlMode;
+	
+	@Getter @Setter private IEntityFilter pickFilter;
 
 	public ControlModes()
 	{

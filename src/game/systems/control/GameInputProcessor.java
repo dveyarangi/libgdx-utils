@@ -149,6 +149,11 @@ public class GameInputProcessor extends EntitySystem implements InputProcessor
 		 */
 		Gdx.input.setInputProcessor(inputMultiplexer);
 	}
+	
+	public void setPickFilter(IEntityFilter filter)
+	{
+		picker.setEntityFilter(filter);
+	}
 
 	/**
 	 * Updates controller state, - recalculate camera position - check units
@@ -161,6 +166,8 @@ public class GameInputProcessor extends EntitySystem implements InputProcessor
 	{
 		// advancing lifetime:
 		lifeTime += delta;
+		
+		setPickFilter(controlModes.getPickFilter());
 
 		uiProcessor.update(delta);
 		

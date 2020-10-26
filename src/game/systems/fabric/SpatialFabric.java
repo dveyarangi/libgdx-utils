@@ -7,14 +7,14 @@ import com.badlogic.ashley.core.EntityListener;
 import com.badlogic.ashley.core.EntitySystem;
 import com.badlogic.ashley.core.Family;
 import com.badlogic.ashley.utils.ImmutableArray;
+import com.badlogic.gdx.ai.msg.PriorityQueue;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.utils.ObjectSet;
-import com.badlogic.gdx.utils.PooledLinkedList;
 
 import game.systems.control.IEntityFilter;
+import game.systems.control.PickComponent;
 import game.systems.sensor.SensorComponent;
 import game.systems.spatial.ISpatialComponent;
-import game.world.Constants;
 import game.world.IFabric;
 import game.world.IPickProvider;
 import lombok.Setter;
@@ -112,7 +112,7 @@ public class SpatialFabric extends EntitySystem implements IFabric, EntityListen
 	
 	class PickProvider implements IPickProvider, ISpatialSensor<SpatialIndexComponent>
 	{
-		private PooledLinkedList<Entity> sensed = new PooledLinkedList<Entity>( Constants.SENSOR_POOL_SIZE );
+		private PriorityQueue<PickComponent> sensed = new PriorityQueue<>();
 		
 		private float pickRadius = 1;
 		private AABB cursor = AABB.createSquare(0, 0, 1, 0);
@@ -138,8 +138,7 @@ public class SpatialFabric extends EntitySystem implements IFabric, EntityListen
 			if( sensed.size() == 0)
 				return null;
 
-			sensed.iter();
-			return sensed.next();
+			return sensed.peek().getEntity();
 		}
 
 		@Override
@@ -147,8 +146,8 @@ public class SpatialFabric extends EntitySystem implements IFabric, EntityListen
 		{
 			if( entityFilter == null || entityFilter.accept(object.getEntity()))
 			{
-				sensed.add(object.getEntity());
-				return true;
+				sensed.add(object.getEntity().getComponent(PickComponent.class));
+				return false;
 			}
 			return false;
 		}
