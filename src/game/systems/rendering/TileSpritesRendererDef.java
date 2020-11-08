@@ -48,6 +48,7 @@ public class TileSpritesRendererDef extends SystemDef <TileSpritesRenderer>  imp
 		@Getter String shaderName;
 		@Getter String textureName;
 		@Getter int unitsPerTile = 1;
+		@Getter boolean isBlended;
 		@Getter ShaderContext context;
 		
 	}
