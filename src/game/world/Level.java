@@ -91,6 +91,10 @@ public class Level extends EntitySystem
 		engine.addSystem( this );
 		
 		
+		
+		
+		
+		
 	}
 
 	/**
@@ -117,6 +121,8 @@ public class Level extends EntitySystem
 		// messages:
 		engine.addSystem( (EntitySystem) modules.getEnvironment() );
 
+		
+		List <SimulationSystem> simSystems = new ArrayList <> ();
 		////////////////////////////////////////////////////
 		// initalize and add a generic entity system from definitions:
 		for(SystemDef systemDef : def.getSystemDefs())
@@ -124,6 +130,8 @@ public class Level extends EntitySystem
 			EntitySystem system = systemDef.createSystem();
 			systemDef.initSystem( this, system );
 			engine.addSystem( system );
+			if(system instanceof SimulationSystem)
+				simSystems.add((SimulationSystem) system);
 			ISystemRenderer systemRenderer = systemDef.createRenderer();
 			if( systemRenderer != null )
 				systemRenderers.add(systemRenderer);
@@ -139,6 +147,9 @@ public class Level extends EntitySystem
 
 
 		unitsFactory.createUnits( def );
+		
+		for(SimulationSystem simSystem : simSystems)
+			simSystem.simulate();
 
 		Debug.stopTiming("level initialization");
 
