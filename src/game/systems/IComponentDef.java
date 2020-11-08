@@ -7,10 +7,6 @@ import game.world.Level;
 
 public interface IComponentDef<C extends Component>
 {
-	/**
-	 * @return Class of the component defined here
-	 */
-	public Class<C> getComponentClass();
 
 	/**
 	 * Initialize the component from definitions.
@@ -22,5 +18,9 @@ public interface IComponentDef<C extends Component>
 	public void initComponent( C component, Entity entity, Level level );
 	
 	
+	/**
+	 * @return Class of the component defined here
+	 */
+	public Class<C> getComponentClass();
 	//public IComponentDef<C> copy();
 }
