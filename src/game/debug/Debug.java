@@ -18,7 +18,7 @@ import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.utils.IntMap;
 import com.badlogic.gdx.utils.IntMap.Entry;
 
-import game.systems.IDComponent;
+import game.systems.EntityDef;
 import game.systems.control.GameInputProcessor;
 import game.systems.control.Hotkeys;
 import game.systems.control.InputAction;
@@ -305,18 +305,18 @@ public class Debug
 	 */
 	public static boolean log( final String message )
 	{
-		log(3, DEBUG, message);
+		log(2, DEBUG, message);
 		return true;
 	}
 	
 	public static boolean warn( final String message )
 	{
-		log(3, WARN, message);
+		log(2, WARN, message);
 		return true;
 	}
 	public static boolean error( final String message )
 	{
-		log(3, ERROR, message);
+		log(2, ERROR, message);
 		return true;
 	}
 	
@@ -380,13 +380,13 @@ public class Debug
 			log("Entity: null");
 			return;
 		}
-		IDComponent id = entity.getComponent(IDComponent.class);
-		if( id == null)
+		EntityDef entityDef = entity.getComponent(EntityDef.class);
+		if( entityDef == null)
 		{
 			log("Entity: No id");
 			return;
 		}
 		
-		log("Entity: " + id);
+		log("Entity: " + entityDef.id);
 	}
 }
