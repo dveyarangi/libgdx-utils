@@ -17,8 +17,9 @@ public class TileMultiSpriteComponent  implements IRenderingComponent
 	{
 		this.def = (TileMultiSpriteDef) def;
 		
-		for(TileSpriteDef spriteDef : this.def.defs)
+		for(int idx = 0; idx < this.def.defs.size(); idx ++)
 		{
+			TileSpriteDef spriteDef = this.def.defs.get(idx);
 			TileSpriteComponent tileSprite = level.getEngine().createComponent(TileSpriteComponent.class);
 			
 			tileSprite.init(entity, spriteDef, level);

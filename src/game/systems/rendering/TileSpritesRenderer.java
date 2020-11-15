@@ -258,7 +258,28 @@ public class TileSpritesRenderer extends EntitySystem implements EntityListener,
 			}
 		});	
 	}
+	
+	
+	private class TileSpriteUpdate implements TileUpdate
+	{
 
+		private TileSpriteComponent tileSprite;
+		private float opacity;
+		public void setSprite(TileSpriteComponent tileSprite, float opacity)
+		{
+			this.tileSprite = tileSprite;
+			this.opacity = opacity;
+		}
+		@Override
+		public void updateVertexBuffer(int tx, int ty, float[] vertexBufferUpdate)
+		{
+			updateTile(tx, ty, tileSprite.def.x, tileSprite.def.y, tileSprite.def.priority, opacity, vertexBufferUpdate, tileSprite);
+		}
+		
+	}
+	
+	TileSpriteUpdate update = new TileSpriteUpdate();
+	
 	public void entityUpdated(TileSpriteComponent tileSprite)
 	{
 
@@ -268,14 +289,9 @@ public class TileSpritesRenderer extends EntitySystem implements EntityListener,
 		
 		int meshIndex = meshIndices.get(tileSprite.def.atlas.getName(), 0);
 		TileMultiMesh multimesh = grids[meshIndex].mesh;
-		multimesh.updateTile(tileSprite.def.tx, tileSprite.def.ty, new TileUpdate() {
-			
-			@Override
-			public void updateVertexBuffer(int tx, int ty, float[] vertexBufferUpdate)
-			{
-				updateTile(tx, ty, tileSprite.def.x, tileSprite.def.y, tileSprite.def.priority, grids[meshIndex].opacity, vertexBufferUpdate, tileSprite);
-			}
-		});
+		float opacity = grids[meshIndex].opacity;
+		update.setSprite(tileSprite, opacity);
+		multimesh.updateTile(tileSprite.def.tx, tileSprite.def.ty, update);
 		
 	}
 	@Override
