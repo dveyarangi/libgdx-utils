@@ -1,9 +1,11 @@
 package game.systems.rendering;
 
 import game.resources.ResourceFactory;
+import lombok.Getter;
 
 /**
  * Defines parameters for a texture context.
+ * TODO: not in use
  *
  * @author Fima
  */
@@ -11,7 +13,7 @@ public class DebugRenderingContext implements IRenderingContext
 {
 	private int contextId;
 
-	private IRenderer renderer;
+	@Getter private IRenderer renderer;
 
 	public DebugRenderingContext(int contextId)
 	{

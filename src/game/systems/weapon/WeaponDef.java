@@ -2,14 +2,12 @@ package game.systems.weapon;
 
 import com.badlogic.ashley.core.Entity;
 
-import game.systems.IComponentDef;
 import game.systems.EntityDef;
+import game.systems.IComponentDef;
 import game.world.Level;
 
 public abstract class WeaponDef implements IComponentDef<WeaponComponent>
 {
-	private float projectileInitialSpeed;
-
 	public EntityDef bulletDef;
 
 	@Override

@@ -44,13 +44,13 @@ public class SpriteComponent implements IRenderingComponent
 	public void init( Entity entity, IComponentDef def, Level level )
 	{
 		SpriteDef sdef = (SpriteDef) def;
-		ResourceFactory factory = level.getModules().getGameFactory();
+		//ResourceFactory factory = level.getModules().getGameFactory();
 		TextureRegion origRegion;
 		if(def instanceof SpriteTextureDef)
 		{
 			SpriteTextureDef tdef = (SpriteTextureDef) def;
 			
-			origRegion = factory.getTextureRegion(tdef.textureName.getName());
+			origRegion = ResourceFactory.getTextureRegion(tdef.textureName.getName());
 			
 		}
 		else

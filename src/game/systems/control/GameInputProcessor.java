@@ -68,10 +68,6 @@ public class GameInputProcessor extends EntitySystem implements InputProcessor
 
 	private Entity touchedObject;
 
-	private boolean dragging = false;
-
-	private float lifeTime = 0;
-
 	private TimeController timeController;
 
 	private UIInputProcessor uiProcessor;
@@ -164,9 +160,7 @@ public class GameInputProcessor extends EntitySystem implements InputProcessor
 	@Override
 	public void update( final float delta )
 	{
-		// advancing lifetime:
-		lifeTime += delta;
-		
+	
 		setPickFilter(controlModes.getPickFilter());
 
 		uiProcessor.update(delta);
@@ -296,14 +290,6 @@ public class GameInputProcessor extends EntitySystem implements InputProcessor
 
 		lastButton = button;
 
-		if( !consumed )
-			if( button == Input.Buttons.RIGHT )
-			{
-
-				// camController.setUnderUserControl(true);
-				dragging = true;
-
-			}
 		if( pickedObject != null )
 		{
 			if( touchedObject == null )
@@ -313,7 +299,7 @@ public class GameInputProcessor extends EntitySystem implements InputProcessor
 		}
 
 
-		return true;
+		return consumed;
 	}
 
 	public IControl control() { return controlModes.control(); }
@@ -328,7 +314,6 @@ public class GameInputProcessor extends EntitySystem implements InputProcessor
 		if(!consumed)
 			if(button == Input.Buttons.RIGHT)
 			{
-				dragging = false;
 				touchedObject = null;
 				controlModes.untouch();
 				lastButton = 0;
@@ -350,7 +335,7 @@ public class GameInputProcessor extends EntitySystem implements InputProcessor
 			camController.moveBy(prevWorldPos.x - worldPos.x, prevWorldPos.y - worldPos.y);
 		}*/
 
-		return true;
+		return consumed;
 	}
 	
 	@AllArgsConstructor

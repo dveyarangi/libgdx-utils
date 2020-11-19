@@ -57,7 +57,7 @@ public class JsonInterfaceAdapter <E> implements JsonDeserializer <E>, JsonSeria
 	@Override
 	public JsonElement serialize( E src, Type typeOfSrc, JsonSerializationContext context )
 	{
-		JsonElement element = element = context.serialize( src );
+		JsonElement element = context.serialize( src );
 		JsonObject jso = (JsonObject) element;
 		//TODO : Changed to solve inner classes naming problem
 //		jso.addProperty( TYPE_ATTRIB, src.getClass().getCanonicalName() );

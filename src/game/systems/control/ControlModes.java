@@ -17,7 +17,7 @@ import lombok.Setter;
 
 public class ControlModes extends EntitySystem
 {
-	private Level level;
+
 	private Map <String, IControlMode> controlModes;
 	private String currModeName;
 	private IControlMode currControlMode;
@@ -37,7 +37,6 @@ public class ControlModes extends EntitySystem
 
 	public void init( Level level )
 	{
-		this.level = level;
 
 		if( !controlModes.isEmpty() )
 		{
@@ -143,7 +142,7 @@ public class ControlModes extends EntitySystem
 
 	public IControl control() {
 		if( !controlModes.isEmpty() )
-			return controlModes.get(0).control();
+			return currControlMode.control();
 
 		return null;
 	}

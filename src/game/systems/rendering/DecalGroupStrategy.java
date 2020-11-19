@@ -72,7 +72,7 @@ public class DecalGroupStrategy implements GroupStrategy, Disposable {
 	Pool<Array<Decal>> arrayPool = new Pool<Array<Decal>>(16) {
 		@Override
 		protected Array<Decal> newObject () {
-			return new Array();
+			return new Array<Decal>();
 		}
 	};
 	Array<Array<Decal>> usedArrays = new Array<Array<Decal>>();

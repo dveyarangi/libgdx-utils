@@ -18,12 +18,10 @@ import game.systems.spatial.ISpatialComponent;
 import game.world.IFabric;
 import game.world.IPickProvider;
 import lombok.Setter;
-import lombok.extern.slf4j.Slf4j;
 import yarangi.spatial.AABB;
 import yarangi.spatial.ISpatialSensor;
 import yarangi.spatial.SpatialHashMap;
 
-@Slf4j
 public class SpatialFabric extends EntitySystem implements IFabric, EntityListener
 {
 	public SpatialHashMap <SpatialIndexComponent> space;
@@ -180,18 +178,13 @@ public class SpatialFabric extends EntitySystem implements IFabric, EntityListen
 	@Override
 	public void addedToEngine( Engine engine )
 	{
-//		KinematicSystem kinematicSystem = engine.getSystem(KinematicSystem.class);
-//		if( kinematicSystem == null )
-//			log.info("Spatial fabric could not locate kinematic system");
-		
-		Family spatialfamily = Family.one(SpatialIndexComponent.class).get();
 		Family sensorfamily = Family.one(SensorComponent.class).get();
 
-		// engine.addEntityListener(physicalfamily, this);
-		// engine.addEntityListener(sensorfamily , this);
+		// listening to:
+		// entities with spatial component (taking space)
+		// entities with sensors
 		engine.addEntityListener(Family.one(SpatialIndexComponent.class, SensorComponent.class).get(), this);
 
-		//spatialEntities = engine.getEntitiesFor(spatialfamily);
 		sensorEntities = engine.getEntitiesFor(sensorfamily);
 		
 		super.addedToEngine(engine);

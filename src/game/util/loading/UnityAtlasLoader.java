@@ -13,7 +13,15 @@ import javax.imageio.ImageIO;
 
 import org.yaml.snakeyaml.Yaml;
 
-public class UnityAtlasLoader {
+/**
+ * Converts sprite atlas created with Unity, into LibGDX sprite atlas
+ * @author Fima
+ */
+public class UnityAtlasLoader 
+{
+	
+	
+	@SuppressWarnings("unchecked")
 	public static void main(String [] args) throws IOException
 	{
 		Yaml yaml = new Yaml();
@@ -24,7 +32,7 @@ public class UnityAtlasLoader {
 		String dataName = imageName.substring(0, imageName.length()-4);
 		
 		BufferedImage atlasImage = ImageIO.read(new File(inputFile.getParentFile(), imageName) );
-		int atlasWidth = atlasImage.getWidth();
+		//int atlasWidth = atlasImage.getWidth();
 		int atlasHeight = atlasImage.getHeight();
 
 		
@@ -44,6 +52,7 @@ public class UnityAtlasLoader {
 		
 		for(Object spriteObj : sprites)
 		{
+			
 			Map <String, Object> sprite = (Map<String, Object>) spriteObj;
 			
 			String spriteName = (String) sprite.get("name");
@@ -57,11 +66,9 @@ public class UnityAtlasLoader {
 			int height = (int) rect.get("height");
 			yoffset = atlasHeight - yoffset - height;
 			
-			Map <String, Object> pivot = (Map<String, Object>)sprite.get("pivot");
-			
-			
-			int xorigin = (int) (width*((Number)pivot.get("x")).floatValue());
-			int yorigin = (int) (height*((Number)pivot.get("y")).floatValue());
+			//Map <String, Object> pivot = (Map<String, Object>)sprite.get("pivot");
+			//int xorigin = (int) (width*((Number)pivot.get("x")).floatValue());
+			//int yorigin = (int) (height*((Number)pivot.get("y")).floatValue());
 			
 			writer.write(spriteName+"\n");
 			writer.write("  rotate: false"+"\n");

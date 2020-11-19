@@ -15,6 +15,8 @@ public class Box2DPullOrder implements IMoveOrder
 	@Override
 	public boolean update( Entity entity, float dt )
 	{
+		if( ! isActive)
+			return true;
 		TargetComponent target = entity.getComponent( TargetComponent.class );
 		assert target != null;
 

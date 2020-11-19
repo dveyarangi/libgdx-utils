@@ -74,10 +74,10 @@ public class EntityDef implements Component, Poolable
 	}
 
 	/**
-	 * TODO: optimize!
 	 * @param class1
-	 * @return
+	 * @return Def of specified type
 	 */
+	@SuppressWarnings("unchecked")
 	public <E> E getDef( final Class<E> class1 )
 	{
 		for( Object cdef : this.getDefs() )

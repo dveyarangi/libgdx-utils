@@ -90,11 +90,6 @@ public class Level extends EntitySystem
 
 		engine.addSystem( this );
 		
-		
-		
-		
-		
-		
 	}
 
 	/**
@@ -151,8 +146,13 @@ public class Level extends EntitySystem
 		for(SimulationSystem simSystem : simSystems)
 			simSystem.simulate();
 
+		//
+		Runtime.getRuntime().gc(); 
+ 
+		
 		Debug.stopTiming("level initialization");
 
+		
 	}
 
 	/**
@@ -223,13 +223,13 @@ public class Level extends EntitySystem
 
 	private static final String TAG = "level";
 
-	private boolean debug( final String message )
+	public boolean debug( final String message )
 	{
 		Gdx.app.debug(TAG, message);
 		return true;
 	}
 
-	private boolean log( final String message )
+	public boolean log( final String message )
 	{
 		Gdx.app.log(TAG, message);
 		return true;

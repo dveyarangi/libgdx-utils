@@ -6,13 +6,10 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 import java.lang.reflect.Field;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.PriorityQueue;
 
-import com.badlogic.gdx.assets.AssetLoaderParameters;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.assets.loaders.FileHandleResolver;
 import com.badlogic.gdx.assets.loaders.PixmapLoader;
@@ -156,15 +153,15 @@ public class ResourceFactory implements LoadableModule
 	/**
 	 * Loaded textures by name (filename, actually)
 	 */
-	private final Map<String, Animation> animationCache = new HashMap<String, Animation>();
+	private final Map<String, Animation<TextureRegion>> animationCache = new HashMap<>();
 
-	private final Map<Object, TextureRegion> regionCache = new HashMap<Object, TextureRegion>();
+	private final Map<Object, TextureRegion> regionCache = new HashMap<>();
 
-	private final Map<String, Region> regionList = new HashMap<String, Region>();
+	private final Map<String, Region> regionList = new HashMap<>();
 
-	private PriorityQueue <TextureHandle> textures = new PriorityQueue <TextureHandle> ();
+	private PriorityQueue <TextureHandle> textures = new PriorityQueue <> ();
 	
-	private List <ResourceTypeFactory> customFactories = new ArrayList <> ();  
+	//private List <ResourceTypeFactory> customFactories = new ArrayList <> ();  
 	
 	// /////////////////////////////////////////////////////////////////////////////////////////////////////
 	// TODO factory singleton
@@ -189,7 +186,7 @@ public class ResourceFactory implements LoadableModule
 	{
 		return init(resourceSetType, new HashMap <>());
 	}
-	public static ResourceFactory init( Class<?> resourceSetType, Map <Class, JsonDeserializer> customJsonDeserializers)
+	public static ResourceFactory init( Class<?> resourceSetType, Map <Class<?>, JsonDeserializer<?>> customJsonDeserializers)
 	{
 
 		if( factory != null )
@@ -239,7 +236,7 @@ public class ResourceFactory implements LoadableModule
 	 * Register a custom resource factory
 	 * @param customFactory
 	 */
-	public void registerCustomResource(ResourceTypeFactory <?,?> customFactory)
+	/*public void registerCustomResource(ResourceTypeFactory <?,?> customFactory)
 	{
 		customFactories.add(customFactory);
 	}
@@ -267,7 +264,7 @@ public class ResourceFactory implements LoadableModule
 			catch( IllegalArgumentException e ) { e.printStackTrace(); } 
 			catch( IllegalAccessException e ) { e.printStackTrace(); }			
 		}
-	}
+	}*/
 
 
 	/**
@@ -298,7 +295,7 @@ public class ResourceFactory implements LoadableModule
 		return factory;
 	}
 
-	public ResourceFactory( Class resourceSetType )
+	public ResourceFactory( Class <?> resourceSetType )
 	{
 		this.resourceSetType = resourceSetType;
 	}
@@ -309,8 +306,7 @@ public class ResourceFactory implements LoadableModule
 		factory = null;
 	}
 
-	@SuppressWarnings( "unchecked" )
-	private void loadResources( Class annotationType, Class resourceType )
+	private void loadResources( Class<?> annotationType, Class<?> resourceType )
 	{
 		try
 		{
@@ -374,7 +370,7 @@ public class ResourceFactory implements LoadableModule
 				{
 					if( anno instanceof Pixmap )
 					{
-						Pixmap pixanno = (Pixmap) anno;
+						//Pixmap pixanno = (Pixmap) anno;
 						String file = (String) field.get(null);
 
 						PixmapLoader.PixmapParameter p = new PixmapLoader.PixmapParameter();
@@ -468,7 +464,7 @@ public class ResourceFactory implements LoadableModule
 						
 						String filename = (String) field.get(null);
 						Configuration.Parameter param = new Configuration.Parameter(cfganno.type());
-						FileHandle configFile = resolver.resolve(filename);
+						//FileHandle configFile = resolver.resolve(filename);
 						
 						//jsonLoader.getDependencies(filename, configFile, param);
 						
@@ -629,13 +625,13 @@ public class ResourceFactory implements LoadableModule
 	 *
 	 * }
 	 */
-	public Animation getAnimation( String atlasName )
+	public Animation <TextureRegion> getAnimation( String atlasName )
 	{
-		Animation animation = animationCache.get(atlasName);
+		Animation <TextureRegion> animation = animationCache.get(atlasName);
 		if( animation == null )
 		{
 			com.badlogic.gdx.graphics.g2d.TextureAtlas atlas = getTextureAtlas(atlasName);
-			animation = new Animation(DEFAULT_FRAME_DURATION, atlas.getRegions());
+			animation = new Animation<TextureRegion>(DEFAULT_FRAME_DURATION, atlas.getRegions());
 			animationCache.put(atlasName, animation);
 		}
 		return animation;

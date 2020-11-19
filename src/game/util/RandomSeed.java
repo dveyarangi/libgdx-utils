@@ -151,7 +151,8 @@ public class RandomSeed
 
 	}
 
-	public <E> E random( E... e )
+	@SafeVarargs
+	public final <E> E random( E... e )
 	{
 		int pick = this.N(e.length);
 		return e[pick];

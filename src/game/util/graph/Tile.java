@@ -20,9 +20,9 @@ public class Tile
 		attributes.put( ATT_TILE_AREA, polygon.area() );
 	}
 
-	public <C> C getAttribute( String attName )
+	public Object getAttribute( String attName )
 	{
-		return (C)attributes.get(attName);
+		return attributes.get(attName);
 	}
 
 	public void setAttribute( String attName, Object value )

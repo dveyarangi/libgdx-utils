@@ -46,15 +46,15 @@ public class BirthTrailDeathDef implements IComponentDef <LifeAuraComponent>
 
 	}
 	public static final String BIRTH_ID = "birth-effect";
-	public void defineBirth( IMovementDef movementDef,
-			RendererDef renderingDef, float lifeDuration, Distribution sizeDist, Distribution angleDist )
+	public void defineBirth( IMovementDef<?> movementDef,
+			RendererDef<?> renderingDef, float lifeDuration, Distribution sizeDist, Distribution angleDist )
 	{
 		birth = new Aspect(BIRTH_ID, movementDef, renderingDef, lifeDuration, sizeDist, angleDist);
 	}
 
 	public static final String TRAIL_ID = "trail-effect";
-	public void defineTrail( IMovementDef movementDef,
-			RendererDef renderingDef, float lifeDuration, Distribution sizeDist, Distribution angleDist,
+	public void defineTrail( IMovementDef<?> movementDef,
+			RendererDef<?> renderingDef, float lifeDuration, Distribution sizeDist, Distribution angleDist,
 			float trailInterval,
 			float trailTotalDuration )
 	{
@@ -65,8 +65,8 @@ public class BirthTrailDeathDef implements IComponentDef <LifeAuraComponent>
 	}
 
 	public static final String DEATH_ID = "death-effect";
-	public void defineDeath( IMovementDef movementDef,
-			RendererDef renderingDef, float lifeDuration, Distribution sizeDist, Distribution angleDist )
+	public void defineDeath( IMovementDef<?> movementDef,
+			RendererDef<?> renderingDef, float lifeDuration, Distribution sizeDist, Distribution angleDist )
 	{
 		death = new Aspect(DEATH_ID, movementDef,
 				renderingDef, lifeDuration, sizeDist, angleDist);

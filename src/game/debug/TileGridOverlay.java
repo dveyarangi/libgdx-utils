@@ -21,13 +21,12 @@ import game.util.FastMath;
  * @author dveyarangi
  *
  */
-public abstract class TileGrid extends WorldOverlay
+public abstract class TileGridOverlay extends WorldOverlay
 {
 	private final float width;
 	private final float height;
-	private final float tileWidth = 1; 
 	
-	public TileGrid( int width, int height )
+	public TileGridOverlay( int width, int height )
 	{
 		this.width = width;
 		this.height = height;
@@ -79,7 +78,6 @@ public abstract class TileGrid extends WorldOverlay
 		int rminy = FastMath.floor(Math.max(0, screenMinY));
 		int rmaxy = FastMath.ceil(Math.min(height, screenMaxY));
 
-		int steps = 8;
 		shape.set(ShapeType.Filled);
 		shape.setColor(lineColor);
 		

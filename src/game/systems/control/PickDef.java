@@ -12,6 +12,12 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class PickDef implements IComponentDef <PickComponent> 
 {
+	
+	public static final PickDef FIXTURE_PICK = new PickDef(10);
+	public static final PickDef DECORATION_PICK = new PickDef(5);
+	public static final PickDef CHARACTER_PICK =  new PickDef(100);
+	
+	
 	//@Getter private int type;
 	@Getter private int priority;
 	

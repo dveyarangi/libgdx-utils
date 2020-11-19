@@ -384,14 +384,12 @@ public class TileSpritesRenderer extends EntitySystem implements EntityListener,
 	}
 
 	int [] cid = new int [] {};
-	private float time;
 	@Override
 	public int[] cid() { return cid; }
 
 	@Override
 	public void render(Entity entity, IRenderer renderer, IRenderingContext context, float deltaTime)
 	{
-		this.time += deltaTime;
 		//TextureRenderingContext ctx = (TextureRenderingContext)context;
 		//ctx.getTexture().bind();
 		for(int tidx = 0; tidx < grids.length; tidx ++)

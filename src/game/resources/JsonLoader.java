@@ -30,14 +30,18 @@ public class JsonLoader extends
 {
 	Configuration cfg;
 	
+	/**
+	 * The purpose of this loader is to mark all dependency resources, specified in a json config,
+	 * and add them for loading. The parsing result is abandoned.
+	 */
 	Gson dependenciesLoader;
 	Gson resourcesJson;
 	
-	Array<AssetDescriptor> dependencies = new Array <> ();
+	Array<AssetDescriptor<?>> dependencies = new Array <> ();
 	
-	Map <Class, JsonDeserializer> customDeserializers;
+	Map <Class<?>, JsonDeserializer<?>> customDeserializers;
 
-	public JsonLoader( ResourceFactory factory, FileHandleResolver resolver, Map <Class, JsonDeserializer> customDeserializers )
+	public JsonLoader( ResourceFactory factory, FileHandleResolver resolver, Map <Class<?>, JsonDeserializer<?>> customDeserializers )
 	{
 		super(resolver);
 		
@@ -155,7 +159,7 @@ public class JsonLoader extends
 				if(json.isJsonObject())
 					return Colormaps.buildGson(new GsonBuilder()).create().fromJson(json, ColormapConf.class);
 				else
-					return factory.getConfiguration(json.getAsString());
+					return ResourceFactory.getConfiguration(json.getAsString());
 			}
 
 		});		
@@ -217,7 +221,7 @@ public class JsonLoader extends
 		if( jsonText.contains("{")) // TODO: this is a bit awkward
 		{
 			try {
-				Object o = dependenciesLoader.fromJson(jsonText, parameter.getType());
+				dependenciesLoader.fromJson(jsonText, parameter.getType());
 				return new Array <AssetDescriptor>(dependencies);
 			}
 			catch(Exception e ) { throw new RuntimeException("Failed to load json file " + fileName, e); }
@@ -232,7 +236,7 @@ public class JsonLoader extends
 				try {
 					jsonText = entry.readString();
 					
-					Object o = dependenciesLoader.fromJson(jsonText, parameter.getType());
+					dependenciesLoader.fromJson(jsonText, parameter.getType());
 				}
 				catch(Exception e ) { throw new RuntimeException("Failed to load json file " + entry, e); }
 				

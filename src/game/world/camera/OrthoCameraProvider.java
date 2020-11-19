@@ -26,7 +26,7 @@ public class OrthoCameraProvider implements ICameraProvider
 	 * dimensions of the displayed world;
 	 * only part may be visible at specified time
 	 */
-	private float worldWidth, worldHeight;
+	private float worldWidth;
 
 	/**
 	 * viewport aspect ratio
@@ -35,7 +35,6 @@ public class OrthoCameraProvider implements ICameraProvider
 
 	public OrthoCameraProvider( float worldWidth, float worldHeight, float startX, float startY, float startZoom )
 	{
-		this.worldHeight = worldHeight;
 		this.worldWidth = worldWidth;
 		// these values will be overridden at resize
 		this.camera = new OrthographicCamera(worldWidth, worldHeight);

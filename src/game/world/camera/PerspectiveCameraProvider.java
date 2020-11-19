@@ -27,12 +27,6 @@ public class PerspectiveCameraProvider implements ICameraProvider
 	private Viewport viewport;
 
 	/**
-	 * dimensions of the displayed world;
-	 * only part may be visible at specified time
-	 */
-	private float worldWidth, worldHeight;
-
-	/**
 	 * viewport aspect ratio
 	 */
 	protected float aspectRatio = 1;
@@ -41,8 +35,6 @@ public class PerspectiveCameraProvider implements ICameraProvider
 
 	public PerspectiveCameraProvider( float worldWidth, float worldHeight, float startX, float startY, float startZoom )
 	{
-		this.worldHeight = worldHeight;
-		this.worldWidth = worldWidth;
 		// these values will be overridden at resize
 		this.camera = new PerspectiveCamera( 45, worldWidth, worldHeight);
 		this.zoom = startZoom;

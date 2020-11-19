@@ -79,6 +79,7 @@ public class EntityRenderingSystem extends EntitySystem implements EntityListene
 
 	private Class <IRenderingComponent> [] rendererTypes;
 
+
 	public EntityRenderingSystem( IRenderer renderer, ResourceFactory factory, List <Class <? extends IRenderingComponent>> rendererTypes )
 	{
 		this.factory = factory;

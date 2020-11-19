@@ -31,8 +31,6 @@ public class WeaponComponent implements Component, Poolable
 	private float requestedResource;
 	private float pendingResourceSupply;
 
-	private float projectileInitialSpeed;
-
 	/**
 	 *
 	 */

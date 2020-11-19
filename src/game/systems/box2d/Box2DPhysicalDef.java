@@ -2,15 +2,12 @@ package game.systems.box2d;
 
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.math.Polygon;
-import com.badlogic.gdx.math.Rectangle;
-import com.badlogic.gdx.math.Shape2D;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.utils.Array;
 
-import game.systems.EntityDef;
 import game.systems.movement.IMovementDef;
 import game.systems.spatial.ISpatialComponent;
 import game.util.Angles;
@@ -19,13 +16,6 @@ import lombok.NoArgsConstructor;
 
 public class Box2DPhysicalDef implements IMovementDef<Box2DPhysicalComponent>
 {
-
-	// setting body shape to axis aligned square
-	static 
-	{
-		Shape2D shape = new Rectangle(0,0,1,1);
-
-	}
 	
 	public static Box2DPhysicalDef createStatic(PartDef part, short categoryBits)
 	{
@@ -125,7 +115,6 @@ public class Box2DPhysicalDef implements IMovementDef<Box2DPhysicalComponent>
 		component.def = this;
 		component.maxSpeed = maxSpeed;
 		ISpatialComponent spatial = ISpatialComponent.get( entity );
-		EntityDef def = EntityDef.get( entity );
 		float dx = (float) Math.cos(spatial.a() * Angles.TO_RAD), dy = (float) Math.sin(spatial.a() * Angles.TO_RAD);
 
 		for(int didx = 0; didx < parts.size; didx ++)

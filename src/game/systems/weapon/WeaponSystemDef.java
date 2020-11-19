@@ -3,9 +3,7 @@ package game.systems.weapon;
 import game.systems.SystemDef;
 import game.world.Level;
 
-import com.badlogic.ashley.core.EntitySystem;
-
-public class WeaponSystemDef extends SystemDef
+public class WeaponSystemDef extends SystemDef<WeaponSystem>
 {
 
 	public WeaponSystemDef()
@@ -14,7 +12,7 @@ public class WeaponSystemDef extends SystemDef
 	}
 
 	@Override
-	public void initSystem( Level level, EntitySystem system )
+	public void initSystem( Level level, WeaponSystem system )
 	{
 		WeaponSystem weaponSystem = (WeaponSystem) system;
 

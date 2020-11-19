@@ -26,8 +26,6 @@ import game.systems.spatial.ISpatialComponent;
 import game.util.Angles;
 import game.world.IFabric;
 import game.world.IPickProvider;
-import game.world.environment.nav.NavMesh;
-import game.world.environment.nav.NavNode;
 
 /**
  * Manages entity interaction.
@@ -41,10 +39,6 @@ public class Box2DFabric extends EntitySystem implements IFabric, EntityListener
 {
 
 	public static final float NAV_NODE_SENSOR_RADIUS = 1;
-
-	private static final short MESH_NODES_CATEGORY = 1;
-
-	private static final short MESH_CLIENTS_CATEGORY = 1;
 
 	/**
 	 * Physical world, should be moved into Environment
@@ -109,13 +103,13 @@ public class Box2DFabric extends EntitySystem implements IFabric, EntityListener
 	 * information to passing units.
 	 *
 	 * TODO: this may be redundant, maybe a query at movement start is
-	 * sufficiently
+	 * sufficient
 	 *
 	 * @param navMesh
 	 * @param categoryBits
 	 * @param maskBits
 	 */
-	private void indexNavMesh( NavMesh<NavNode> navMesh, short categoryBits, short maskBits )
+	/*private void indexNavMesh( NavMesh<NavNode> navMesh, short categoryBits, short maskBits )
 	{
 		// static body:
 		BodyDef bodyDef = new BodyDef();
@@ -144,7 +138,7 @@ public class Box2DFabric extends EntitySystem implements IFabric, EntityListener
 			Fixture fixture = body.createFixture(fixtureDef);
 			fixture.setUserData(node);
 		}
-	}
+	}*/
 
 	BodyDef sensorBodyDef = new BodyDef();
 	FixtureDef sensorFixtureDef = new FixtureDef();
@@ -288,7 +282,7 @@ public class Box2DFabric extends EntitySystem implements IFabric, EntityListener
 		// modifying time for physics step:
 		float modifiedStep = step;
 		// System.out.println(modifiedStep);
-		int stepsTaken = 0;
+		//int stepsTaken = 0;
 
 		// float physicsTime = 0;
 		do

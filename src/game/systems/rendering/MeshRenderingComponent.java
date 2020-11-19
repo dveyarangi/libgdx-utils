@@ -37,14 +37,14 @@ public class MeshRenderingComponent implements IRenderingComponent
 	}
 
 	@Override
-	public void init( Entity entity, IComponentDef def, Level level )
+	public void init( Entity entity, IComponentDef<?> def, Level level )
 	{
 		this.cam = level.getModules().getCameraProvider().getCamera();
 		
 		MeshRenderingDef meshDef = (MeshRenderingDef) def;
-		ResourceFactory factory = level.getModules().getGameFactory();
-		meshTexture = factory.getTexture(meshDef.textureName);
-		shader = factory.getShader(meshDef.shaderName);
+		//ResourceFactory factory = level.getModules().getGameFactory();
+		meshTexture = ResourceFactory.getTexture(meshDef.textureName);
+		shader = ResourceFactory.getShader(meshDef.shaderName);
 
 		terrainTriangles = meshDef.triangles;
 

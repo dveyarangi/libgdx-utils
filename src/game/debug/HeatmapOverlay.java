@@ -7,7 +7,7 @@ import game.util.colors.Colormap;
 import game.util.colors.ColormapConf;
 import yarangi.math.Pair;
 
-public class HeatmapOverlay extends TileGrid 
+public class HeatmapOverlay extends TileGridOverlay 
 {
 
 	private float[][] heatmap;

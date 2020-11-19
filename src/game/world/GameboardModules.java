@@ -61,7 +61,8 @@ public class GameboardModules
 		customModules.put(object.getClass(), object);
 	}
 
-	public <M> M getModule(Class <?> clazz)
+	@SuppressWarnings("unchecked")
+	public <M> M getModule(Class <M> clazz)
 	{
 		return (M) customModules.get(clazz);
 	}

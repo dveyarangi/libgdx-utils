@@ -17,7 +17,7 @@ public class ControlDef implements IComponentDef <ControlComponent>
 	}
 
 	@Override
-	public Class getComponentClass() { return ControlComponent.class; }
+	public Class <ControlComponent> getComponentClass() { return ControlComponent.class; }
 
 	@Override
 	public void initComponent( ControlComponent component, Entity entity, Level level )

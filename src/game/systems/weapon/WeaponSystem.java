@@ -172,7 +172,7 @@ public class WeaponSystem extends IteratingSystem
 		// if(energyStock.getAmount() < weapon.def.getBulletEnergyConsumption())
 		// return ;
 
-		float angle = weapon.def.getAngleDistribution(source.a());
+		//float angle = weapon.def.getAngleDistribution(source.a());
 
 		//	float vx = weapon.def.getBulletDef().maxSpeed * (float) Math.cos(angle * Angles.TO_RAD);
 		//	float vy = weapon.def.getBulletDef().maxSpeed * (float) Math.sin(angle * Angles.TO_RAD);

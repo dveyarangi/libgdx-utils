@@ -17,7 +17,7 @@ public class RandomUtil
 	/**
 	 * Random seed: the real one but not ready yet
 	 */
-	private int x = random.nextInt();
+	//private int x = random.nextInt();
 
 	/*
 	 * public static int N() { x ^= (x << 17); x ^= (x >> 21); x ^= (x << 7);
@@ -41,7 +41,7 @@ public class RandomUtil
 
 	public static float getRandomFloat( final float d )
 	{
-		return that.R(d);
+		return that.R_(d);
 	}
 
 	/**
@@ -158,6 +158,7 @@ public class RandomUtil
 
 	}
 
+	@SafeVarargs
 	public static <E> E random( E... e )
 	{
 		int pick = RandomUtil.N(e.length);

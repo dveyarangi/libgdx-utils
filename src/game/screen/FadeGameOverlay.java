@@ -4,15 +4,10 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 
-import game.config.GraphicOptions;
 import game.systems.rendering.Renderer;
 
 public class FadeGameOverlay implements IGameOverlay
 {
-
-	private GraphicOptions options;
-
-	private AbstractScreen screen;
 
 	public static float INTERVAL = 0.5f;
 	private float inTime;
@@ -36,7 +31,6 @@ public class FadeGameOverlay implements IGameOverlay
 	@Override
 	public void setFadeIn( AbstractScreen screen )
 	{
-		this.screen = screen;
 		this.inTime = 0;
 		this.outFade = false;
 	}
@@ -44,7 +38,6 @@ public class FadeGameOverlay implements IGameOverlay
 	@Override
 	public void setFadeOut( AbstractScreen screen )
 	{
-		this.screen = screen;
 		this.outFade = true;
 		this.ouTime = 0;
 	}

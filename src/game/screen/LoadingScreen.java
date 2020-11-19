@@ -184,8 +184,6 @@ public class LoadingScreen<G extends AbstractGame> extends AbstractScreen<G>
 	{
 		if(progress.getMessage() == null)
 			return;
-		float cx = Gdx.graphics.getWidth()/2;
-		float cy = Gdx.graphics.getHeight()/2;
 		renderer.sprites().begin();
 
 		fontLabel.setColor(1,1,1,1);
@@ -198,7 +196,7 @@ public class LoadingScreen<G extends AbstractGame> extends AbstractScreen<G>
 	public void resize( int width, int height )
 	{
 		super.resize(width, height);
-		float w = loadingSprite.getWidth();
+		//float w = loadingSprite.getWidth();
 		float h = loadingSprite.getHeight();
 		
 		this.pbarminx = width / 2 - width / 4;

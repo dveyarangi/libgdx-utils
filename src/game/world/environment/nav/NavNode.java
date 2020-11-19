@@ -33,8 +33,6 @@ public class NavNode
 
 	private final NavNodeDescriptor descriptor;
 
-	private int spatialId;
-
 	/**
 	 *
 	 * @param point

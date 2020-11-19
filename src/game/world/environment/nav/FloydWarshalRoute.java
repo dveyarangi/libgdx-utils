@@ -22,14 +22,12 @@ public class FloydWarshalRoute extends Route
 				}
 			};
 
-	private FloydWarshal navMesh;
 	private NavNode from;
 	private NavNode to;
 	private boolean hasNext;
 
 	private FloydWarshalRoute()
 	{
-		this.navMesh = null;
 		this.from = null;
 		this.to = null;
 		this.hasNext = false;
@@ -42,9 +40,8 @@ public class FloydWarshalRoute extends Route
 	 * @param from
 	 * @param to
 	 */
-	protected void set( final FloydWarshal navMesh, final NavNode from, final NavNode to )
+	protected void set(final NavNode from, final NavNode to )
 	{
-		this.navMesh = navMesh;
 		this.from = from;
 		this.to = to;
 		hasNext = false;
@@ -126,7 +123,6 @@ public class FloydWarshalRoute extends Route
 	@Override
 	public void reset()
 	{
-		this.navMesh = null;
 		this.from = null;
 		this.to = null;
 		this.hasNext = false;
