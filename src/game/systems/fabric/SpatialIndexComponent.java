@@ -9,6 +9,11 @@ import lombok.Getter;
 import yarangi.spatial.AABB;
 import yarangi.spatial.ISpatialObject;
 
+/** 
+ * Entities having this component will be managed by SpatialFabric
+ *  
+ * @author Fima
+ */
 public class SpatialIndexComponent implements ISpatialObject, Component, Poolable
 {
 

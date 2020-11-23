@@ -3,7 +3,8 @@ package game.systems.light;
 import game.systems.rendering.IRenderer;
 import game.systems.rendering.ISystemRenderer;
 
-public class LightSystemRenderer implements ISystemRenderer {
+public class LightSystemRenderer implements ISystemRenderer 
+{
 	private LightSystem system;
 
 	public LightSystemRenderer(LightSystem system) 
