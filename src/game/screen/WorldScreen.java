@@ -140,9 +140,6 @@ public abstract class WorldScreen<G extends AbstractGame> extends AbstractScreen
 		// TODO: remove
 		Debug.init(level);
 
-		// TODO: this is not the place
-		Gdx.gl.glEnable(GL20.GL_BLEND);
-
 	}
 	
 	protected abstract LevelDef createLevel(LoadingProgress progress);
@@ -170,7 +167,6 @@ public abstract class WorldScreen<G extends AbstractGame> extends AbstractScreen
 
 
 		level.draw(delta);
-		Debug.debug.draw();
 	}
 
 	@Override

@@ -11,6 +11,9 @@ import game.systems.rendering.IRenderer;
 public interface IOverlay<E>
 {
 
+	public default void onShow() {}
+	public default void onHide() {}
+	
 	public void draw( final IRenderer renderer );
 
 	/***
@@ -18,6 +21,6 @@ public interface IOverlay<E>
 	 *
 	 * @return
 	 */
-	public boolean useWorldCoordinates();
+	public default boolean useWorldCoordinates() { return false; }
 
 }

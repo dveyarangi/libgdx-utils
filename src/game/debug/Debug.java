@@ -15,6 +15,8 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
+import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
+import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.IntMap;
 import com.badlogic.gdx.utils.IntMap.Entry;
 
@@ -29,7 +31,7 @@ import game.systems.rendering.IRenderer;
 import game.systems.rendering.IRenderingComponent;
 import game.systems.rendering.OverlayRenderer;
 import game.world.Level;
-import lombok.AllArgsConstructor;
+import lombok.Getter;
 import lombok.experimental.var;
 
 /**
@@ -62,39 +64,45 @@ public class Debug
 
 	//public ShapeRenderingContext projectedShapeRenderer;
 
-	@AllArgsConstructor
+
 	public static class OverlayBinding
 	{
 		int keyCode;
 		String name;
-		boolean isOn;
+		@Getter boolean isOn;
 		IOverlay overlay;
+		
+		Array <ChangeListener> listeners = new Array <> ();
 
-		/*public OverlayBinding( IOverlay overlay )
+		public OverlayBinding(int keyCode, String name, boolean isOn, IOverlay overlay)
 		{
-			this(overlay, false);
-		}
-
-		public OverlayBinding( IOverlay overlay, boolean isOn )
-		{
-			this.overlay = overlay;
+			this.keyCode = keyCode;
+			this.name = name;
 			this.isOn = isOn;
-		}*/
+			this.overlay = overlay;
+		}
 
 		public void toggle()
 		{
 			isOn = !isOn;
-		}
-
-		public boolean isOn()
-		{
-			return isOn;
+			if( isOn )
+				overlay.onShow();
+			else
+				overlay.onHide();
+			
+			for(int idx = 0; idx < listeners.size; idx ++)
+				listeners.get(idx).changed(null, null);
 		}
 
 		public void render( IRenderer renderer )
 		{
 			if( overlay != null && isOn )
 				overlay.draw( renderer );
+		}
+
+		public void addToggleListener(ChangeListener changeListener)
+		{
+			listeners.add(changeListener);
 		}
 	}
 
@@ -132,7 +140,6 @@ public class Debug
 
 	public static void init( final Level level)
 	{
-
 		debug.setup(level);
 	}
 
@@ -150,7 +157,7 @@ public class Debug
 		uiRenderer = new OverlayRenderer();
 		//projectedShapeRenderer = new ShapeRenderingContext(PROJECTED_SHAPER_ID[0], levelRenderer.shaper());
 
-		GameInputProcessor  inputController = level.getEngine().getSystem(GameInputProcessor.class);
+		GameInputProcessor inputController = level.getEngine().getSystem(GameInputProcessor.class);
 
 		uiProcessor = inputController.getInputRegistry();
 
@@ -184,10 +191,19 @@ public class Debug
 			}
 
 		});
+		this.addOverlay(Hotkeys.TOGGLE_UI_DEBUG, "UI Debug", new IOverlay()
+				{
+					public void onShow() { inputController.getUi().setDebug(true);}
+					public void onHide() { inputController.getUi().setDebug(false);}
+					@Override
+					public void draw(IRenderer renderer) { }
+			
+				});
 		
 		// NOTE: This should be added last to properly display overlay key bindings
-		this.addOverlay(Hotkeys.TOGGLE_FPS, "Debug Info", new DebugInfoOverlay(debugOverlays));
+		this.addOverlay(Hotkeys.TOGGLE_DEBUG_INFO, "Debug Info", new DebugInfoOverlay(inputController, debugOverlays));
 		
+	
 		for(OverlayBinding binding : debugOverlays.values())
 		{
 			if(binding.overlay instanceof WorldOverlay)

@@ -188,7 +188,8 @@ public class Level extends EntitySystem
 		{
 			systemRenderers.get(idx).render(renderer);
 		}
-		
+		Debug.debug.draw();
+
 		GameInputProcessor processor = getEngine().getSystem(GameInputProcessor.class);
 		processor.render(renderer);
 	}

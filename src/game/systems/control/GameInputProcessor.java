@@ -77,7 +77,7 @@ public class GameInputProcessor extends EntitySystem implements InputProcessor
 	protected float BASE_PICK_RADIUS = 1;
 	protected float pickRadius = BASE_PICK_RADIUS;
 
-	protected HUD ui;
+	@Getter protected HUD ui;
 
 	protected int lastButton;
 	// private boolean pointerChanged = true;

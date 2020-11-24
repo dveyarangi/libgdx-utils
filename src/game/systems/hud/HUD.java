@@ -6,7 +6,6 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
-import game.debug.Debug;
 import game.systems.control.GameInputProcessor;
 import lombok.Getter;
 
@@ -36,7 +35,6 @@ public abstract class HUD
 		
 		canvas.setFillParent(true);
 		stage.addActor(canvas);
-		canvas.setDebug(Debug.DEBUG_UI);
 	}
 
 	
@@ -60,5 +58,10 @@ public abstract class HUD
 	public void dispose() 
 	{
 		stage.dispose();
+	}
+
+	public void setDebug(boolean showDebug)
+	{
+		stage.setDebugAll(showDebug);
 	}
 }
