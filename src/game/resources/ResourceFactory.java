@@ -201,6 +201,7 @@ public class ResourceFactory implements LoadableModule
 		// register colors deserializer
 		
 		customJsonDeserializers.put(Color.class, new Colormaps.LibGDXColorDeserializer());
+		customJsonDeserializers.put(Class.class, new JsonClassAdapter());
 
 
 		// factory.manager.getLogger().setLevel(Logger.INFO);;
