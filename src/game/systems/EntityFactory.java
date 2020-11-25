@@ -111,6 +111,11 @@ public class EntityFactory
 				component = (Component)engine.getSystem(componentDef.getComponentClass());
 			}
 			else
+			if( componentDef instanceof IDefComponent)
+			{
+				component = (IDefComponent)componentDef;
+			}
+			else
 			{
 				// create component for the speficied def:
 				component = engine.createComponent(componentDef.getComponentClass());
