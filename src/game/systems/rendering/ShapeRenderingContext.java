@@ -41,6 +41,7 @@ public class ShapeRenderingContext implements IRenderingContext
 	{
 		shaper.end();
 	}
+	@Override public boolean isEntityless() { return false; }
 	
 	@Override public String toString() { return "shape rendering context"; }
 

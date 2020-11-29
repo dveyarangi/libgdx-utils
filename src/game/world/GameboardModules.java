@@ -1,12 +1,9 @@
 package game.world;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import game.resources.ResourceFactory;
-import game.systems.rendering.IRenderingComponent;
 import game.world.camera.ICameraProvider;
 import lombok.Getter;
 
@@ -21,7 +18,7 @@ public class GameboardModules
 	 * Resource factory, that loads and caches resources textures, animations,
 	 * models, fonts etc) used in this level.
 	 */
-	@Getter protected ResourceFactory gameFactory;
+	@Getter protected ResourceFactory resourceFactory;
 
 	/**
 	 * Level definitions, such as initial unit layout, camera setup, background
@@ -32,14 +29,13 @@ public class GameboardModules
 
 	@Getter private ICameraProvider cameraProvider; 
 
-	private Map <Class<?>, Object> customModules = new HashMap <Class<?>, Object> ();
-
-	@Getter private List <Class<? extends IRenderingComponent>> rendererTypes = new ArrayList <>();
+	private Map <Class<?>, Object> customModules = new HashMap <> ();
+	
 
 	public GameboardModules( ResourceFactory resourceFactory, LevelDef def, IFabric environment, ICameraProvider cameraProvider)
 	{
 		// game resources registry and loader
-		gameFactory = resourceFactory;
+		this.resourceFactory = resourceFactory;
 
 		this.levelDef = def;
 
@@ -48,13 +44,6 @@ public class GameboardModules
 		this.cameraProvider = cameraProvider;
 
 	}
-	
-	
-	public void addRendererType(Class <? extends IRenderingComponent> type)
-	{
-		rendererTypes.add(type);
-	}
-
 
 	public void addModule(Object object)
 	{

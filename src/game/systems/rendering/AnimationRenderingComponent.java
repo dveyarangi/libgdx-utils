@@ -51,7 +51,7 @@ public class AnimationRenderingComponent implements IRenderingComponent
 		
 		
 		AnimationRenderingDef adef = (AnimationRenderingDef) def;
-		this.animation = level.getModules().getGameFactory().getAnimation(adef.atlasName);
+		this.animation = level.getModules().getResourceFactory().getAnimation(adef.atlasName);
 		//		this.animation = adef.animation;
 
 		this.timeModifier = adef.timeModifier;

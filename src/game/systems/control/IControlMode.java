@@ -5,7 +5,6 @@ import com.badlogic.ashley.core.EntityListener;
 import com.badlogic.gdx.math.Vector2;
 
 import game.systems.rendering.IRenderer;
-import game.world.Level;
 
 /**
  * Control mode determines input handling some subset of game functionality
@@ -15,11 +14,6 @@ import game.world.Level;
  */
 public interface IControlMode extends EntityListener
 {
-	/**
-	 * Called before the mode is activated.
-	 */
-	void reset( Level level );
-	
 	
 	public void switchToMode(String modeName, Object parameter);
 	void modeActivated(Object parameter);

@@ -16,63 +16,32 @@ import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.utils.ObjectIntMap;
 
 import game.resources.ResourceFactory;
-import game.systems.IComponentDef;
 import game.systems.rendering.TileSpritesRendererDef.MeshDef;
 import game.util.rendering.TileMultiMesh;
 import game.util.rendering.TileMultiMesh.TileUpdate;
-import game.world.Level;
 
-public class TileSpritesRenderer extends EntitySystem implements EntityListener, IRenderingComponent
+public class TileSpritesRenderer extends EntitySystem implements EntityListener, IRenderingContext
 {
 	//static { ComponentType.registerFor(IRenderingComponent.class, MeshRenderingComponent.class); }
 
 	TileSpritesRendererDef rendererDef;
 	
 	TileSpritesGrid [] grids;
-
-	Camera cam;
 	
 	ObjectIntMap<String> meshIndices = new ObjectIntMap<> ();
-
-	public TileSpritesRenderer()
-	{
-	}
 	
+	Camera cam;
 	
-	public void toggleMeshVisibility(String meshName)
+	public TileSpritesRenderer(TileSpritesRendererDef rendererDef)
 	{
-		int idx = meshIndices.get(meshName, -1);
-		assert idx >= 0;
-		
-		grids[idx].isOn = !grids[idx].isOn;
-	}
-	public void setOpacity(String meshName, float opacity)
-	{
-		int idx = meshIndices.get(meshName, -1);
-		assert idx >= 0;
-		grids[idx].opacity = opacity;
-		for(int x = 0; x < rendererDef.width; x ++)
-			for(int y = 0; y < rendererDef.height; y ++)
-		grids[idx].mesh.updateTile(x, y, new TileUpdate() {
-
-			@Override
-			public void updateVertexBuffer(int x, int y, float[] vertexBufferUpdate)
-			{
-				vertexBufferUpdate[8] = opacity;
-			}
-			
-		});
-
+		this.rendererDef = rendererDef;
 	}
 	
 	@Override
-	public void init(Entity entity, IComponentDef<?> def, Level level)
+	public void init(ResourceFactory factory, IRenderer renderer)
 	{
-		// TODO Auto-generated method stub
-		
+		this.cam = renderer.camera();
 	}
-
-	
 	@Override
 	public void addedToEngine( Engine engine )
 	{
@@ -376,19 +345,15 @@ public class TileSpritesRenderer extends EntitySystem implements EntityListener,
 		super.removedFromEngine(engine);
 	}
 
-	@Override
-	public void reset()
-	{
-		// TODO Auto-generated method stub
-		
-	}
 
-	int [] cid = new int [] {};
-	@Override
-	public int[] cid() { return cid; }
+
+	@Override public int id() { return EntityRenderingSystem.POST_RENDERING; }
+
+
+
 
 	@Override
-	public void render(Entity entity, IRenderer renderer, IRenderingContext context, float deltaTime)
+	public void begin()
 	{
 		//TextureRenderingContext ctx = (TextureRenderingContext)context;
 		//ctx.getTexture().bind();
@@ -434,7 +399,48 @@ public class TileSpritesRenderer extends EntitySystem implements EntityListener,
 	
 			shader.end();
 		}	
+	}
+
+
+	@Override
+	public void end()
+	{
+		// TODO Auto-generated method stub
 		
 	}
 
+
+	@Override
+	public boolean isEntityless() { return true; }
+	
+	public void toggleMeshVisibility(String meshName)
+	{
+		int idx = meshIndices.get(meshName, -1);
+		assert idx >= 0;
+		
+		grids[idx].isOn = !grids[idx].isOn;
+	}
+	public void setOpacity(String meshName, float opacity)
+	{
+		int idx = meshIndices.get(meshName, -1);
+		assert idx >= 0;
+		grids[idx].opacity = opacity;
+		for(int x = 0; x < rendererDef.width; x ++)
+			for(int y = 0; y < rendererDef.height; y ++)
+		grids[idx].mesh.updateTile(x, y, new TileUpdate() {
+
+			@Override
+			public void updateVertexBuffer(int x, int y, float[] vertexBufferUpdate)
+			{
+				vertexBufferUpdate[8] = opacity;
+			}
+			
+		});
+
+	}
+
+	
+
+	
+	public String toString() { return "tile sprites"; }
 }

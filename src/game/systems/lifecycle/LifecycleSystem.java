@@ -14,6 +14,7 @@ import game.systems.EntityId;
 import game.systems.spatial.AnchorComponent;
 import game.systems.spatial.ISpatialComponent;
 import game.world.Constants;
+import game.world.Transient;
 
 /**
  * Manages entity's Great Cycle.
@@ -22,6 +23,7 @@ import game.world.Constants;
  *
  * @author Fima
  */
+@Transient
 public class LifecycleSystem extends EntitySystem implements EntityListener
 {
 	/**
@@ -202,10 +204,6 @@ public class LifecycleSystem extends EntitySystem implements EntityListener
 			LifeAuraComponent aura = LifeAuraComponent.get(corpse);
 			if( aura != null)
 				configurer.addEntity(aura.createDeathDef( corpse ));
-
-			LifecycleComponent lifecycle = LifecycleComponent.get(corpse);
-			if( lifecycle.deathHook != null )
-				lifecycle.deathHook.entityDead( corpse );
 
 			// thats it:
 			getEngine().removeEntity(corpse);

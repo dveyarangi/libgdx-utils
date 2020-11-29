@@ -18,6 +18,7 @@ import game.systems.rendering.IRenderer;
 import game.world.IPickProvider;
 import game.world.Level;
 import game.world.LevelInitialSettings;
+import game.world.Transient;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -27,6 +28,7 @@ import lombok.Getter;
  * @author Ni
  *
  */
+@Transient
 public class GameInputProcessor extends EntitySystem implements InputProcessor
 {
 	private Level level;

@@ -5,7 +5,7 @@ import com.badlogic.gdx.graphics.Color;
 
 import game.systems.SystemDef;
 import game.systems.box2d.Box2DFabric;
-import game.systems.rendering.ISystemRenderer;
+import game.systems.rendering.IRenderingContext;
 import game.world.Level;
 
 public class LightSystemDef extends SystemDef <LightSystem>
@@ -29,7 +29,7 @@ public class LightSystemDef extends SystemDef <LightSystem>
 		system.init( fabric.getWorld(), camera, this, level.getGraphicOptions() );
 	}
 
-	public ISystemRenderer createRenderer(LightSystem system)
+	public IRenderingContext createRenderer(LightSystem system)
 	{
 		return new LightSystemRenderer(system);
 	}

@@ -2,7 +2,7 @@ package game.systems;
 
 import com.badlogic.ashley.core.EntitySystem;
 
-import game.systems.rendering.ISystemRenderer;
+import game.systems.rendering.IRenderingContext;
 import game.world.Level;
 import lombok.Getter;
 
@@ -12,7 +12,7 @@ public class SystemDef <S extends EntitySystem>
 
 	@Getter protected S system;
 
-	protected ISystemRenderer renderer;
+	protected IRenderingContext renderer;
 
 	public SystemDef()
 	{
@@ -26,7 +26,7 @@ public class SystemDef <S extends EntitySystem>
 	{
 		this.system = system;
 	}
-	public SystemDef( S system, ISystemRenderer renderer )
+	public SystemDef( S system, IRenderingContext renderer )
 	{
 		this.system = system;
 		this.renderer = renderer;
@@ -55,6 +55,6 @@ public class SystemDef <S extends EntitySystem>
 
 	}
 	
-	public ISystemRenderer createRenderer() { return renderer; }
+	public IRenderingContext createRenderer() { return renderer; }
 
 }

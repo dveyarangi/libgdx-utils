@@ -12,6 +12,7 @@ import game.systems.lifecycle.LifecycleSystem;
 import game.systems.spatial.SpatialComponent;
 import game.world.Level;
 import game.world.LevelDef;
+import lombok.Getter;
 
 /**
  * Manages entity instantiation and pooling.
@@ -28,7 +29,7 @@ public class EntityFactory
 	/**
 	 * Entity pooling and managing engine
 	 */
-	private PooledEngine engine;
+	@Getter private PooledEngine engine;
 	private LifecycleSystem lifecycle;
 
 	private Level level;

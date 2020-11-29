@@ -1,14 +1,18 @@
 package game.systems.rendering;
 
+
 import java.util.List;
 
+import com.badlogic.ashley.core.Component;
 import com.badlogic.ashley.core.Engine;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.EntityListener;
 import com.badlogic.ashley.core.EntitySystem;
+import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g3d.decals.DecalBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.IntMap;
 import com.badlogic.gdx.utils.ObjectMap;
 import com.badlogic.gdx.utils.ObjectMap.Entries;
@@ -18,6 +22,7 @@ import game.debug.Debug;
 import game.resources.ResourceFactory;
 import game.systems.rendering.IRenderingContext.DecalContext;
 import game.systems.rendering.IRenderingContext.VoidContext;
+import game.world.Transient;
 
 /**
  * <P>This system iterates over entities with {@link IRenderingComponent} and
@@ -36,6 +41,7 @@ import game.systems.rendering.IRenderingContext.VoidContext;
  * @author Fima
  *
  */
+@Transient
 public class EntityRenderingSystem extends EntitySystem implements EntityListener, IRenderer
 {
 	/**
@@ -48,9 +54,9 @@ public class EntityRenderingSystem extends EntitySystem implements EntityListene
 	/**
 	 * Indexed set of rendering context.
 	 */
-	private IntMap<IRenderingContext> contexts = new IntMap<IRenderingContext>();
+	private IntMap<IRenderingContext> contexts = new IntMap<>();
 
-	private int [] contextOrder;
+	private Array <IRenderingContext> contextOrder = new Array <> ();
 
 	/**
 	 * Mapping of context to entities that use it
@@ -68,25 +74,62 @@ public class EntityRenderingSystem extends EntitySystem implements EntityListene
 	private ResourceFactory factory;
 
 	public static final int PRE_RENDERING = 0;
-	public static final int POST_RENDERING = 1;
-	public static final int PROJECTED_SHAPER_ID = 2;
-	public static final int DEBUG_ID = 3;
-	public static final int DECAL_ID = 4; 
+	public static final int DECAL_ID = 50; 
+	public static final int POST_RENDERING = 100;
+	public static final int PROJECTED_SHAPER_ID = 150;
+	public static final int DEBUG_ID = 151;
 	/**
 	 * Actual rendering toolbox
 	 */
 	private IRenderer renderer;
 
-	private Class <IRenderingComponent> [] rendererTypes;
 
-
-	public EntityRenderingSystem( IRenderer renderer, ResourceFactory factory, List <Class <? extends IRenderingComponent>> rendererTypes )
+	public EntityRenderingSystem( IRenderer renderer, ResourceFactory factory, List <IRenderingContext> customContexts)
 	{
 		this.factory = factory;
 		
 		this.renderer = renderer;
+			
 		
-		this.rendererTypes = rendererTypes.toArray(new Class [rendererTypes.size()]);
+		// dummy context for entities without a context
+		this.registerContext(new VoidContext(PRE_RENDERING));
+		
+		for(IRenderingContext context : customContexts)
+		{
+			int priority = context.id();
+			if( priority >= PRE_RENDERING && priority < DECAL_ID)
+				this.registerContext(context);
+				
+		}
+		
+		/*for( TextureHandle textureHandle : factory.getTextures() )
+		{
+			Texture texture = factory.getTexture( textureHandle.getTextureName() );
+			TextureRenderingContext ctx = new TextureRenderingContext(textureHandle.getTextureName(), texture);
+			this.registerContext(ctx);
+			contextOrder[idx ++] = ctx.id();
+		}*/
+		
+		// dummy context for entities without a context
+		this.registerContext(new DecalContext(DECAL_ID));
+		
+		for(IRenderingContext context : customContexts)
+		{
+			int priority = context.id();
+			if( priority >= POST_RENDERING && priority < PROJECTED_SHAPER_ID)
+				this.registerContext(context);
+				
+		}
+		
+		// context for rendering shapes
+		this.registerContext(new ShapeRenderingContext(PROJECTED_SHAPER_ID, renderer.shaper()));
+		
+		// TODO: this is debugging context, should be removed or ignored when in
+		// production:
+		this.registerContext(new DebugRenderingContext(DEBUG_ID));
+		
+		debugPrintContexts();
+		
 	}
 
 	@Override
@@ -103,9 +146,13 @@ public class EntityRenderingSystem extends EntitySystem implements EntityListene
 	public void registerContext( IRenderingContext ctx )
 	{
 		assert !contexts.containsKey(ctx.id());
+		
+		
 		contexts.put(ctx.id(), ctx);
-		contextRenderables.put(ctx.id(), new ObjectMap<IRenderingComponent, Entity>());
-		//contextSwitchEntities.put(ctx.id(), new PooledLinkedList<Entity>( Constants.RENDERER_POOL_SIZE ));
+		contextOrder.add(ctx);
+		
+		if( !ctx.isEntityless() )
+			contextRenderables.put(ctx.id(), new ObjectMap<IRenderingComponent, Entity>());
 	}
 
 	/**
@@ -125,41 +172,7 @@ public class EntityRenderingSystem extends EntitySystem implements EntityListene
 		
 		// TODO: load and use several textures in the same time;
 		// may use combined contexts.
-		contextOrder = new int [5];
-		int idx = 0;
-		
-		// dummy context for entities without a context
-		this.registerContext(new VoidContext(PRE_RENDERING));
-		contextOrder[idx ++] = PRE_RENDERING;
-		
-		/*for( TextureHandle textureHandle : factory.getTextures() )
-		{
-			Texture texture = factory.getTexture( textureHandle.getTextureName() );
-			TextureRenderingContext ctx = new TextureRenderingContext(textureHandle.getTextureName(), texture);
-			this.registerContext(ctx);
-			contextOrder[idx ++] = ctx.id();
-		}*/
 
-		// dummy context for entities without a context
-		this.registerContext(new VoidContext(POST_RENDERING));
-		contextOrder[idx ++] = POST_RENDERING;
-		
-		// dummy context for entities without a context
-		this.registerContext(new DecalContext(DECAL_ID));
-		contextOrder[idx ++] = DECAL_ID;
-		
-		
-		// context for rendering shapes
-		this.registerContext(new ShapeRenderingContext(PROJECTED_SHAPER_ID, renderer.shaper()));
-		contextOrder[idx ++] = PROJECTED_SHAPER_ID;
-		
-		// TODO: this is debugging context, should be removed or ignored when in
-		// production:
-		this.registerContext(new DebugRenderingContext(DEBUG_ID));
-		contextOrder[idx ++] = DEBUG_ID;
-		
-		debugPrintContexts();
-		
 		//Family family = Family.one( rendererTypes ).get();
 
 		// registering as listener for all entities with renderer component:
@@ -177,26 +190,31 @@ public class EntityRenderingSystem extends EntitySystem implements EntityListene
 	public void entityAdded( Entity entity )
 	{
 //		IRenderingComponent c = entity.getComponent(IRenderingComponent.class);
-		for(Class <IRenderingComponent> type : rendererTypes)
+		for(Component component : entity.getComponents())
 		{
-			IRenderingComponent component = entity.getComponent( type );
-			if( component == null) continue;
+			if(!(component instanceof IRenderingComponent))
+				continue;
+			
+			IRenderingComponent rcomp = (IRenderingComponent) component;
 			// adding the entity to appropriate sub-list of the entity mapping:
-			int [] cids = component.cid();
+			int [] cids = rcomp.cid();
 			if( cids.length == 0)
-				this.entityAdded(POST_RENDERING, component, entity);
+				this.addEntityToContext(POST_RENDERING, rcomp, entity);
 			else
 				for(int cid : cids)
 				{
-					this.entityAdded(cid, component, entity);
+					this.addEntityToContext(cid, rcomp, entity);
 				}
 
 		}
 	}
 
-	private void entityAdded( int cid, IRenderingComponent component, Entity entity )
+	private void addEntityToContext( int cid, IRenderingComponent component, Entity entity )
 	{
-		//IRenderingContext context = contexts.get(cid);
+		IRenderingContext context = contexts.get(cid);
+		if( context.isEntityless())
+			return;
+
 		//context.entityAdded(entity);
 		// add ing the entity to appropriate sub-list of the entity mapping:
 		ObjectMap<IRenderingComponent, Entity> renderables = contextRenderables.get(cid);
@@ -231,28 +249,34 @@ public class EntityRenderingSystem extends EntitySystem implements EntityListene
 	{
 		// rendering all units, grouped by rendering context:
 
-		for( int idx = 0; idx < contextOrder.length; idx ++ )
+		for( int idx = 0; idx < contextOrder.size; idx ++ )
 		{
 
-			int cid = contextOrder[idx];
-			
-			IRenderingContext context = contexts.get(cid);
+			IRenderingContext context = contextOrder.get(idx);
 			assert context != null;
-
-			Entries<IRenderingComponent, Entity> renderables = contextRenderables.get(cid).iterator();
-			if( ! renderables.hasNext )
-				continue;
-
-			context.begin();
-			while( renderables.hasNext )
+			if( context.isEntityless())
 			{
-				Entry<IRenderingComponent, Entity> entry = renderables.next();
-				IRenderingComponent rend = entry.key;
-				Entity entity = entry.value;
-
-				rend.render(entity, renderer, context, delta);
+				context.begin();
+				context.end();
 			}
-			context.end();
+			else
+			{
+				int cid = context.id();
+				Entries<IRenderingComponent, Entity> renderables = contextRenderables.get(cid).iterator();
+				if( ! renderables.hasNext )
+					continue;
+	
+				context.begin();
+				while( renderables.hasNext )
+				{
+					Entry<IRenderingComponent, Entity> entry = renderables.next();
+					IRenderingComponent rend = entry.key;
+					Entity entity = entry.value;
+	
+					rend.render(entity, renderer, context, delta);
+				}
+				context.end();
+			}
 		}	
 		
 	}
@@ -263,16 +287,17 @@ public class EntityRenderingSystem extends EntitySystem implements EntityListene
 	@Override
 	public void entityRemoved( Entity entity )
 	{
-		for(Class <IRenderingComponent> type : rendererTypes)
+		for(Component component : entity.getComponents())
 		{
-			IRenderingComponent component = entity.getComponent( type );
-			if( component == null) continue;
-
-			int [] cids = component.cid();
+			if(!(component instanceof IRenderingComponent))
+				continue;
+			
+			IRenderingComponent rcomp = (IRenderingComponent) component;
+			int [] cids = rcomp.cid();
 
 			for( int cid : cids)
 			{
-				contextRenderables.get(cid).remove( component );
+				contextRenderables.get(cid).remove( rcomp );
 				//IRenderingContext context = contexts.get(cid);
 				//context.entityRemoved(entity);
 
@@ -327,9 +352,12 @@ public class EntityRenderingSystem extends EntitySystem implements EntityListene
 	private void debugPrintContexts()
 	{
 		Debug.log("=== rendering contexts ==================");
-		for(int i = 0; i < contextOrder.length; i ++)
-			Debug.log(String.format(" * context id %12d: %s", contextOrder[i], contexts.get(contextOrder[i])));
+		for(int i = 0; i < contextOrder.size; i ++)
+			Debug.log(String.format(" * context id %12d: %s", contextOrder.get(i).id(), contextOrder.get(i)));
 		Debug.log("=========================================");
 	}
+
+	@Override
+	public Camera camera() { return renderer.camera(); }
 
 }

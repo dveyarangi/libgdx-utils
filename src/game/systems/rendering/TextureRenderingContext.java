@@ -52,6 +52,7 @@ public class TextureRenderingContext implements IRenderingContext
 	{
 		return contextId;
 	}
+	@Override public boolean isEntityless() { return false; }
 
 	@Override
 	public String toString() { return "texture " + textureName; }

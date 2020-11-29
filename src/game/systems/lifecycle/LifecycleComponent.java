@@ -30,8 +30,6 @@ public class LifecycleComponent implements Component, Poolable
 	 * When set to false, entity will be destroyed by the LifecycleSystem
 	 */
 	public boolean isAlive = false;
-	
-	public DeathHook deathHook;
 
 	public boolean isAlive()
 	{

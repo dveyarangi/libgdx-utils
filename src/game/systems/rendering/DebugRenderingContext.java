@@ -44,4 +44,7 @@ public class DebugRenderingContext implements IRenderingContext
 	
 	@Override public String toString() { return "debug rendering context"; }
 
+	@Override
+	public boolean isEntityless() { return true; }
+
 }

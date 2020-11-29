@@ -1,6 +1,7 @@
 package game.systems.rendering;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g3d.decals.DecalBatch;
@@ -84,4 +85,7 @@ public class OverlayRenderer implements IRenderer
 		throw new UnsupportedOperationException();
 	}
 
+
+	@Override
+	public Camera camera() { return cameraProvider.getCamera(); }
 }

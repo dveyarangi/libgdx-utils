@@ -41,6 +41,12 @@ public interface IRenderingContext
 	 * Finalize batch rendering and restore renderer state.
 	 */
 	public void end();
+	
+	/**
+	 * If true, no entities are needed for this context to be rendered
+	 * @return
+	 */
+	public boolean isEntityless();
 
 	/**
 	 * Dummy context for rendering components that do not specify context id
@@ -55,6 +61,7 @@ public interface IRenderingContext
 		@Override public void begin() { }
 		@Override public void end() { }
 		@Override public String toString() { return "void context"; }
+		@Override public boolean isEntityless() { return false; }
 	}
 	
 	public static class DecalContext implements IRenderingContext
@@ -71,6 +78,8 @@ public interface IRenderingContext
 		}
 		@Override public void end() { decals.flush(); }
 		@Override public String toString() { return "decals context"; }
+		@Override
+		public boolean isEntityless() { return false; }
 	}
 
 	public default void entityAdded(Entity entity) {};

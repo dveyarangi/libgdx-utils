@@ -7,11 +7,7 @@ import game.config.GraphicOptions;
 import game.debug.Debug;
 import game.resources.ResourceFactory;
 import game.systems.control.GameInputProcessor;
-import game.systems.rendering.AnimationRenderingComponent;
 import game.systems.rendering.EntityRenderingSystem;
-import game.systems.rendering.MeshRenderingComponent;
-import game.systems.rendering.ShapeRenderingComponent;
-import game.systems.rendering.SpriteComponent;
 import game.util.LoadableModule;
 import game.util.LoadableThread;
 import game.util.LoadingProgress;
@@ -23,18 +19,24 @@ import game.world.LevelInitialSettings;
 import game.world.camera.ICameraProvider;
 import game.world.camera.OrthoCameraProvider;
 import game.world.camera.PerspectiveCameraProvider;
+import lombok.Getter;
 
 public abstract class WorldScreen<G extends AbstractGame> extends AbstractScreen<G >
 {
 	GameboardModules gameSetup;
 
-	private Level level;
+	protected Level level;
 
-	private GraphicOptions options;
+	@Getter protected GraphicOptions options;
 
-	public WorldScreen( G game )
+	public WorldScreen( G game, GraphicOptions options )
 	{
 		super(game);
+		
+		this.options = options;
+		if( options == null)
+			throw new IllegalArgumentException("Options cannot be null");
+
 	}
 	
 	public LoadableModule getLoadable()
@@ -51,20 +53,6 @@ public abstract class WorldScreen<G extends AbstractGame> extends AbstractScreen
 	{
 		progress.update(0, "Loading level...");
 		
-		this.options = getOptions();
-		if( options == null)
-			throw new IllegalArgumentException("Options cannot be null");
-
-
-		// /////////////////////////////////////////////////////////////////////////
-		// LOADING LEVEL RESOURCES
-		//
-		// this should be done before we get here, in a loading screen:
-		//
-		ResourceFactory factory = super.game.getResourceFactory();
-		//		factory.finishLoading();
-
-
 		// /////////////////////////////////////////////////////////////////////////
 		// CREATING INTERACTIVE ENVIRONMENT
 		//
@@ -83,20 +71,6 @@ public abstract class WorldScreen<G extends AbstractGame> extends AbstractScreen
 		LevelDef def = createLevel(progress.subprogress(0.8f));
 		Debug.stopTiming("level creation");
 		
-
-
-		// /////////////////////////////////////////////////////////////////////////
-		// CREATING USER INTERFACE OVERLAY
-		//
-		// HUD display and interface manager
-		//
-		//HUD ui = new BattleHUD();
-
-		// /////////////////////////////////////////////////////////////////////////
-		// GAME WORLD RENDERER
-		//
-		// initializing level rendering system
-		//
 
 		LevelInitialSettings settings = def.getInitialSettings();
 		if( settings == null )
@@ -117,6 +91,8 @@ public abstract class WorldScreen<G extends AbstractGame> extends AbstractScreen
 			break;
 		
 		}
+
+		ResourceFactory factory = super.game.getResourceFactory();
 
 		gameSetup = new GameboardModules(factory, def, environment, worldCameraProvider);
 		extendModules(gameSetup);
@@ -148,10 +124,6 @@ public abstract class WorldScreen<G extends AbstractGame> extends AbstractScreen
 	
 	protected void extendModules(GameboardModules modules)
 	{
-		modules.addRendererType(AnimationRenderingComponent.class);
-		modules.addRendererType(ShapeRenderingComponent.class);
-		modules.addRendererType(MeshRenderingComponent.class);
-		modules.addRendererType(SpriteComponent.class);
 	}
 
 	private void update( float delta )

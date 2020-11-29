@@ -15,7 +15,7 @@ import game.systems.SystemDef;
 import game.systems.control.GameInputProcessor;
 import game.systems.lifecycle.LifecycleSystem;
 import game.systems.rendering.EntityRenderingSystem;
-import game.systems.rendering.ISystemRenderer;
+import game.systems.rendering.IRenderingContext;
 import game.systems.rendering.Renderer;
 import lombok.Getter;
 
@@ -24,6 +24,7 @@ import lombok.Getter;
  *
  * @author Fima
  */
+@Transient
 public class Level extends EntitySystem
 {
 	// //////////////////////////////////////////////////////////////
@@ -63,9 +64,6 @@ public class Level extends EntitySystem
 	// //////////////////////////////////////////////////////////////
 	// renderer
 	private EntityRenderingSystem renderer;
-
-	
-	private List <ISystemRenderer> systemRenderers;
 	
 	
 	@Getter private GraphicOptions graphicOptions;
@@ -85,8 +83,6 @@ public class Level extends EntitySystem
 		this.engine = new PooledEngine(INITIAL_UNITS_NUM, Integer.MAX_VALUE, 10 * INITIAL_UNITS_NUM, Integer.MAX_VALUE);
 		// flattening game modules:
 		this.unitsFactory = new EntityFactory( this, engine );
-		
-		this.systemRenderers = new ArrayList <> ();
 
 		engine.addSystem( this );
 		
@@ -105,29 +101,26 @@ public class Level extends EntitySystem
 	{
 		Debug.startTiming("level initialization");
 
-		// creating entity control systems:
-
 		////////////////////////////////////////////////////
-		// lifecyctem works closely with units factory
+		// lifesystem works closely with units factory
+		// to give birth and death to entities
 		engine.addSystem( new LifecycleSystem( unitsFactory ) );
 
 		////////////////////////////////////////////////////
-		// this system controls the physical environment and dispatches damage
-		// messages:
+		// this system controls the physical environment, manages cursor picking and collisions 
 		engine.addSystem( (EntitySystem) modules.getEnvironment() );
 
 		
-		List <SimulationSystem> simSystems = new ArrayList <> ();
+		List <IRenderingContext> systemRenderers = new ArrayList <> ();
 		////////////////////////////////////////////////////
-		// initalize and add a generic entity system from definitions:
+		// initialize and add EntitySystems from definitions:
 		for(SystemDef systemDef : def.getSystemDefs())
 		{
 			EntitySystem system = systemDef.createSystem();
 			systemDef.initSystem( this, system );
 			engine.addSystem( system );
-			if(system instanceof SimulationSystem)
-				simSystems.add((SimulationSystem) system);
-			ISystemRenderer systemRenderer = systemDef.createRenderer();
+			
+			IRenderingContext systemRenderer = systemDef.createRenderer();
 			if( systemRenderer != null )
 				systemRenderers.add(systemRenderer);
 		}
@@ -135,17 +128,15 @@ public class Level extends EntitySystem
 		// ////////////////////////////////////////////////////
 		Renderer rend = new Renderer( modules.getCameraProvider(), graphicOptions );
 		// creating entity rendering system:
-		this.renderer = new EntityRenderingSystem( rend,
-				modules.getGameFactory(), modules.getRendererTypes() );
+		this.renderer = new EntityRenderingSystem( rend, modules.getResourceFactory(), systemRenderers );
 
 		engine.addSystem( this.renderer );
 
 
+		// ////////////////////////////////////////////////////
 		unitsFactory.createUnits( def );
-		
-		for(SimulationSystem simSystem : simSystems)
-			simSystem.simulate();
 
+		// ////////////////////////////////////////////////////
 		//
 		Runtime.getRuntime().gc(); 
  
@@ -183,11 +174,7 @@ public class Level extends EntitySystem
 	public void draw( float delta )
 	{
 		renderer.draw(delta);
-		
-		for(int idx = 0; idx < systemRenderers.size(); idx ++)
-		{
-			systemRenderers.get(idx).render(renderer);
-		}
+
 		Debug.debug.draw();
 
 		GameInputProcessor processor = getEngine().getSystem(GameInputProcessor.class);

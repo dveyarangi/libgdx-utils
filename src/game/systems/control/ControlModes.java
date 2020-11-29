@@ -4,7 +4,6 @@ import java.util.Map;
 import java.util.TreeMap;
 
 import com.badlogic.ashley.core.Entity;
-import com.badlogic.ashley.core.EntitySystem;
 import com.badlogic.ashley.core.Family;
 import com.badlogic.gdx.math.Vector2;
 
@@ -15,7 +14,8 @@ import game.world.Level;
 import lombok.Getter;
 import lombok.Setter;
 
-public class ControlModes extends EntitySystem
+
+public class ControlModes// extends EntitySystem
 {
 
 	private Map <String, IControlMode> controlModes;
@@ -48,7 +48,7 @@ public class ControlModes extends EntitySystem
 		}
 	}
 
-	@Override
+	//@Override
 	public void update( float delta )
 	{
 		if( !controlModes.isEmpty() )

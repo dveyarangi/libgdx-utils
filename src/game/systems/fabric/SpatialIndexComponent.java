@@ -5,6 +5,7 @@ import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.utils.Pool.Poolable;
 
 import game.systems.spatial.ISpatialComponent;
+import game.world.Transient;
 import lombok.Getter;
 import yarangi.spatial.AABB;
 import yarangi.spatial.ISpatialObject;
@@ -14,6 +15,7 @@ import yarangi.spatial.ISpatialObject;
  *  
  * @author Fima
  */
+@Transient
 public class SpatialIndexComponent implements ISpatialObject, Component, Poolable
 {
 

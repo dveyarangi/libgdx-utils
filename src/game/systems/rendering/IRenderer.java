@@ -1,5 +1,6 @@
 package game.systems.rendering;
 
+import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g3d.decals.DecalBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
@@ -28,6 +29,9 @@ public interface IRenderer
 	 * @return
 	 */
 	DecalBatch decals();
+	
+	
+	Camera camera();
 
 	/**
 	 * Prepare rendering stuff
