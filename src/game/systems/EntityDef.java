@@ -28,14 +28,15 @@ public class EntityDef implements Component, Poolable
 	
 	public String id;
 
-	public boolean isPickable = false;
-
 	/**
 	 * If true, this unit is allowed to have children
 	 */
 	public boolean descendants = false;
 
-	public Array <IComponentDef<?>> genericAspects = new Array <IComponentDef<?>> ();
+	/**
+	 * Used to initialize entity with additional components
+	 */
+	transient public Array <IComponentDef<?>> genericAspects = new Array <IComponentDef<?>> ();
 
 	public EntityDef(String id)
 	{
@@ -43,11 +44,6 @@ public class EntityDef implements Component, Poolable
 	}
 
 	//	@Override public int getFactionId() { return faction;}
-
-	public boolean isPickable()
-	{
-		return isPickable;
-	}
 
 
 	/*	@Override
@@ -95,8 +91,6 @@ public class EntityDef implements Component, Poolable
 	{
 		genericAspects.clear();
 		descendants = false;
-		isPickable = false;
-		
 	}
 
 

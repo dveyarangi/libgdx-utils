@@ -5,8 +5,8 @@ import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.QueryCallback;
 import com.badlogic.gdx.physics.box2d.World;
 
-import game.systems.EntityDef;
 import game.systems.control.IEntityFilter;
+import game.systems.control.PickComponent;
 import game.world.IPickProvider;
 import lombok.Setter;
 
@@ -44,8 +44,9 @@ public class Box2DPicker implements IPickProvider
 			Entity testedEntity = (Entity) fixture.getUserData();
 			if(testedEntity == null)
 				return true;
-			EntityDef def = EntityDef.get( testedEntity );
-			if(def.isPickable() && (entityFilter == null || entityFilter.accept(testedEntity)))
+			
+			PickComponent pick = testedEntity.getComponent(PickComponent.class);
+			if(pick != null && (entityFilter == null || entityFilter.accept(testedEntity)))
 			{
 				pickedEnitity = testedEntity;
 				return false;

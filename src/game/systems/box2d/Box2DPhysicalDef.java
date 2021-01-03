@@ -100,6 +100,7 @@ public class Box2DPhysicalDef implements IMovementDef<Box2DPhysicalComponent>
 
 	private float maxSpeed;
 
+
 	public Box2DPhysicalDef(float maxSpeed )
 	{
 		this.parts = new Array <PartDef> (1);
