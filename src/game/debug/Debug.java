@@ -292,7 +292,7 @@ public class Debug
 
 	public static void startTiming( final String processName )
 	{
-		log("Starting " + processName + "...");
+		log( DEBUG,"Starting " + processName + "...");
 		timings.put(processName, System.currentTimeMillis());
 	}
 
@@ -305,7 +305,7 @@ public class Debug
 		}
 		
 		long duration = System.currentTimeMillis() - timings.get(processName);
-		log("Finished " + processName + " in " + duration + "ms.");
+		log( DEBUG, "Finished " + processName + " in " + duration + "ms.");
 		
 		timings.remove(processName);
 	}
@@ -321,18 +321,18 @@ public class Debug
 	 */
 	public static boolean log( final String message )
 	{
-		log(2, DEBUG, message);
+		log( DEBUG, message);
 		return true;
 	}
 	
 	public static boolean warn( final String message )
 	{
-		log(2, WARN, message);
+		log( WARN, message);
 		return true;
 	}
 	public static boolean error( final String message )
 	{
-		log(2, ERROR, message);
+		log( ERROR, message);
 		return true;
 	}
 	
@@ -346,6 +346,30 @@ public class Debug
 	public static boolean log( int stackDepth, String tag,  final String message )
 	{
 		StackTraceElement el = new Exception().getStackTrace()[stackDepth];
+		String className = el.getClassName();
+		int lineNum = el.getLineNumber();
+
+		Gdx.app.log(tag, String.format(LOG_TEMPLATE, className, lineNum, message));
+
+		return true;
+	}
+	
+	public static boolean log( String tag,  final String format, Object ... args )
+	{
+		return log(tag, String.format(format, args));
+	}
+	
+	public static boolean log(String tag,  final String message )
+	{
+		StackTraceElement [] els = new Exception().getStackTrace();
+		StackTraceElement el = null;
+		for(int idx = 0; idx < els.length; idx ++)
+		{
+			el = els[idx];
+			if(!el.getClassName().equals(Debug.class.getCanonicalName()))
+				break;
+		}
+		
 		String className = el.getClassName();
 		int lineNum = el.getLineNumber();
 
