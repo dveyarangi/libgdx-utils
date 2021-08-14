@@ -20,12 +20,12 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.IntMap;
 import com.badlogic.gdx.utils.IntMap.Entry;
 
-import game.systems.EntityDef;
 import game.systems.control.GameInputProcessor;
 import game.systems.control.Hotkeys;
 import game.systems.control.InputAction;
 import game.systems.control.InputContext;
 import game.systems.hud.UIInputProcessor;
+import game.systems.lifecycle.LifecycleComponent;
 import game.systems.rendering.EntityRenderingSystem;
 import game.systems.rendering.IRenderer;
 import game.systems.rendering.IRenderingComponent;
@@ -48,17 +48,17 @@ public class Debug
 	public Level level;
 
 	IRenderer levelRenderer;
-	
+
 	IRenderer uiRenderer;
 
 	// private OrthographicCamera camera;
 
 	public static final int [] PROJECTED_SHAPER_ID = new int [] {-1};
-	
-	
+
+
 	// TODO: turn off in production
 	public static final boolean DEBUG_IDS = true;
-	
+
 	public static boolean DEBUG_UI = false;
 
 
@@ -71,7 +71,7 @@ public class Debug
 		String name;
 		@Getter boolean isOn;
 		IOverlay overlay;
-		
+
 		Array <ChangeListener> listeners = new Array <> ();
 
 		public OverlayBinding(int keyCode, String name, boolean isOn, IOverlay overlay)
@@ -89,7 +89,7 @@ public class Debug
 				overlay.onShow();
 			else
 				overlay.onHide();
-			
+
 			for(int idx = 0; idx < listeners.size; idx ++)
 				listeners.get(idx).changed(null, null);
 		}
@@ -106,9 +106,9 @@ public class Debug
 		}
 	}
 
-	private IntMap<OverlayBinding> debugOverlays = new IntMap<OverlayBinding>();
+	private IntMap<OverlayBinding> debugOverlays = new IntMap<>();
 
-	private static Map<String, Long> timings = new HashMap<String, Long>();
+	private static Map<String, Long> timings = new HashMap<>();
 
 	private int frameCount = 0;
 	/**
@@ -119,17 +119,17 @@ public class Debug
 	/**
 	 * Font for debug labels hardloading TODO:set size!
 	 */
-	public static final BitmapFont FONT; 
+	public static final BitmapFont FONT;
 	static {
 		FileHandle font = Gdx.files.internal("fonts/VisOpenSans.ttf");
-	    FreeTypeFontGenerator generator = new FreeTypeFontGenerator(font);
+		FreeTypeFontGenerator generator = new FreeTypeFontGenerator(font);
 		var param = new FreeTypeFontGenerator.FreeTypeFontParameter();
 		param.size = 12;
 		param.color = new Color(1,1,1,1);
-		
+
 		FONT = generator.generateFont(param);
 	}
-	
+
 	private float[] deltas = new float[SAMPLES];
 	private float deltaPeak = 0;
 	private boolean isFirstBatch = true;
@@ -162,7 +162,7 @@ public class Debug
 		uiProcessor = inputController.getInputRegistry();
 
 		// coordinate grid:
-		this.addOverlay(Hotkeys.TOGGLE_COORDINATE_GRID, "Coordinate Grid",
+		addOverlay(Hotkeys.TOGGLE_COORDINATE_GRID, "Coordinate Grid",
 				new CoordinateGrid(level.getDef().getCenterX(), level.getDef().getCenterY(), level.def().getHalfWidth(), level.def().getHalfHeight())
 				);
 
@@ -174,16 +174,16 @@ public class Debug
 
 		// spatial faction colors
 
-		
-		 /*addOverlay( Hotkeys.TOGGLE_FACTION_COLORS, new
+
+		/*addOverlay( Hotkeys.TOGGLE_FACTION_COLORS, new
 				OverlayBinding(null) {
 				 @Override public void toggle() { super.toggle(); for(IUnit unit :
 		 debug.level.getUnits()) unit.toggleOverlay( FACTION_OID ); } } );*/
-		 
+
 		//this.addOverlay(Hotkeys.TOGGLE_FACTION_COLORS, new UnitSymbol());
 
-		this.addOverlay(Hotkeys.TOGGLE_BOX2D_DEBUG, "Physics Debug", new WorldOverlay() {
-			
+		addOverlay(Hotkeys.TOGGLE_BOX2D_DEBUG, "Physics Debug", new WorldOverlay() {
+
 			@Override
 			public void draw( IRenderer renderer )
 			{
@@ -191,26 +191,28 @@ public class Debug
 			}
 
 		});
-		this.addOverlay(Hotkeys.TOGGLE_UI_DEBUG, "UI Debug", new IOverlay()
-				{
-					public void onShow() { inputController.getUi().setDebug(true);}
-					public void onHide() { inputController.getUi().setDebug(false);}
-					@Override
-					public void draw(IRenderer renderer) { }
-			
-				});
-		
+		addOverlay(Hotkeys.TOGGLE_UI_DEBUG, "UI Debug", new IOverlay()
+		{
+			@Override
+			public void onShow() { inputController.getUi().setDebug(true);}
+			@Override
+			public void onHide() { inputController.getUi().setDebug(false);}
+			@Override
+			public void draw(IRenderer renderer) { }
+
+		});
+
 		// NOTE: This should be added last to properly display overlay key bindings
-		this.addOverlay(Hotkeys.TOGGLE_DEBUG_INFO, "Debug Info", new DebugInfoOverlay(inputController, debugOverlays));
-		
-	
+		addOverlay(Hotkeys.TOGGLE_DEBUG_INFO, "Debug Info", new DebugInfoOverlay(inputController, debugOverlays));
+
+
 		for(OverlayBinding binding : debugOverlays.values())
 		{
 			if(binding.overlay instanceof WorldOverlay)
 			{
 				((WorldOverlay) binding.overlay).setCameraProvider(level.getModules().getCameraProvider());
 			}
-			
+
 			uiProcessor.registerAction(binding.keyCode, new InputAction() {
 				@Override
 				public void execute( final InputContext context )
@@ -220,9 +222,9 @@ public class Debug
 			});
 		}
 
-		
-		
-		
+
+
+
 	}
 
 
@@ -303,14 +305,14 @@ public class Debug
 			log("Trying to stop missing timing measurement " + processName);
 			return;
 		}
-		
+
 		long duration = System.currentTimeMillis() - timings.get(processName);
 		log( DEBUG, "Finished " + processName + " in " + duration + "ms.");
-		
+
 		timings.remove(processName);
 	}
 
-	
+
 	public static String DEBUG = "DEBUG";
 	public static String WARN  = "WARN ";
 	public static String ERROR = "ERROR";
@@ -324,7 +326,12 @@ public class Debug
 		log( DEBUG, message);
 		return true;
 	}
-	
+	public static boolean log( final String fmt, Object ... args )
+	{
+		log( DEBUG, fmt, args);
+		return true;
+	}
+
 	public static boolean warn( final String message )
 	{
 		log( WARN, message);
@@ -335,7 +342,7 @@ public class Debug
 		log( ERROR, message);
 		return true;
 	}
-	
+
 	private static String LOG_TEMPLATE = "%s:%d >> %s";
 
 	public static boolean log( int stackDepth, String tag,  final String format, Object ... args )
@@ -353,23 +360,23 @@ public class Debug
 
 		return true;
 	}
-	
+
 	public static boolean log( String tag,  final String format, Object ... args )
 	{
 		return log(tag, String.format(format, args));
 	}
-	
+
 	public static boolean log(String tag,  final String message )
 	{
-		StackTraceElement [] els = new Exception().getStackTrace();
+		StackTraceElement [] els = Thread.currentThread().getStackTrace();
 		StackTraceElement el = null;
-		for(int idx = 0; idx < els.length; idx ++)
+		for(int idx = 2; idx < els.length; idx ++)
 		{
 			el = els[idx];
 			if(!el.getClassName().equals(Debug.class.getCanonicalName()))
 				break;
 		}
-		
+
 		String className = el.getClassName();
 		int lineNum = el.getLineNumber();
 
@@ -401,10 +408,10 @@ public class Debug
 	public static String entityToString(Entity entity)
 	{
 		StringBuilder sb = new StringBuilder();
-		
+
 		for(Component component : entity.getComponents())
 			sb.append(component.getClass()).append(": ").append(component.toString()).append("\n");
-		
+
 		return sb.toString();
 	}
 
@@ -420,13 +427,13 @@ public class Debug
 			log("Entity: null");
 			return;
 		}
-		EntityDef entityDef = entity.getComponent(EntityDef.class);
-		if( entityDef == null)
+		LifecycleComponent lifecycle = entity.getComponent(LifecycleComponent.class);
+		if( lifecycle == null )
 		{
 			log("Entity: No id");
 			return;
 		}
-		
-		log("Entity: " + entityDef.id);
+
+		log("Entity: " + lifecycle.id);
 	}
 }

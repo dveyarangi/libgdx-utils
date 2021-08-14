@@ -2,6 +2,7 @@ package game.util;
 
 import java.util.List;
 import java.util.Random;
+import java.util.Set;
 
 import lombok.Getter;
 
@@ -164,6 +165,19 @@ public class RandomSeed
 		int pick = this.N(list.size());
 		return list.get(pick);
 
+	}
+	public <E> E random( Set <E> set )
+	{
+		int size = set.size();
+		int pick = this.N(size);
+		int i = 0;
+		for(E obj : set)
+		{
+		    if (i == pick)
+		        return obj;
+		    i++;
+		}
+		throw new IllegalStateException("Java got crazy");
 	}
 
 
