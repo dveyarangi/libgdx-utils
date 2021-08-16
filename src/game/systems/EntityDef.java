@@ -10,6 +10,6 @@ public abstract class EntityDef
 	/**
 	 * Full name of this entity within group
 	 */
-	@Getter @Setter protected String type;
+	@Getter @Setter protected String path;
 
 }
