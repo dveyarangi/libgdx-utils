@@ -112,7 +112,7 @@ public class GameInputProcessor extends EntitySystem implements InputProcessor
 		});
 
 		this.ui = ui;
-		
+
 	}
 	/**
 	 * Called when this EntitySystem is added to an {@link Engine}.
@@ -123,20 +123,20 @@ public class GameInputProcessor extends EntitySystem implements InputProcessor
 	{
 		this.level = engine.getSystem(Level.class);
 
-		
+
 		controlModes.init( level );
-		
+
 
 		this.ui.init( this );
-		
-		
+
+
 		inputMultiplexer.addProcessor(uiProcessor);
 		if( ui != null)
 			inputMultiplexer.addProcessor(ui.getInputProcessor());
 		inputMultiplexer.addProcessor(new GestureDetector(new GameGestureListener(camController)));
 		inputMultiplexer.addProcessor(this);
 
-		
+
 		LevelInitialSettings settings = level.getDef().getInitialSettings();
 		camController = new FreeCameraController( level.getModules().getCameraProvider(), settings.getInitZoom(), settings.getMinZoom(), settings.getMaxZoom() );
 
@@ -147,7 +147,7 @@ public class GameInputProcessor extends EntitySystem implements InputProcessor
 		 */
 		Gdx.input.setInputProcessor(inputMultiplexer);
 	}
-	
+
 	public void setPickFilter(IEntityFilter filter)
 	{
 		picker.setEntityFilter(filter);
@@ -162,21 +162,21 @@ public class GameInputProcessor extends EntitySystem implements InputProcessor
 	@Override
 	public void update( final float delta )
 	{
-	
+
 		setPickFilter(controlModes.getPickFilter());
 
 		uiProcessor.update(delta);
-		
+
 		// adjusting camera:
 		camController.update(delta);
 
 		// TODO: this may be called too much:
-		this.toggleCursorMoved(currx, curry, true);
+		toggleCursorMoved(currx, curry, true);
 
 		timeController.update(delta);
 
 		controlModes.update(delta);
-		
+
 
 
 	}
@@ -244,12 +244,12 @@ public class GameInputProcessor extends EntitySystem implements InputProcessor
 		switch( keycode )
 		{
 
-			/*
-			 * case Input.Keys.SPACE: if(camController == freeController) {
-			 * autoController.zoomTarget = camController.getCamera().zoom;
-			 * camController = autoController; } else { camController =
-			 * freeController; } break;
-			 */
+		/*
+		 * case Input.Keys.SPACE: if(camController == freeController) {
+		 * autoController.zoomTarget = camController.getCamera().zoom;
+		 * camController = autoController; } else { camController =
+		 * freeController; } break;
+		 */
 		default:
 
 			controlModes.keyDown(keycode);
@@ -286,7 +286,7 @@ public class GameInputProcessor extends EntitySystem implements InputProcessor
 	@Override
 	public boolean touchDown( final int screenX, final int screenY, final int pointer, final int button )
 	{
-		this.toggleCursorMoved(screenX, screenY, true);
+		toggleCursorMoved(screenX, screenY, true);
 
 		boolean consumed = controlModes.touchDown(worldPos.x, worldPos.y, camController.zoom(), pickedObject, button);
 
@@ -309,7 +309,7 @@ public class GameInputProcessor extends EntitySystem implements InputProcessor
 	@Override
 	public boolean touchUp( final int screenX, final int screenY, final int pointer, final int button )
 	{
-		this.toggleCursorMoved(screenX, screenY, true);
+		toggleCursorMoved(screenX, screenY, true);
 
 		boolean consumed = controlModes.touchUp(worldPos.x, worldPos.y, camController.zoom(), pickedObject, button);
 
@@ -326,7 +326,7 @@ public class GameInputProcessor extends EntitySystem implements InputProcessor
 	@Override
 	public boolean touchDragged( final int screenX, final int screenY, final int pointer )
 	{
-		this.toggleCursorMoved(screenX, screenY, false);
+		toggleCursorMoved(screenX, screenY, false);
 
 		boolean consumed = false;
 
@@ -339,7 +339,7 @@ public class GameInputProcessor extends EntitySystem implements InputProcessor
 
 		return consumed;
 	}
-	
+
 	@AllArgsConstructor
 	public class MoveCameraAction implements InputAction
 	{
@@ -349,21 +349,23 @@ public class GameInputProcessor extends EntitySystem implements InputProcessor
 		{
 			camController.moveBy(dx*context.dt*camController.zoom(), dy*context.dt*camController.zoom());
 		}
+		@Override
 		public boolean isActivable() { return true; }
 	}
-	
+
 	@Override
 	public boolean mouseMoved( final int screenX, final int screenY )
 	{
-		this.toggleCursorMoved(screenX, screenY, false);
+		toggleCursorMoved(screenX, screenY, false);
 		return true;
 	}
 
 	@Override
-	public boolean scrolled( final int amount )
+	public boolean scrolled( float amountX, float amountY )
 	{
-		this.toggleCursorMoved(currx, curry, true);
-		camController.zoomTo(worldPos.x, worldPos.y, amount * ZOOM_SPEED_COEF);
+		//System.out.println("scroll: " + amountX + ":" +amountY);
+		toggleCursorMoved(currx, curry, true);
+		camController.zoomTo(worldPos.x, worldPos.y, amountY * ZOOM_SPEED_COEF);
 		return true;
 	}
 
@@ -408,7 +410,7 @@ public class GameInputProcessor extends EntitySystem implements InputProcessor
 		 */
 
 		controlModes.render(renderer);
-		
+
 		ui.render();
 	}
 

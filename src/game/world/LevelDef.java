@@ -3,7 +3,7 @@ package game.world;
 import java.util.ArrayList;
 import java.util.List;
 
-import game.systems.EntityDef;
+import game.systems.EntityPrefab;
 import game.systems.SystemDef;
 import lombok.Getter;
 import lombok.Setter;
@@ -32,7 +32,7 @@ public class LevelDef
 
 	private ArrayList<SystemDef<?>> systems = new ArrayList<> ();
 
-	private ArrayList<EntityDef> entities = new ArrayList<>();
+	private ArrayList<EntityPrefab> entities = new ArrayList<>();
 
 	public void setWidth( final int width )
 	{
@@ -59,12 +59,12 @@ public class LevelDef
 		systems.add(systemDef);
 	}
 
-	public ArrayList<EntityDef> getEntityDefs()
+	public ArrayList<EntityPrefab> getEntityDefs()
 	{
 		return entities;
 	}
 	
-	public void addEntity(EntityDef entityDef)
+	public void addEntity(EntityPrefab entityDef)
 	{
 		entities.add(entityDef);
 	}

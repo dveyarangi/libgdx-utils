@@ -5,16 +5,16 @@ import com.badlogic.ashley.core.Family;
 import com.badlogic.ashley.utils.ImmutableArray;
 
 import game.systems.DescendantsComponent;
-import game.systems.EntityDef;
+import game.systems.lifecycle.LifecycleComponent;
 import game.world.Level;
 
 public class AnchorDef implements ISpatialDef<AnchorComponent>
 {
 	public float x, y, z, a, r;
 
-	public EntityDef parent;
+	public int parentId;
 
-	public AnchorDef( final EntityDef parent, final float x, final float y, final float z, final float a, final float r )
+	public AnchorDef( int parentId, final float x, final float y, final float z, final float a, final float r )
 	{
 		super();
 		this.x = x;
@@ -22,11 +22,8 @@ public class AnchorDef implements ISpatialDef<AnchorComponent>
 		this.z = z;
 		this.a = a;
 		this.r = r;
-		
-		if(!parent.hasDescendants())
-			throw new IllegalArgumentException("Parent entity is not defined to have descendants");
 
-		this.parent = parent;
+		this.parentId = parentId;
 	}
 
 	@Override
@@ -35,8 +32,8 @@ public class AnchorDef implements ISpatialDef<AnchorComponent>
 		ImmutableArray<Entity> entities = level.getEngine().getEntitiesFor(Family.one(DescendantsComponent.class).get());
 		for( Entity potentialParent : entities )
 		{
-			EntityDef parentDef = EntityDef.get(potentialParent);
-			if( parentDef == parent )
+			LifecycleComponent parentDef = LifecycleComponent.get(potentialParent);
+			if( parentDef.id == parentId )
 			{
 				anchor.parent = potentialParent;
 				anchor.parentSpatial = potentialParent.getComponent(ISpatialComponent.class);

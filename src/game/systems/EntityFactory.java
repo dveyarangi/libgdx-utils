@@ -17,7 +17,7 @@ import lombok.Getter;
 /**
  * Manages entity instantiation and pooling.
  *
- * Unit is created taking properties from {@link EntityDef}. TODO: all the def properties are copied to component,
+ * Unit is created taking properties from {@link EntityPrefab}. TODO: all the def properties are copied to component,
  * so it is safe to reuse the def with some modifications
  *
  * @author Fima
@@ -41,14 +41,14 @@ public class EntityFactory
 	{
 		this.engine = engine;
 		this.level = level;
-	
+
 	}
-	
+
 	public LifecycleSystem getLifecycle()
 	{
 		if( lifecycle == null)
 			this.lifecycle = engine.getSystem(LifecycleSystem.class);
-		
+
 		return lifecycle;
 	}
 
@@ -58,9 +58,9 @@ public class EntityFactory
 		// create starting units:
 		for( int idx = 0; idx < def.getEntityDefs().size(); idx ++ )
 		{
-			EntityDef entityDef = def.getEntityDefs().get(idx);
+			EntityPrefab entityDef = def.getEntityDefs().get(idx);
 			assert entityDef != null : "Unit def is null, looks like redundant comma in units list in config";
-			Entity unit = this.createUnit(entityDef);
+			Entity unit = createUnit(entityDef);
 
 			engine.addEntity(unit);
 		}
@@ -81,48 +81,48 @@ public class EntityFactory
 	 *
 	 * Every created entity has the {@link LifecycleComponent} and {@link SpatialComponent}, as well as
 	 * other components, specified by definitions.
-	 * @param def
+	 * @param prefab
 	 * @return
 	 */
 	@SuppressWarnings( "unchecked" )
-	public Entity createUnit( EntityDef def )
+	public Entity createUnit( EntityPrefab prefab )
 	{
 		Entity entity = engine.createEntity();
 
-		entity.add(def);
 
 
-		if( def.hasDescendants() )
+		if( prefab.hasDescendants() )
 		{
 			entity.add(engine.createComponent(DescendantsComponent.class));
 		}
 
 		// /////////////////////////////////////////////////////////
 		// Generic components
-		for( int idx = 0; idx < def.getDefs().size; idx ++ )
+		for( int idx = 0; idx < prefab.getDefs().size; idx ++ )
 		{
-			IComponentDef componentDef = def.getDefs().get(idx);
-			
+			IComponentDef componentDef = prefab.getDefs().get(idx);
+
 			if(componentDef.getComponentClass() == null) // TODO: validate component type is not null
 				throw new IllegalArgumentException("No class defined for component def " + componentDef);
-			
+
 			Component component;
 			if( componentDef instanceof SystemDef)
 			{
 				component = (Component)engine.getSystem(componentDef.getComponentClass());
 			}
 			else
-			if( componentDef instanceof IDefComponent)
-			{
-				component = (IDefComponent)componentDef;
-			}
-			else
-			{
-				// create component for the speficied def:
-				component = engine.createComponent(componentDef.getComponentClass());
-			}
+				if( componentDef instanceof IDefComponent)
+				{
+					component = (IDefComponent)componentDef;
+				}
+				else
+				{
+					// create component for the speficied def:
+					component = engine.createComponent(componentDef.getComponentClass());
+				}
 			// init the component:
 			componentDef.initComponent( component, entity, level );
+			componentDef.initComponent( component, prefab.getProps(), entity, level );
 			// attach the component to the entity:
 			entity.add(component);
 		}
@@ -160,11 +160,11 @@ public class EntityFactory
 		engine.removeEntity(entity);
 	}
 
-	public Entity addEntity( EntityDef def )
+	public Entity addEntity( EntityPrefab def )
 	{
 		if( def == null ) return null;
 
-		Entity entity = this.createUnit(def);
+		Entity entity = createUnit(def);
 
 		engine.addEntity( entity );
 

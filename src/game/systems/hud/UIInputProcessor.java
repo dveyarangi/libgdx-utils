@@ -14,10 +14,10 @@ import game.systems.control.InputContext;
 public class UIInputProcessor implements InputProcessor
 {
 
-	private IntMap<InputAction> keyActions = new IntMap<InputAction>();
+	private IntMap<InputAction> keyActions = new IntMap<>();
 
 	private InputContext context = new InputContext();
-	
+
 	private Array<InputAction> activeActions = new Array<>();
 
 	public void registerAction( final int keycode, final InputAction action )
@@ -87,12 +87,12 @@ public class UIInputProcessor implements InputProcessor
 	}
 
 	@Override
-	public boolean scrolled( final int amount )
+	public boolean scrolled (float amountX, float amountY)
 	{
 		// TODO Auto-generated method stub
 		return false;
 	}
-	
+
 	public void update(float dt)
 	{
 		context.dt = dt;

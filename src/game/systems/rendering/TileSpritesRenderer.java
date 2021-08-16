@@ -135,9 +135,9 @@ public class TileSpritesRenderer extends EntitySystem implements EntityListener,
 		buffer[vidx++] = 1;
 
 		// color
-		buffer[vidx++] = sprite.def.color.r;
-		buffer[vidx++] = sprite.def.color.g;
-		buffer[vidx++] = sprite.def.color.b;
+		buffer[vidx++] = sprite.color.r;
+		buffer[vidx++] = sprite.color.g;
+		buffer[vidx++] = sprite.color.b;
 		buffer[vidx++] = opacity;					
 
 		buffer[vidx++] = x;
@@ -150,9 +150,9 @@ public class TileSpritesRenderer extends EntitySystem implements EntityListener,
 		buffer[vidx++] = 1;
 
 		// color
-		buffer[vidx++] = sprite.def.color.r;
-		buffer[vidx++] = sprite.def.color.g;
-		buffer[vidx++] = sprite.def.color.b;
+		buffer[vidx++] = sprite.color.r;
+		buffer[vidx++] = sprite.color.g;
+		buffer[vidx++] = sprite.color.b;
 		buffer[vidx++] = opacity;	
 		
 		buffer[vidx++] = x+sprite.dw*sprite.width;
@@ -165,9 +165,9 @@ public class TileSpritesRenderer extends EntitySystem implements EntityListener,
 		buffer[vidx++] = 1;
 
 		// color
-		buffer[vidx++] = sprite.def.color.r;
-		buffer[vidx++] = sprite.def.color.g;
-		buffer[vidx++] = sprite.def.color.b;
+		buffer[vidx++] = sprite.color.r;
+		buffer[vidx++] = sprite.color.g;
+		buffer[vidx++] = sprite.color.b;
 		buffer[vidx++] = opacity;
 		
 		buffer[vidx++] = x+sprite.dw*sprite.width;
@@ -180,9 +180,9 @@ public class TileSpritesRenderer extends EntitySystem implements EntityListener,
 		buffer[vidx++] = 1;
 
 		// color
-		buffer[vidx++] = sprite.def.color.r;
-		buffer[vidx++] = sprite.def.color.g;
-		buffer[vidx++] = sprite.def.color.b;
+		buffer[vidx++] = sprite.color.r;
+		buffer[vidx++] = sprite.color.g;
+		buffer[vidx++] = sprite.color.b;
 		buffer[vidx++] = opacity;	
 	}
 	

@@ -2,7 +2,7 @@ package game.systems.lifecycle;
 
 import com.badlogic.ashley.core.Entity;
 
-import game.systems.EntityDef;
+import game.systems.EntityPrefab;
 import game.systems.IComponentDef;
 import game.systems.movement.IMovementDef;
 import game.systems.rendering.RendererDef;
@@ -12,17 +12,17 @@ import game.world.Level;
 
 public class BirthTrailDeathDef implements IComponentDef <LifeAuraComponent>
 {
-	
+
 	public static class Aspect
 	{
 		public Distribution sizeDist, angleDist;
-		public EntityDef def;
+		public EntityPrefab def;
 
 		public Aspect( String id, IMovementDef movementDef,
 				RendererDef renderingDef, float lifeDuration, Distribution sizeDist, Distribution angleDist )
 		{
-			def = new EntityDef(id);
-			def.addDef( new LifecycleDef( lifeDuration ));
+			def = new EntityPrefab();
+			def.addDef( new LifecycleDef( id, lifeDuration ));
 			def.addDef( new SpatialDef(0, 0, 0, 0, 0) );
 			def.addDef( movementDef );
 			def.addDef( renderingDef );

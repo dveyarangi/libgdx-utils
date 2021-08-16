@@ -21,10 +21,6 @@ public class TileSpriteDef extends RendererDef<TileSpriteComponent>
 	public boolean xFlip = false;
 	public boolean yFlip = false;
 	
-	public int randomParallaxes = 0;
-	public float xRandom = 0;
-	public float yRandom = 0;
-	public float wRandom = 0;
 
 	public TileSpriteDef( TextureAtlasName atlas, String regionName )
 	{

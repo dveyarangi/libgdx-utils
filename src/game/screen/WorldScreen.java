@@ -32,27 +32,34 @@ public abstract class WorldScreen<G extends AbstractGame> extends AbstractScreen
 	public WorldScreen( G game, GraphicOptions options )
 	{
 		super(game);
-		
+
 		this.options = options;
 		if( options == null)
 			throw new IllegalArgumentException("Options cannot be null");
 
 	}
-	
+
+	@Override
 	public LoadableModule getLoadable()
 	{
 		return new LoadableThread() {
 			@Override
 			public void load(LoadingProgress loadingProgress) {
-				WorldScreen.this.load(loadingProgress);
+				try {
+					WorldScreen.this.load(loadingProgress);
+				}
+				catch(Exception e) {
+					loadingProgress.setFailed(e);
+				}
+
 			}
 		};
 	}
-	
+
 	private void load(LoadingProgress progress)
 	{
 		progress.update(0, "Loading level...");
-		
+
 		// /////////////////////////////////////////////////////////////////////////
 		// CREATING INTERACTIVE ENVIRONMENT
 		//
@@ -70,14 +77,14 @@ public abstract class WorldScreen<G extends AbstractGame> extends AbstractScreen
 		Debug.startTiming("level creation");
 		LevelDef def = createLevel(progress.subprogress(0.8f));
 		Debug.stopTiming("level creation");
-		
+
 
 		LevelInitialSettings settings = def.getInitialSettings();
 		if( settings == null )
 			throw new IllegalArgumentException("Missing level initial settings");
 
 		ICameraProvider worldCameraProvider = null;
-		
+
 		switch(settings.getCameraMode())
 		{
 		default:
@@ -89,21 +96,21 @@ public abstract class WorldScreen<G extends AbstractGame> extends AbstractScreen
 			worldCameraProvider = new PerspectiveCameraProvider(def.getWidth(), def.getHeight(),
 					settings.getCameraPosition().x, settings.getCameraPosition().y, settings.getInitZoom());
 			break;
-		
+
 		}
 
 		ResourceFactory factory = super.game.getResourceFactory();
 
 		gameSetup = new GameboardModules(factory, def, environment, worldCameraProvider);
 		extendModules(gameSetup);
-		
+
 
 		progress.update(1, "Populating world...");
 		progress.setFinished(true);
 
 
 	}
-	
+
 
 	@Override
 	public void show()
@@ -117,11 +124,11 @@ public abstract class WorldScreen<G extends AbstractGame> extends AbstractScreen
 		Debug.init(level);
 
 	}
-	
+
 	protected abstract LevelDef createLevel(LoadingProgress progress);
-	
+
 	protected abstract IFabric createFabric(LoadingProgress progress);
-	
+
 	protected void extendModules(GameboardModules modules)
 	{
 	}
@@ -145,7 +152,7 @@ public abstract class WorldScreen<G extends AbstractGame> extends AbstractScreen
 	public void render( float delta )
 	{
 		Gdx.gl.glClearColor(0, 0, 0, 1);
-        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT );
+		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT );
 
 		super.render(delta);
 
@@ -163,10 +170,11 @@ public abstract class WorldScreen<G extends AbstractGame> extends AbstractScreen
 
 		GameInputProcessor processor = level.getEngine().getSystem(GameInputProcessor.class);
 		processor.resize(screenWidth, screenHeight);
-		
+
 		Debug.debug.resize(screenWidth, screenHeight);
 	}
 
+	@Override
 	public void dispose()
 	{
 		GameInputProcessor processor = level.getEngine().getSystem(GameInputProcessor.class);

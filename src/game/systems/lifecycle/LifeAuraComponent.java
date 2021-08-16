@@ -5,8 +5,8 @@ import com.badlogic.ashley.core.ComponentMapper;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.utils.Pool.Poolable;
 
-import game.systems.EntityDef;
-import game.systems.kinematic.KinematicMovementDef;
+import game.systems.EntityPrefab;
+import game.systems.kinematic.KinematicDef;
 import game.systems.lifecycle.BirthTrailDeathDef.Aspect;
 import game.systems.movement.IMovementComponent;
 import game.systems.spatial.ISpatialComponent;
@@ -50,12 +50,12 @@ public class LifeAuraComponent implements Component, Poolable
 	 * @param aspect
 	 * @return
 	 */
-	private EntityDef createDef( Entity entity, Aspect aspect )
+	private EntityPrefab createDef( Entity entity, Aspect aspect )
 	{
 		if( aspect == null )
 			return null;
 
-		EntityDef def = aspect.def;
+		EntityPrefab def = aspect.def;
 
 		ISpatialComponent spatial = ISpatialComponent.get(entity);
 
@@ -68,7 +68,7 @@ public class LifeAuraComponent implements Component, Poolable
 		IMovementComponent movement = entity.getComponent( IMovementComponent.class );
 		if(movement != null)
 		{
-			KinematicMovementDef moveDef = def.getDef(KinematicMovementDef.class);
+			KinematicDef moveDef = def.getDef(KinematicDef.class);
 			moveDef.vx = -movement.getMaxSpeed() * spatial.u();
 			moveDef.vy = -movement.getMaxSpeed() * spatial.v();
 			// moveDef.va = 0;
@@ -77,17 +77,17 @@ public class LifeAuraComponent implements Component, Poolable
 
 	}
 
-	public EntityDef createBirthDef( Entity entity )
+	public EntityPrefab createBirthDef( Entity entity )
 	{
 		return this.createDef(entity, def.birth);
 	}
 
-	public EntityDef createDeathDef( Entity entity )
+	public EntityPrefab createDeathDef( Entity entity )
 	{
 		return this.createDef(entity, def.death);
 	}
 
-	public EntityDef createTrailDef( Entity entity )
+	public EntityPrefab createTrailDef( Entity entity )
 	{
 		return this.createDef(entity, def.trail);
 	}

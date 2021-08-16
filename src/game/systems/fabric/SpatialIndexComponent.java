@@ -10,9 +10,9 @@ import lombok.Getter;
 import yarangi.spatial.AABB;
 import yarangi.spatial.ISpatialObject;
 
-/** 
+/**
  * Entities having this component will be managed by SpatialFabric
- *  
+ *
  * @author Fima
  */
 @Transient
@@ -20,26 +20,26 @@ public class SpatialIndexComponent implements ISpatialObject, Component, Poolabl
 {
 
 	@Getter Entity entity;
-	
+
 	//@Getter SpatialIndexDef def;
-	
+
 	@Getter AABB oldArea = AABB.createFromCenter(0, 0, 1, 1, 0);
 	@Getter AABB area = AABB.createFromCenter(0, 0, 1, 1, 0);
 
 	@Getter public boolean isStatic = true;
-	
+
 	public void init(Entity entity)
 	{
 		this.entity = entity;
 
 		update();
 	}
-	
+
 	public void update()
 	{
 		ISpatialComponent spatial = ISpatialComponent.get(entity);
 		oldArea.paste(area);
-			area.move(spatial.x(), spatial.y());
+		area.move(spatial.x(), spatial.y());
 		area.fitTo(spatial.r());
 	}
 	@Override
@@ -47,5 +47,5 @@ public class SpatialIndexComponent implements ISpatialObject, Component, Poolabl
 	{
 		this.entity = null;
 	}
-	
+
 }

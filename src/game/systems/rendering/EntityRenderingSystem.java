@@ -1,6 +1,7 @@
 package game.systems.rendering;
 
 
+import java.util.Comparator;
 import java.util.List;
 
 import com.badlogic.ashley.core.Component;
@@ -17,6 +18,7 @@ import com.badlogic.gdx.utils.IntMap;
 import com.badlogic.gdx.utils.ObjectMap;
 import com.badlogic.gdx.utils.ObjectMap.Entries;
 import com.badlogic.gdx.utils.ObjectMap.Entry;
+import com.badlogic.gdx.utils.Sort;
 
 import game.debug.Debug;
 import game.resources.ResourceFactory;
@@ -127,6 +129,15 @@ public class EntityRenderingSystem extends EntitySystem implements EntityListene
 		// TODO: this is debugging context, should be removed or ignored when in
 		// production:
 		this.registerContext(new DebugRenderingContext(DEBUG_ID));
+		
+		Sort.instance().sort(contextOrder, new Comparator<IRenderingContext>() {
+
+			@Override
+			public int compare(IRenderingContext o1, IRenderingContext o2)
+			{
+				return o1.id() - o2.id();
+			}
+		});
 		
 		debugPrintContexts();
 		

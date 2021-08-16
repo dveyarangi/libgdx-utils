@@ -12,6 +12,8 @@ import game.resources.ResourceFactory;
 import game.systems.IComponentDef;
 import game.systems.spatial.ISpatialComponent;
 import game.world.Level;
+import game.world.saves.EntityProps;
+import game.world.saves.Savable;
 import lombok.Getter;
 
 /**
@@ -19,20 +21,20 @@ import lombok.Getter;
  *
  * @author Fima
  */
-public class SpriteComponent implements IRenderingComponent
+public class SpriteComponent implements IRenderingComponent, Savable
 {
 	//static { ComponentType.registerFor(IRenderingComponent.class, SpriteRenderingComponent.class); }
 
-	@Getter protected TextureRegion region = new TextureRegion();
 	@Getter float ox, oy, sx, sy;
 	@Getter float dx, dy;
-	@Getter float priority;
+	@Getter private float dz;
+
+	@Getter protected TextureRegion region = new TextureRegion();
+
+	protected Decal decal = Decal.newDecal(this.sx, this.sy, this.region, false);
 
 	protected int [] cid;
-	
-	
-	protected Decal decal = Decal.newDecal(this.sx, this.sy, this.region, false);
-	@Getter private float dz;
+
 
 
 	public SpriteComponent()
@@ -49,9 +51,9 @@ public class SpriteComponent implements IRenderingComponent
 		if(def instanceof SpriteTextureDef)
 		{
 			SpriteTextureDef tdef = (SpriteTextureDef) def;
-			
+
 			origRegion = ResourceFactory.getTextureRegion(tdef.textureName.getName());
-			
+
 		}
 		else
 		{
@@ -64,20 +66,20 @@ public class SpriteComponent implements IRenderingComponent
 			}
 			else
 				origRegion = atlas.findRegion(tdef.regionName);
-			
+
 		}
-		
-		
+
+
 		this.region.setRegion(origRegion);
 		this.region.flip(sdef.xFlip, sdef.yFlip);
-		
+
 		float rw = region.getRegionWidth();
 		float rh = region.getRegionHeight();
 		region.getTexture().setFilter(TextureFilter.MipMap, TextureFilter.MipMap);
-	
+
 		float width = sdef.w;
-		float height = rh / rw * sdef.w; 
-		
+		float height = rh / rw * sdef.w;
+
 		/* FOR SPRITE BATCH:
 		switch(sdef.hAlign)
 		{
@@ -85,14 +87,14 @@ public class SpriteComponent implements IRenderingComponent
 		default: case CENTER:dx = 0.5f*width; break;
 		case RIGHT: dx = width-0.5f; break;
 		}
-		
+
 		switch(sdef.vAlign)
 		{
 		case TOP: dy = height - 0.5f; break;
 		default: case CENTER: dy = 0.5f*height; break;
 		case BOTTOM: dy =  0.5f; break;
 		}*/
-		
+
 		// FOR DECAL BATCH:
 		/*switch(sdef.hAlign)
 		{
@@ -100,7 +102,7 @@ public class SpriteComponent implements IRenderingComponent
 		default: case CENTER:dx = 0; break;
 		case RIGHT: dx = 0.5f*width-0.5f; break;
 		}
-		
+
 		switch(sdef.vAlign)
 		{
 		case TOP: dy = height-0.5f; break;
@@ -108,17 +110,16 @@ public class SpriteComponent implements IRenderingComponent
 		case BOTTOM: dy = -0.5f*height+0.5f; break;
 		}		*/
 		this.ox = sdef.ox; this.oy = sdef.oy; this.sx = sdef.w; this.sy = sdef.h;
-		
-		
+
+
 		this.dx = width*ox;
 		this.dy = height*oy;
 		this.dz = width*sdef.zOffset;
-		priority = sdef.priority;
 		this.cid[0] = EntityRenderingSystem.DECAL_ID;
 		//boolean hasTransparency = false;
 		//this.decal.setPosition(spatial.x()-dx, spatial.y()-dy, -50);
 		this.decal.setDimensions(this.sx, this.sy);
-		
+
 		this.decal.setTextureRegion(region);
 
 
@@ -127,8 +128,8 @@ public class SpriteComponent implements IRenderingComponent
 
 	@Override
 	public int [] cid() { return cid; }
-	
-	
+
+
 	public void setRegion(TextureRegion region)
 	{
 		this.region = region;
@@ -153,7 +154,7 @@ public class SpriteComponent implements IRenderingComponent
 		else
 		{
 			//this.render( spatial.x(), spatial.y(), spatial.a(), spatial.r(), entity, renderer, context );
-			
+
 			float rw = region.getRegionWidth();
 			float rh = region.getRegionHeight();
 			float scale = rw > rh ? (2*spatial.r() / rw) : (2*spatial.r()/rh);
@@ -196,12 +197,12 @@ public class SpriteComponent implements IRenderingComponent
 
 		return false;
 	}
-	
+
 	public boolean useSpatialDimensions()
 	{
 		return Float.isNaN(ox);
 	}
-	
+
 	public void directRight()
 	{
 		if( this.region.isFlipX())
@@ -209,7 +210,7 @@ public class SpriteComponent implements IRenderingComponent
 		this.region.flip(true, false);
 		decal.setTextureRegion(region);
 	}
-	
+
 	public void directLeft()
 	{
 		if( !this.region.isFlipX())
@@ -217,6 +218,37 @@ public class SpriteComponent implements IRenderingComponent
 		this.region.flip(true, false);
 		decal.setTextureRegion(this.region);
 		//renderer.entityUpdated(this);
+	}
+
+
+	//@Getter float ox, oy, sx, sy;
+	//@Getter float dx, dy;
+	//@Getter private float dz;
+	//@Getter float priority;
+
+	//@Getter protected TextureRegion region = new TextureRegion();
+
+	//protected Decal decal = Decal.newDecal(this.sx, this.sy, this.region, false);
+
+	//protected int [] cid;
+
+	@Override
+	public void save(EntityProps props)
+	{
+		props.put("ox", ox);
+		props.put("oy", oy);
+		props.put("sx", sx);
+		props.put("sy", sy);
+		props.put("dx", dx);
+		props.put("dy", dy);
+		props.put("dz", dz);
+	}
+
+	@Override
+	public void load(EntityProps props)
+	{
+		// TODO Auto-generated method stub
+
 	}
 
 }

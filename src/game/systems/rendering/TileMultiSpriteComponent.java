@@ -9,17 +9,17 @@ import game.world.Level;
 
 public class TileMultiSpriteComponent  implements IRenderingComponent
 {
-	TileMultiSpriteDef def;
+	//TileMultiSpriteDef def;
 	Array <TileSpriteComponent> sprites = new Array <> ();
 
 	@Override
-	public void init(Entity entity, IComponentDef<?> def, Level level)
+	public void init(Entity entity, IComponentDef<?> cdef, Level level)
 	{
-		this.def = (TileMultiSpriteDef) def;
+		TileMultiSpriteDef def = (TileMultiSpriteDef) cdef;
 		
-		for(int idx = 0; idx < this.def.defs.size(); idx ++)
+		for(int idx = 0; idx < def.defs.size(); idx ++)
 		{
-			TileSpriteDef spriteDef = this.def.defs.get(idx);
+			TileSpriteDef spriteDef = def.defs.get(idx);
 			TileSpriteComponent tileSprite = level.getEngine().createComponent(TileSpriteComponent.class);
 			
 			tileSprite.init(entity, spriteDef, level);
@@ -38,7 +38,6 @@ public class TileMultiSpriteComponent  implements IRenderingComponent
 	@Override
 	public void reset()
 	{
-		this.def = null;
 		this.sprites.clear();
 	}
 

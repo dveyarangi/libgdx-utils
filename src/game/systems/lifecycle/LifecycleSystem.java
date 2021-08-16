@@ -8,7 +8,7 @@ import com.badlogic.ashley.core.Family;
 import com.badlogic.gdx.utils.PooledLinkedList;
 
 import game.systems.DescendantsComponent;
-import game.systems.EntityDef;
+import game.systems.EntityPrefab;
 import game.systems.EntityFactory;
 import game.systems.EntityId;
 import game.systems.spatial.AnchorComponent;
@@ -123,7 +123,7 @@ public class LifecycleSystem extends EntitySystem implements EntityListener
 					aura.timeSinceSpawn += deltaTime;
 					if( aura.timeSinceSpawn >= aura.def.trailInterval )
 					{
-						EntityDef def = aura.createTrailDef( entity );
+						EntityPrefab def = aura.createTrailDef( entity );
 						configurer.addEntity(def);
 						aura.timeSinceSpawn = 0;
 					}
@@ -147,8 +147,6 @@ public class LifecycleSystem extends EntitySystem implements EntityListener
 			
 			if(!lifecycle.isImmortal())
 				entities.add(baby);
-			
-			
 			
 			LifeAuraComponent aura = LifeAuraComponent.get(baby);
 			if( aura == null )
