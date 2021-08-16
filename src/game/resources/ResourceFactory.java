@@ -698,7 +698,7 @@ public class ResourceFactory implements LoadableModule
 				E def = (E)entityDef;
 				if( def.getName() == null)
 					throw new IllegalArgumentException("Nameless entity def in group " + group.getName());
-				entityDefs.put(group.getName() + "/" + def.getName(), def);
+				entityDefs.put(def.getType(), def);
 			}
 		}
 		return entityDefs;
@@ -728,6 +728,8 @@ public class ResourceFactory implements LoadableModule
 									throw new IllegalArgumentException("Missing name for EntityDef group in " + filename);
 
 								entityDefGroups.put(group.getName(), group);
+								for(EntityDef def : group.getEntities())
+									def.setType(group.getName() + "/" + def.getName());
 							}
 						}
 

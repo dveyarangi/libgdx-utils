@@ -1,6 +1,15 @@
 package game.systems;
 
-public interface EntityDef
+import lombok.Getter;
+import lombok.Setter;
+
+public abstract class EntityDef
 {
-	String getName();
+	@Getter protected String name;
+
+	/**
+	 * Full name of this entity within group
+	 */
+	@Getter @Setter protected String type;
+
 }
