@@ -27,6 +27,7 @@ import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.google.gson.JsonDeserializer;
 
 import game.debug.Debug;
+import game.systems.EntityDef;
 import game.util.Angles;
 import game.util.LoadableModule;
 import game.util.LoadingProgress;
@@ -56,7 +57,7 @@ public class ResourceFactory implements LoadableModule
 		boolean useMipMap() default true;
 		int priority() default 1;
 	}
-	
+
 	/**
 	 * Annotation to mark textures:
 	 *
@@ -129,7 +130,7 @@ public class ResourceFactory implements LoadableModule
 	@Target( ElementType.FIELD ) @Retention( RetentionPolicy.RUNTIME ) public static @interface Sound {
 		int priority() default 0;
 	}
-	
+
 	@Target( ElementType.FIELD ) @Retention( RetentionPolicy.RUNTIME ) public static @interface Cfg {
 		Class <?>type();
 		int priority() default 0;
@@ -155,22 +156,22 @@ public class ResourceFactory implements LoadableModule
 	 */
 	private final Map<String, Animation<TextureRegion>> animationCache = new HashMap<>();
 
-	private final Map<Object, TextureRegion> regionCache = new HashMap<>();
+	private final Map<Object, NamedTextureRegion> regionCache = new HashMap<>();
 
 	private final Map<String, Region> regionList = new HashMap<>();
 
 	private PriorityQueue <TextureHandle> textures = new PriorityQueue <> ();
-	
-	//private List <ResourceTypeFactory> customFactories = new ArrayList <> ();  
-	
+
+	//private List <ResourceTypeFactory> customFactories = new ArrayList <> ();
+
 	// /////////////////////////////////////////////////////////////////////////////////////////////////////
 	// TODO factory singleton
 	private static ResourceFactory factory;
-	
-	
+
+
 	private JsonLoader jsonLoader;
 
-	
+
 	private LoadingProgress progress = new LoadingProgress();
 
 	// /////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -197,9 +198,9 @@ public class ResourceFactory implements LoadableModule
 		}
 
 		factory = new ResourceFactory(resourceSetType);
-		
+
 		// register colors deserializer
-		
+
 		customJsonDeserializers.put(Color.class, new Colormaps.LibGDXColorDeserializer());
 		customJsonDeserializers.put(Class.class, new JsonClassAdapter());
 
@@ -207,9 +208,9 @@ public class ResourceFactory implements LoadableModule
 		// factory.manager.getLogger().setLevel(Logger.INFO);;
 		// add resources to assets manager:
 		factory.resolver = new InternalFileHandleResolver();
-		
+
 		factory.jsonLoader = new JsonLoader(factory, factory.resolver, customJsonDeserializers);
-		
+
 		factory.loadConfigurations();
 
 		factory.loadTextures(resourceSetType);
@@ -244,7 +245,7 @@ public class ResourceFactory implements LoadableModule
 
 	private void loadCustomResources()
 	{
-		
+
 		for(ResourceTypeFactory <Object, AssetLoaderParameters<Object>> rtFactory : customFactories)
 		{
 
@@ -261,9 +262,9 @@ public class ResourceFactory implements LoadableModule
 							manager.load((String) field.get(null), rtFactory.getResourceType());
 					}
 				}
-			} 
-			catch( IllegalArgumentException e ) { e.printStackTrace(); } 
-			catch( IllegalAccessException e ) { e.printStackTrace(); }			
+			}
+			catch( IllegalArgumentException e ) { e.printStackTrace(); }
+			catch( IllegalAccessException e ) { e.printStackTrace(); }
 		}
 	}*/
 
@@ -275,19 +276,25 @@ public class ResourceFactory implements LoadableModule
 	 *            execution time restriction
 	 * @return progress in range 0-1
 	 */
+	@Override
 	public LoadingProgress stepLoading( float seconds )
 	{
 		boolean isFinished = factory.manager.update((int) ( 1000 * seconds ));
 
 		progress.update(factory.manager.getProgress(), "Loading assets...");
 		progress.setFinished(isFinished);
-		
+
 		return progress;
 	}
 
+	@Override
 	public void finishLoading()
 	{
+
 		factory.manager.finishLoading();
+
+		mapEntityDefs(); // collect all loaded entityDefGroups to allow access to list of groups
+		// this is needed for level saving/loading
 		// factory.sound.init(factory);
 	}
 
@@ -320,11 +327,11 @@ public class ResourceFactory implements LoadableModule
 						manager.load((String) field.get(null), resourceType);
 				}
 			}
-		} 
-		catch( IllegalArgumentException e ) { e.printStackTrace(); } 
+		}
+		catch( IllegalArgumentException e ) { e.printStackTrace(); }
 		catch( IllegalAccessException e ) { e.printStackTrace(); }
 	}
-	
+
 	public void loadTextures(Class<?> resourceSetType)
 	{
 		try
@@ -338,7 +345,7 @@ public class ResourceFactory implements LoadableModule
 					{
 						Texture texxanno = (Texture) anno;
 						String textureFile = (String) field.get(null);
-						
+
 						loadTexture(textureFile, texxanno.useMipMap(), texxanno.priority());
 					}
 				}
@@ -350,12 +357,12 @@ public class ResourceFactory implements LoadableModule
 	{
 		TextureLoader.TextureParameter p = new TextureLoader.TextureParameter();
 		p.genMipMaps = useMipMap;
-		
+
 		TextureHandle textureHandle = new TextureHandle(textureFile, priority);
 
 		if(!textures.contains( textureHandle))
 		{
-			textures.offer( textureHandle );	
+			textures.offer( textureHandle );
 			manager.load( textureFile, com.badlogic.gdx.graphics.Texture.class, p);
 		}
 	}
@@ -446,7 +453,7 @@ public class ResourceFactory implements LoadableModule
 		}
 
 	}
-	
+
 	private void loadConfigurations()
 	{
 
@@ -462,13 +469,13 @@ public class ResourceFactory implements LoadableModule
 					if( anno instanceof Cfg )
 					{
 						Cfg cfganno = (Cfg) anno;
-						
+
 						String filename = (String) field.get(null);
 						Configuration.Parameter param = new Configuration.Parameter(cfganno.type());
 						//FileHandle configFile = resolver.resolve(filename);
-						
+
 						//jsonLoader.getDependencies(filename, configFile, param);
-						
+
 						manager.load(filename,
 								Configuration.class,
 								param
@@ -528,7 +535,7 @@ public class ResourceFactory implements LoadableModule
 	{
 		return factory.manager.get(id);
 	}
-	
+
 	public static <T> T getConfiguration( String id )
 	{
 		return ((Configuration)factory.manager.get(id)).getObject();
@@ -546,7 +553,7 @@ public class ResourceFactory implements LoadableModule
 			throw new IllegalArgumentException(e);
 		}
 	}
-	
+
 	public static com.badlogic.gdx.graphics.Pixmap getPixmap( String pixmap )
 	{
 		try {
@@ -632,7 +639,7 @@ public class ResourceFactory implements LoadableModule
 		if( animation == null )
 		{
 			com.badlogic.gdx.graphics.g2d.TextureAtlas atlas = getTextureAtlas(atlasName);
-			animation = new Animation<TextureRegion>(DEFAULT_FRAME_DURATION, atlas.getRegions());
+			animation = new Animation<>(DEFAULT_FRAME_DURATION, atlas.getRegions());
 			animationCache.put(atlasName, animation);
 		}
 		return animation;
@@ -640,40 +647,104 @@ public class ResourceFactory implements LoadableModule
 
 	// public SoundProvider getSoundProvider() { return sound; }
 
-	public static com.badlogic.gdx.graphics.g2d.TextureRegion getTextureRegion( String name )
+	public static NamedTextureRegion getTextureRegion( String textureName )
 	{
-		TextureRegion region;
-		if( factory.regionList.containsKey(name) )
+		NamedTextureRegion region;
+		if( factory.regionList.containsKey(textureName) )
 		{
-			Region regianno = factory.regionList.get(name);
+			Region regianno = factory.regionList.get(textureName);
 			TextureAtlas atlas = factory.manager.get(regianno.atlas());
-			region = atlas.findRegion(regianno.name());
+			region = new NamedTextureRegion(new TextureRegionName(textureName, null),
+					atlas.findRegion(regianno.name()));
 		}
 		else
 		{
-			region = factory.regionCache.get(name);
+			region = factory.regionCache.get(textureName);
 			if( region == null )
 			{
-				region = new TextureRegion(getTexture(name));
-				factory.regionCache.put(name, region);
+				region = new NamedTextureRegion(new TextureRegionName(textureName, null),
+						new TextureRegion(getTexture(textureName)));
 			}
 		}
 
-		return region;
+		factory.regionCache.put(textureName, region);
 
-	}
-	
-	public static com.badlogic.gdx.graphics.g2d.TextureRegion getTextureRegion( TextureRegionName regionName )
-	{
-		TextureRegion region = factory.regionCache.get(regionName);
-		if( region != null)
-			return region;
-		TextureAtlas atlas = factory.manager.get(regionName.atlasName);
-		region = atlas.findRegion(regionName.regionName);
-		factory.regionCache.put(regionName, region);
 		return region;
 	}
-	
+
+	public static NamedTextureRegion getTextureRegion( TextureRegionName regionName )
+	{
+		NamedTextureRegion result = factory.regionCache.get(regionName);
+		if( result != null)
+			return result;
+		TextureAtlas atlas = factory.manager.get(regionName.atlasName);
+		TextureRegion region = atlas.findRegion(regionName.regionName);
+		result = new NamedTextureRegion(regionName, region);
+		factory.regionCache.put(regionName, result);
+		return result;
+	}
+
+	private Map <String, EntityDefGroup> entityDefGroups = new HashMap <> ();
+	public static <E extends EntityDef> Map <String,E> getEntityDefs(Class<?> type)
+	{
+		Map <String,E> entityDefs = new HashMap <> ();
+		for(EntityDefGroup group : factory.entityDefGroups.values())
+		{
+			for(EntityDef entityDef: group.getEntities())
+			{
+				if( ! (entityDef.getClass().isAssignableFrom(type) ) )
+					continue;
+
+				E def = (E)entityDef;
+				if( def.getName() == null)
+					throw new IllegalArgumentException("Nameless entity def in group " + group.getName());
+				entityDefs.put(group.getName() + "/" + def.getName(), def);
+			}
+		}
+		return entityDefs;
+	}
+
+	private void mapEntityDefs()
+	{
+		try
+		{
+			for( Field field : resourceSetType.getDeclaredFields() )
+			{
+				Annotation[] annos = field.getDeclaredAnnotations();
+				for( Annotation anno : annos )
+				{
+					if( anno instanceof Cfg )
+					{
+						Cfg cfganno = (Cfg) anno;
+
+						String filename = (String) field.get(null);
+
+						if(cfganno.type().isAssignableFrom(EntityDefGroup.class))
+						{
+							EntityDefGroup [] groups = this.getConfiguration(filename);
+							for(EntityDefGroup group : groups)
+							{
+								if( group.getName() == null)
+									throw new IllegalArgumentException("Missing name for EntityDef group in " + filename);
+
+								entityDefGroups.put(group.getName(), group);
+							}
+						}
+
+					}
+				}
+			}
+		} catch( IllegalArgumentException e )
+		{
+			e.printStackTrace();
+		} catch( IllegalAccessException e )
+		{
+			e.printStackTrace();
+		}
+
+		loadConfigurations();
+	}
+
 	@SuppressWarnings("unchecked")
 	public static <O> O getResource(String name)
 	{

@@ -43,15 +43,17 @@ public class JsonInterfaceAdapter <E> implements JsonDeserializer <E>, JsonSeria
 		JsonObject object = json.getAsJsonObject();
 
 		// get real type from the json fields:
+		if( !object.has(TYPE_ATTRIB))
+			throw new JsonParseException("Interfaced json of type " + typeOfT + " missing concrete class field '" + TYPE_ATTRIB + "'");
 		String className = object.get(TYPE_ATTRIB).getAsString();
-	    Class<?> klass = null;
-	    try {
-	    	klass = classloader.loadClass(className);
-	    } catch (ClassNotFoundException e) {
-	    	throw new IllegalArgumentException("Could not load class " + className );
-	    }
+		Class<?> klass = null;
+		try {
+			klass = classloader.loadClass(className);
+		} catch (ClassNotFoundException e) {
+			throw new IllegalArgumentException("Could not load class " + className );
+		}
 
-    	return context.deserialize( json, klass );
+		return context.deserialize( json, klass );
 	}
 
 	@Override
@@ -60,7 +62,7 @@ public class JsonInterfaceAdapter <E> implements JsonDeserializer <E>, JsonSeria
 		JsonElement element = context.serialize( src );
 		JsonObject jso = (JsonObject) element;
 		//TODO : Changed to solve inner classes naming problem
-//		jso.addProperty( TYPE_ATTRIB, src.getClass().getCanonicalName() );
+		//		jso.addProperty( TYPE_ATTRIB, src.getClass().getCanonicalName() );
 		jso.addProperty( TYPE_ATTRIB, src.getClass().getName() );
 		return element;
 	}
