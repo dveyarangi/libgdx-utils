@@ -117,6 +117,8 @@ public abstract class WorldScreen<G extends AbstractGame> extends AbstractScreen
 	{
 		super.show();
 
+
+
 		//progress.update(0.8f, "Populating world...");
 		level = new Level( gameSetup, options );
 
