@@ -17,7 +17,7 @@ public class MeshRenderingDef extends RendererDef<MeshRenderingComponent>
 
 	public MeshRenderingDef()
 	{
-		super(MeshRenderingComponent.class);
+		super();
 	}
 	@Override
 	public void initComponent( MeshRenderingComponent component, Entity entity, Level level )
@@ -26,4 +26,6 @@ public class MeshRenderingDef extends RendererDef<MeshRenderingComponent>
 
 
 	}
+	@Override
+	public Class<MeshRenderingComponent> getComponentClass() { return MeshRenderingComponent.class; }
 }

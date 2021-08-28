@@ -11,9 +11,12 @@ public class AnimationRenderingDef extends RendererDef<AnimationRenderingCompone
 
 	public AnimationRenderingDef(  String atlasName, float timeModifier )
 	{
-		super(AnimationRenderingComponent.class);
+		super();
 		this.atlasName = atlasName;
 		this.timeModifier = timeModifier;
 	}
+
+	@Override
+	public Class<AnimationRenderingComponent> getComponentClass() { return AnimationRenderingComponent.class; }
 
 }

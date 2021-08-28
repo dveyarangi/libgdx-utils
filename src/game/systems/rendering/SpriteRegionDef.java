@@ -4,6 +4,7 @@ import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 
 public class SpriteRegionDef extends SpriteDef
 {
+
 	public TextureAtlas atlas;
 	public String regionName;
 
@@ -13,6 +14,10 @@ public class SpriteRegionDef extends SpriteDef
 		this.atlas = atlas;
 		this.regionName = regionName;
 	}
+
+
+	@Override
+	public Class getComponentClass() { return SpriteRegionComponent.class; }
 
 
 }

@@ -12,7 +12,7 @@ public class TileSpriteDef extends RendererDef<TileSpriteComponent>
 	public Color color;
 	public float x, y;
 	public int tx, ty;
-	
+
 
 	public float w = Float.NaN;
 	public float dw = 1;
@@ -20,18 +20,18 @@ public class TileSpriteDef extends RendererDef<TileSpriteComponent>
 	public float xOffset = 0, yOffset = 0, zOffset = 0;
 	public boolean xFlip = false;
 	public boolean yFlip = false;
-	
+
 
 	public TileSpriteDef( TextureAtlasName atlas, String regionName )
 	{
-		super( TileSpriteComponent.class );
+		super(  );
 		this.atlas = atlas;
 		this.regionName = regionName;
 	}
 
 	public TileSpriteDef(TextureAtlasName atlas, String regionName, float x, float y, float priority, Color color, int tx, int ty, float w, float dw, float xOffset, float yOffset, float zOffset, boolean xFlip, boolean yFlip)
 	{
-		super(TileSpriteComponent.class);
+		super();
 		this.atlas = atlas;
 		this.regionName = regionName;
 		this.x = x;
@@ -48,5 +48,9 @@ public class TileSpriteDef extends RendererDef<TileSpriteComponent>
 		this.yFlip = yFlip;
 
 	}
-	
+
+	@Override
+	public Class<TileSpriteComponent> getComponentClass() { return TileSpriteComponent.class; }
+
+
 }

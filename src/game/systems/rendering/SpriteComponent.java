@@ -3,17 +3,13 @@ package game.systems.rendering;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.g3d.decals.Decal;
 
-import game.debug.Debug;
-import game.resources.ResourceFactory;
 import game.systems.IComponentDef;
 import game.systems.spatial.ISpatialComponent;
 import game.world.Level;
 import game.world.saves.EntityProps;
-import game.world.saves.Savable;
 import lombok.Getter;
 
 /**
@@ -21,14 +17,41 @@ import lombok.Getter;
  *
  * @author Fima
  */
-public class SpriteComponent implements IRenderingComponent, Savable
+public abstract class SpriteComponent implements IRenderingComponent
 {
 	//static { ComponentType.registerFor(IRenderingComponent.class, SpriteRenderingComponent.class); }
+	public static final String PROP_SX = "sx";
+	public static final String PROP_SY = "sy";
+	public static final String PROP_DX = "dx";
+	public static final String PROP_DY = "dy";
+	public static final String PROP_DZ = "dz";
+	public static final float DEFAULT_SX = 1;
+	public static final float DEFAULT_SY = 1;
+	public static final float DEFAULT_DX = 0;
+	public static final float DEFAULT_DY = 0;
+	public static final float DEFAULT_DZ = 0;
+	/**
+	 * Origin point for scaling (TODO: and rotation) transformation
+	 * STATIC property
+	 */
+	@Getter float ox, oy;
 
-	@Getter float ox, oy, sx, sy;
-	@Getter float dx, dy;
-	@Getter private float dz;
+	/**
+	 * Sprite width on x and y axes
+	 * DYNAMIC property
+	 */
+	@Getter float sx, sy;
 
+	/**
+	 * Offsets on x, y and z position (defined by by SpatialComponent)
+	 * STATIC/DERIVED property
+	 */
+	@Getter float dx, dy, dz;
+
+	/**
+	 * DYNAMIC property
+	 * Region area and x/y flip
+	 */
 	@Getter protected TextureRegion region = new TextureRegion();
 
 	protected Decal decal = Decal.newDecal(this.sx, this.sy, this.region, false);
@@ -46,39 +69,14 @@ public class SpriteComponent implements IRenderingComponent, Savable
 	public void init( Entity entity, IComponentDef def, Level level )
 	{
 		SpriteDef sdef = (SpriteDef) def;
-		//ResourceFactory factory = level.getModules().getGameFactory();
-		TextureRegion origRegion;
-		if(def instanceof SpriteTextureDef)
-		{
-			SpriteTextureDef tdef = (SpriteTextureDef) def;
 
-			origRegion = ResourceFactory.getTextureRegion(tdef.textureName.getName());
-
-		}
-		else
-		{
-			SpriteRegionDef tdef = (SpriteRegionDef) def;
-			TextureAtlas atlas = tdef.atlas;
-			if( tdef.regionName == null)
-			{
-				origRegion = atlas.getRegions().get(0);
-				Debug.warn("RegionRenderingDef does not specify regionName");
-			}
-			else
-				origRegion = atlas.findRegion(tdef.regionName);
-
-		}
-
-
-		this.region.setRegion(origRegion);
 		this.region.flip(sdef.xFlip, sdef.yFlip);
 
 		float rw = region.getRegionWidth();
 		float rh = region.getRegionHeight();
 		region.getTexture().setFilter(TextureFilter.MipMap, TextureFilter.MipMap);
 
-		float width = sdef.w;
-		float height = rh / rw * sdef.w;
+
 
 		/* FOR SPRITE BATCH:
 		switch(sdef.hAlign)
@@ -109,12 +107,15 @@ public class SpriteComponent implements IRenderingComponent, Savable
 		default: case CENTER: dy =0; break;
 		case BOTTOM: dy = -0.5f*height+0.5f; break;
 		}		*/
-		this.ox = sdef.ox; this.oy = sdef.oy; this.sx = sdef.w; this.sy = sdef.h;
+		//this.ox = sdef.ox; this.oy = sdef.oy;
+		this.sx = sdef.w; this.sy = sdef.h;
+		float width = sdef.w;
+		float height = rh / rw * sdef.w;
 
+		this.dx = width*sdef.xOffset;
+		this.dy = height*sdef.yOffset;
+		this.dz = sdef.zOffset;
 
-		this.dx = width*ox;
-		this.dy = height*oy;
-		this.dz = width*sdef.zOffset;
 		this.cid[0] = EntityRenderingSystem.DECAL_ID;
 		//boolean hasTransparency = false;
 		//this.decal.setPosition(spatial.x()-dx, spatial.y()-dy, -50);
@@ -197,11 +198,11 @@ public class SpriteComponent implements IRenderingComponent, Savable
 
 		return false;
 	}
-
+	/*
 	public boolean useSpatialDimensions()
 	{
 		return Float.isNaN(ox);
-	}
+	}*/
 
 	public void directRight()
 	{
@@ -232,23 +233,24 @@ public class SpriteComponent implements IRenderingComponent, Savable
 
 	//protected int [] cid;
 
-	@Override
-	public void save(EntityProps props)
+
+	public void save(SpriteDef def, EntityProps props)
 	{
-		props.put("ox", ox);
-		props.put("oy", oy);
-		props.put("sx", sx);
-		props.put("sy", sy);
-		props.put("dx", dx);
-		props.put("dy", dy);
-		props.put("dz", dz);
+
+		props.put(PROP_SX, sx);
+		props.put(PROP_SY, sy);
+		props.put(PROP_DX, dx);
+		props.put(PROP_DY, dy);
+		props.put(PROP_DZ, dz);
 	}
 
-	@Override
-	public void load(EntityProps props)
+	public void load(SpriteDef def, EntityProps props)
 	{
-		// TODO Auto-generated method stub
-
+		this.sx = props.get(PROP_SX, DEFAULT_SX);
+		this.sy = props.get(PROP_SY, DEFAULT_SY);
+		float xOffset = props.get(PROP_DX, DEFAULT_DX);
+		float yOffset = props.get(PROP_DY, DEFAULT_DY);
+		float zOffset = props.get(PROP_DZ, DEFAULT_DZ);
 	}
 
 }
