@@ -14,21 +14,27 @@ import game.world.Level;
 import lombok.Getter;
 import lombok.Setter;
 
-
+/**
+ * Managed differen control modes and propagates input signals to the current control mode
+ *
+ *
+ * @author fimar
+ */
 public class ControlModes// extends EntitySystem
 {
 
 	private Map <String, IControlMode> controlModes;
 	private String currModeName;
 	private IControlMode currControlMode;
-	
+
 	@Getter @Setter private IEntityFilter pickFilter;
+	boolean controlModeChanged = false;
 
 	public ControlModes()
 	{
 		controlModes = new TreeMap<>();
 	}
-	
+
 
 	public void addMode( String name, IControlMode mode )
 	{
@@ -69,55 +75,93 @@ public class ControlModes// extends EntitySystem
 
 	public void switchToMode(String modeName, Object parameter)
 	{
+
 		if(modeName.equals(currModeName))
 			return;
 		IControlMode newMode = controlModes.get(modeName);
 		if( newMode == null )
 			throw new IllegalArgumentException("Unknown mode " + modeName);
-		
+
+		controlModeChanged = true;
+
 		if(currControlMode != null)
 			currControlMode.modeDeactivated();
-		
+
 		currControlMode = newMode;
-		
+
 		Debug.log("New control mode: " + currControlMode);
-		
+
 		newMode.modeActivated(parameter);
-		
+
 		currModeName = modeName;
 	}
 
 	public void keyDown( int keycode )
 	{
-		if( !controlModes.isEmpty() )
+		if( controlModes.isEmpty() )
+			return;
+
+		currControlMode.keyDown(keycode);
+
+		if( controlModeChanged )
+		{
 			currControlMode.keyDown(keycode);
+			controlModeChanged = false;
+		}
 	}
 
 	public void keyUp( int keycode )
 	{
-		if( !controlModes.isEmpty() )
+		if( controlModes.isEmpty() )
+			return;
+
+		currControlMode.keyUp(keycode);
+
+		if( controlModeChanged )
+		{
 			currControlMode.keyUp(keycode);
+			controlModeChanged = false;
+		}
 	}
 
 	public void keyTyped( char keycode )
 	{
-		if( !controlModes.isEmpty() )
+		if( controlModes.isEmpty() )
+			return;
+
+		currControlMode.keyTyped(keycode);
+
+		if( controlModeChanged )
+		{
 			currControlMode.keyTyped(keycode);
+			controlModeChanged = false;
+		}
 	}
 	public boolean touchDown( float worldX, float worldY, float scale, Entity pickedObject, int button )
 	{
-		if( !controlModes.isEmpty() )
-			return currControlMode.touchDown(worldX, worldY, scale, pickedObject, button);
-
-		return false;
+		if( controlModes.isEmpty() )
+			return false;
+		boolean propagate = currControlMode.touchDown(worldX, worldY, scale, pickedObject, button);
+		if(controlModeChanged)
+		{
+			propagate = currControlMode.touchDown(worldX, worldY, scale, pickedObject, button);
+			controlModeChanged = false;
+		}
+		return propagate;
 	}
 
 	public boolean touchUp( float worldX, float worldY, float scale, Entity pickedObject, int button )
 	{
-		if( !controlModes.isEmpty() )
-			return currControlMode.touchUp(worldX, worldY, scale, pickedObject, button);
+		if( controlModes.isEmpty() )
+			return false;
 
-		return false;
+		boolean propagate = currControlMode.touchUp(worldX, worldY, scale, pickedObject, button);
+		if(controlModeChanged)
+		{
+			propagate = currControlMode.touchUp(worldX, worldY, scale, pickedObject, button);
+			controlModeChanged = false;
+		}
+		return propagate;
 	}
 
 	public void untouch()
