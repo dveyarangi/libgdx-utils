@@ -12,6 +12,7 @@ import game.systems.lifecycle.LifecycleSystem;
 import game.systems.spatial.SpatialComponent;
 import game.world.Level;
 import game.world.LevelDef;
+import game.world.saves.Savable;
 import lombok.Getter;
 
 /**
@@ -41,7 +42,6 @@ public class EntityFactory
 	{
 		this.engine = engine;
 		this.level = level;
-
 	}
 
 	public LifecycleSystem getLifecycle()
@@ -121,8 +121,10 @@ public class EntityFactory
 					component = engine.createComponent(componentDef.getComponentClass());
 				}
 			// init the component:
-			componentDef.initComponent( component, entity, level );
-			componentDef.initComponent( component, prefab.getProps(), entity, level );
+			if( component instanceof Savable )
+				((Savable)component).load(componentDef, prefab.getProps());
+			else
+				componentDef.initComponent( component, entity, level );
 			// attach the component to the entity:
 			entity.add(component);
 		}

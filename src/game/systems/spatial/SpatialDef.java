@@ -21,6 +21,11 @@ public class SpatialDef implements ISpatialDef<SpatialComponent>
 		this.r = r;
 	}
 
+	public EntityProps initProps( EntityProps prop)
+	{
+		return initProps(prop, x, y, z, a, r);
+	}
+
 	/**
 	 * Configure initial properties for this component type
 	 */
@@ -44,11 +49,6 @@ public class SpatialDef implements ISpatialDef<SpatialComponent>
 		//component.load(props);
 	}
 
-	@Override
-	public void initComponent( SpatialComponent component, EntityProps props, Entity entity, Level level )
-	{
-		component.load(props);
-	}
 	@Override public float x() { return x; }
 	@Override public float y() { return y; }
 	@Override public float z() { return z; }

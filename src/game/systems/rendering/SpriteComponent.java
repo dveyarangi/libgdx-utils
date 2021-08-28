@@ -19,7 +19,6 @@ import lombok.Getter;
  */
 public abstract class SpriteComponent implements IRenderingComponent
 {
-	//static { ComponentType.registerFor(IRenderingComponent.class, SpriteRenderingComponent.class); }
 	public static final String PROP_SX = "sx";
 	public static final String PROP_SY = "sy";
 	public static final String PROP_DX = "dx";

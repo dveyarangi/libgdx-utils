@@ -8,9 +8,9 @@ public class SavedLevel {
 	//List <EntitySystem> systems = new ArrayList <> ();
 	List <SavedEntity> entities = new ArrayList <> ();
 
-	public void addEntity(String prefabPath, HashMap<String, String> properties)
+	public void addEntity(String id, HashMap<String, String> properties)
 	{
-		entities.add(new SavedEntity(prefabPath, properties));
+		entities.add(new SavedEntity(id, properties));
 	}
 
 }

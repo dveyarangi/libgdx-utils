@@ -685,6 +685,18 @@ public class ResourceFactory implements LoadableModule
 	}
 
 	private Map <String, EntityDefGroup> entityDefGroups = new HashMap <> ();
+	public static <E extends EntityDef> E getEntityDef(String path)
+	{
+		for(EntityDefGroup group : factory.entityDefGroups.values())
+		{
+			for(EntityDef entityDef: group.getEntities())
+			{
+				if(entityDef.getPath().equals(path))
+					return (E)entityDef;
+			}
+		}
+		return null;
+	}
 	public static <E extends EntityDef> Map <String,E> getEntityDefs(Class<?> type)
 	{
 		Map <String,E> entityDefs = new HashMap <> ();
@@ -721,7 +733,7 @@ public class ResourceFactory implements LoadableModule
 
 						if(cfganno.type().isAssignableFrom(EntityDefGroup.class))
 						{
-							EntityDefGroup [] groups = this.getConfiguration(filename);
+							EntityDefGroup [] groups = ResourceFactory.getConfiguration(filename);
 							for(EntityDefGroup group : groups)
 							{
 								if( group.getName() == null)

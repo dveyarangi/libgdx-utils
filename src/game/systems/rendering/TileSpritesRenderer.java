@@ -17,6 +17,8 @@ import com.badlogic.gdx.utils.ObjectIntMap;
 
 import game.resources.ResourceFactory;
 import game.systems.rendering.TileSpritesRendererDef.MeshDef;
+import game.systems.spatial.SpatialComponent;
+import game.systems.tiles.TileSystem;
 import game.util.rendering.TileMultiMesh;
 import game.util.rendering.TileMultiMesh.TileUpdate;
 
@@ -24,35 +26,42 @@ public class TileSpritesRenderer extends EntitySystem implements EntityListener,
 {
 	//static { ComponentType.registerFor(IRenderingComponent.class, MeshRenderingComponent.class); }
 
+	TileSystem tilemap;
+
 	TileSpritesRendererDef rendererDef;
-	
+
 	TileSpritesGrid [] grids;
-	
+
 	ObjectIntMap<String> meshIndices = new ObjectIntMap<> ();
-	
+
 	Camera cam;
-	
+
 	public TileSpritesRenderer(TileSpritesRendererDef rendererDef)
 	{
 		this.rendererDef = rendererDef;
 	}
-	
+
 	@Override
 	public void init(ResourceFactory factory, IRenderer renderer)
 	{
 		this.cam = renderer.camera();
 	}
+
 	@Override
 	public void addedToEngine( Engine engine )
 	{
 		super.addedToEngine(engine);
 		engine.addEntityListener(this);
-//		ResourceFactory factory = level.getModules().getGameFactory();
+
+		this.tilemap = engine.getSystem(TileSystem.class);
+
+		//		ResourceFactory factory = level.getModules().getGameFactory();
 		int meshNum = rendererDef.meshes.length;
-		
+
+
 		grids = new TileSpritesGrid[meshNum];
 
-		
+
 		//interp = Interpolation.getInstance(Interpolation.Type.BICUBIC, heightLowressArr);
 		//float [][] heightmap = interp.resize(2*w+1, 2*h+1);
 		VertexAttributes vattr = new VertexAttributes(
@@ -61,10 +70,10 @@ public class TileSpritesRenderer extends EntitySystem implements EntityListener,
 				VertexAttribute.Normal(),
 				VertexAttribute.ColorUnpacked()
 				);
-	
+
 		int verticesPerTile = 4;
 		int trianglesPerTile = 2;
-		
+
 		for(int idx = 0; idx < meshNum; idx ++)
 		{
 			MeshDef meshDef = rendererDef.meshes[idx];
@@ -72,52 +81,52 @@ public class TileSpritesRenderer extends EntitySystem implements EntityListener,
 			int h = rendererDef.height*meshDef.unitsPerTile;
 			int dx = meshDef.unitsPerTile/2;
 			int dy = meshDef.unitsPerTile/2;
-			
-			
+
+
 			TileMultiMesh mesh = new TileMultiMesh(w, h, verticesPerTile, trianglesPerTile, vattr);
 			mesh.fillTiles((x, y, tileIdx, vertexBuffer, triangles) -> {
-				
-				
+
+
 				int vidx = 0;
 				vertexBuffer.set(vidx++, x+dx);
 				vertexBuffer.set(vidx++, y+dy);
 				vertexBuffer.set(vidx++, -y);//heightmap[xx][yy];
 				vertexBuffer.set(vidx++, 0);
 				vertexBuffer.set(vidx++, 0);
-	
+
 				// color
 				vertexBuffer.set(vidx++, 1);
 				vertexBuffer.set(vidx++, 1);
 				vertexBuffer.set(vidx++, 1);
-				vertexBuffer.set(vidx++, 1);					
-	
+				vertexBuffer.set(vidx++, 1);
+
 				int c00 = verticesPerTile*tileIdx+0;
 				int c10 = verticesPerTile*tileIdx+1;
 				int c01 = verticesPerTile*tileIdx+2;
 				int c11 = verticesPerTile*tileIdx+3;
-	
+
 				triangles.addTriangle(c00, c01, c10);
 				triangles.addTriangle(c10, c01, c11);
 			});
-			
-			
+
+
 			ShaderProgram shader = ResourceFactory.getShader(meshDef.shaderName);
 			TextureAtlas atlas = ResourceFactory.getTextureAtlas(meshDef.textureName);
 			Texture texture = atlas.getTextures().iterator().next();
 			meshIndices.put(meshDef.textureName, idx);
-			
+
 			boolean isOn = true;
-			
+
 			float opacity = 1;
-			
+
 			TileSpritesGrid grid = new TileSpritesGrid(mesh, texture, shader, isOn, opacity);
-			
+
 			grids[idx] = grid;
 
 		}
 	}
 
-	
+
 	public void updateTile(int tx, int ty, float ex, float ey, float ez, float opacity,  float [] buffer, TileSpriteComponent sprite)
 	{
 		float x = ex - sprite.dx;
@@ -138,7 +147,7 @@ public class TileSpritesRenderer extends EntitySystem implements EntityListener,
 		buffer[vidx++] = sprite.color.r;
 		buffer[vidx++] = sprite.color.g;
 		buffer[vidx++] = sprite.color.b;
-		buffer[vidx++] = opacity;					
+		buffer[vidx++] = opacity;
 
 		buffer[vidx++] = x;
 		buffer[vidx++] = y;
@@ -153,8 +162,8 @@ public class TileSpritesRenderer extends EntitySystem implements EntityListener,
 		buffer[vidx++] = sprite.color.r;
 		buffer[vidx++] = sprite.color.g;
 		buffer[vidx++] = sprite.color.b;
-		buffer[vidx++] = opacity;	
-		
+		buffer[vidx++] = opacity;
+
 		buffer[vidx++] = x+sprite.dw*sprite.width;
 		buffer[vidx++] = y+sprite.dw*sprite.height;
 		buffer[vidx++] = z;
@@ -169,7 +178,7 @@ public class TileSpritesRenderer extends EntitySystem implements EntityListener,
 		buffer[vidx++] = sprite.color.g;
 		buffer[vidx++] = sprite.color.b;
 		buffer[vidx++] = opacity;
-		
+
 		buffer[vidx++] = x+sprite.dw*sprite.width;
 		buffer[vidx++] = y;
 		buffer[vidx++] = z;
@@ -183,19 +192,19 @@ public class TileSpritesRenderer extends EntitySystem implements EntityListener,
 		buffer[vidx++] = sprite.color.r;
 		buffer[vidx++] = sprite.color.g;
 		buffer[vidx++] = sprite.color.b;
-		buffer[vidx++] = opacity;	
+		buffer[vidx++] = opacity;
 	}
-	
+
 
 	@Override
 	public void entityAdded(Entity entity)
 	{
 		TileSpriteComponent tileSprite = entity.getComponent( TileSpriteComponent.class );
 		if( tileSprite != null)
-		{			
+		{
 			updateSprite(tileSprite);
 		}
-		
+
 		TileMultiSpriteComponent tileMultiSprite = entity.getComponent( TileMultiSpriteComponent.class );
 		if( tileMultiSprite != null )
 		{
@@ -210,25 +219,25 @@ public class TileSpritesRenderer extends EntitySystem implements EntityListener,
 
 	public void updateSprite(TileSpriteComponent tileSprite)
 	{
-		
+
 		int meshIndex = meshIndices.get(tileSprite.def.atlas.getName(), -1);
 		if( meshIndex < 0)
 			throw new IllegalArgumentException("No mesh for defined for atlas " + tileSprite.def.atlas.getName());
-		
+
 		TileMultiMesh multimesh = grids[meshIndex].mesh;
 		MeshDef meshDef = rendererDef.meshes[meshIndex];
-		
+
 		multimesh.updateTile(meshDef.getUnitsPerTile()*tileSprite.def.tx, meshDef.getUnitsPerTile()*tileSprite.def.ty, new TileUpdate() {
-			
+
 			@Override
 			public void updateVertexBuffer(int tx, int ty, float[] vertexBufferUpdate)
 			{
 				updateTile(tx, ty, tileSprite.def.x, tileSprite.def.y, tileSprite.def.priority, grids[meshIndex].opacity, vertexBufferUpdate, tileSprite);
 			}
-		});	
+		});
 	}
-	
-	
+
+
 	private class TileSpriteUpdate implements TileUpdate
 	{
 
@@ -244,24 +253,24 @@ public class TileSpritesRenderer extends EntitySystem implements EntityListener,
 		{
 			updateTile(tx, ty, tileSprite.def.x, tileSprite.def.y, tileSprite.def.priority, opacity, vertexBufferUpdate, tileSprite);
 		}
-		
+
 	}
-	
+
 	TileSpriteUpdate update = new TileSpriteUpdate();
-	
+
 	public void entityUpdated(TileSpriteComponent tileSprite)
 	{
 
 		if( tileSprite == null)
 			return; // ignore
-		
-		
+
+
 		int meshIndex = meshIndices.get(tileSprite.def.atlas.getName(), 0);
 		TileMultiMesh multimesh = grids[meshIndex].mesh;
 		float opacity = grids[meshIndex].opacity;
 		update.setSprite(tileSprite, opacity);
 		multimesh.updateTile(tileSprite.def.tx, tileSprite.def.ty, update);
-		
+
 	}
 	@Override
 	public void update( float deltaTime )
@@ -271,37 +280,38 @@ public class TileSpritesRenderer extends EntitySystem implements EntityListener,
 	@Override
 	public void entityRemoved(Entity entity)
 	{
+		SpatialComponent spatial = entity.getComponent(SpatialComponent.class);
 		TileSpriteComponent tileSprite = entity.getComponent( TileSpriteComponent.class );
 		if( tileSprite != null)
 		{
-			removeSprite(tileSprite);
+			removeSprite(spatial, tileSprite);
 		}
-		
+
 		TileMultiSpriteComponent tileMultiSprite = entity.getComponent( TileMultiSpriteComponent.class );
 		if( tileMultiSprite != null )
 		{
 			for(int i = 0; i < tileMultiSprite.sprites.size; i ++)
 			{
 				TileSpriteComponent sprite = tileMultiSprite.sprites.get(i);
-				removeSprite(sprite);
+				removeSprite(spatial, sprite);
 			}
 		}
 
 	}
 
 
-	public void removeSprite(TileSpriteComponent tileSprite)
+	public void removeSprite(SpatialComponent spatial, TileSpriteComponent tileSprite)
 	{
 		int meshIndex = meshIndices.get(tileSprite.def.atlas.getName(), 0);
 		TileMultiMesh multimesh = grids[meshIndex].mesh;
 		multimesh.updateTile(tileSprite.def.tx, tileSprite.def.ty, new TileUpdate() {
-			
+
 			@Override
 			public void updateVertexBuffer(int tx, int ty, float[] vertexBufferUpdate)
 			{
 				updateTile(tx, ty, 0,0, 200, 0, vertexBufferUpdate, tileSprite);
 			}
-		});	
+		});
 	}
 
 	/*public void render( Entity entity, IRenderer renderer, IRenderingContext context, float deltaTime )
@@ -330,9 +340,9 @@ public class TileSpritesRenderer extends EntitySystem implements EntityListener,
 
 	/*public void render(ModelBatch batch, Environment environment )
 	{
-		
+
 		batch.begin(cam);
-		
+
 		batch.render(terrainModel, environment);
 		batch.end();
 
@@ -362,7 +372,7 @@ public class TileSpritesRenderer extends EntitySystem implements EntityListener,
 			TileSpritesGrid grid = grids[tidx];
 			if( ! grid.isOn )
 				continue;
-			
+
 			MeshDef meshDef = rendererDef.meshes[tidx];
 			if( meshDef.isBlended() || grid.opacity < 1)
 			{
@@ -376,13 +386,13 @@ public class TileSpritesRenderer extends EntitySystem implements EntityListener,
 				Gdx.gl.glDisable(GL20.GL_BLEND);
 			}
 
-			
+
 			grid.texture.bind();
-	
+
 			ShaderProgram shader = grid.shader;
 			shader.begin();
-			
-			
+
+
 			if( meshDef.context != null)
 				meshDef.context.updateShader(shader);
 
@@ -393,12 +403,12 @@ public class TileSpritesRenderer extends EntitySystem implements EntityListener,
 			//		bicoloringShader.setUniformf("u_maskingColor", color1.r, color1.g, color1.b, 0.2f);
 			//		bicoloringShader.setUniformf("v_maskingColor", color2.r, color2.g, color2.b, 1f);
 			TileMultiMesh multimesh = grid.mesh;
-	
+
 			for(int midx = 0; midx < multimesh.getMeshes().size(); midx ++)
 				multimesh.getMeshes().get(midx).render( shader, GL20.GL_TRIANGLES );
-	
+
 			shader.end();
-		}	
+		}
 	}
 
 
@@ -406,18 +416,18 @@ public class TileSpritesRenderer extends EntitySystem implements EntityListener,
 	public void end()
 	{
 		// TODO Auto-generated method stub
-		
+
 	}
 
 
 	@Override
 	public boolean isEntityless() { return true; }
-	
+
 	public void toggleMeshVisibility(String meshName)
 	{
 		int idx = meshIndices.get(meshName, -1);
 		assert idx >= 0;
-		
+
 		grids[idx].isOn = !grids[idx].isOn;
 	}
 	public void setOpacity(String meshName, float opacity)
@@ -427,20 +437,21 @@ public class TileSpritesRenderer extends EntitySystem implements EntityListener,
 		grids[idx].opacity = opacity;
 		for(int x = 0; x < rendererDef.width; x ++)
 			for(int y = 0; y < rendererDef.height; y ++)
-		grids[idx].mesh.updateTile(x, y, new TileUpdate() {
+				grids[idx].mesh.updateTile(x, y, new TileUpdate() {
 
-			@Override
-			public void updateVertexBuffer(int x, int y, float[] vertexBufferUpdate)
-			{
-				vertexBufferUpdate[8] = opacity;
-			}
-			
-		});
+					@Override
+					public void updateVertexBuffer(int x, int y, float[] vertexBufferUpdate)
+					{
+						vertexBufferUpdate[8] = opacity;
+					}
+
+				});
 
 	}
 
-	
 
-	
+
+
+	@Override
 	public String toString() { return "tile sprites"; }
 }

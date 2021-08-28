@@ -4,7 +4,6 @@ import com.badlogic.ashley.core.Entity;
 
 import game.systems.IComponentDef;
 import game.world.Level;
-import game.world.saves.EntityProps;
 
 /**
  * Holds definitions for entity type and life length.
@@ -16,79 +15,56 @@ public class LifecycleDef implements IComponentDef <LifecycleComponent>
 
 	public static final String PROP_ID = "id";
 	public static final String PROP_TYPE = "type";
+	public static final String PROP_PATH = "path";
 	public static final String PROP_LIFELEN = "lifelen";
 	public static final String PROP_LIFETIME = "lifetime";
 	public static final float DEFAULT_LIFELEN = Float.POSITIVE_INFINITY;
 
-	public EntityProps initProps(EntityProps props, String type, long lifelen)
-	{
-		return LifecycleComponent.save(props, createId(type), type, lifelen, 0);
-	}
+	//public int id;
 
-	public int id;
 	public String type;
+
+	public String path;
 	/**
 	 * Total life duration.
 	 */
-	public float lifeDuration = DEFAULT_LIFELEN;
+	public float lifelen = DEFAULT_LIFELEN;
 
-	public LifecycleDef(String type)
+	public LifecycleDef( String type )
 	{
-		this(createId(type), DEFAULT_LIFELEN, type);
+		this( type, null, DEFAULT_LIFELEN);
 	}
 
-	public LifecycleDef( String type, float lifeDuration )
+	public LifecycleDef( String type, String path )
 	{
-		this(createId(type), lifeDuration, type);
+		this( type, path, DEFAULT_LIFELEN);
 	}
 
-	public LifecycleDef( int id, float lifeDuration, String type  )
+	public LifecycleDef( String type, String path, float lifelen )
 	{
-		this.id = id;
-		this.lifeDuration = lifeDuration;
 		this.type = type;
+		this.path = path;
+		this.lifelen = lifelen;
 	}
 
 	public String getType() { return type; }
 
 	public float getLiveLength()
 	{
-		return lifeDuration;
+		return lifelen;
 	}
 
 	@Override
 	public Class<LifecycleComponent> getComponentClass() { return LifecycleComponent.class; }
 
+	@Deprecated
 	@Override
 	public void initComponent( LifecycleComponent component, Entity entity, Level level )
 	{
-		component.id = id;
-		component.lifelen = lifeDuration;
-		component.type = type;
+		throw new UnsupportedOperationException();
+		//component.id = createId(type);
+		//component.lifelen = lifelen;
+		//component.type = type;
 	}
-
-	@Override
-	public void initComponent( LifecycleComponent component, EntityProps props, Entity entity, Level level )
-	{
-		component.id = id;
-		component.lifelen = lifeDuration;
-		component.type = type;
-	}
-	//////////////////////
-	// ID generation
-
-	static int IDGEN = 1;
-	public static int createId(String type)
-	{
-		return IDGEN ++;
-	}
-
-	/** When loading entities, update IDGEN so that new entities won't get repeating ids */
-	static void adjustIdGen(int existingId)
-	{
-		if(existingId > IDGEN)
-			IDGEN = existingId + 1;
-	}
-
 
 }

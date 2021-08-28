@@ -1,5 +1,6 @@
 package game.systems.rendering;
 
+import com.badlogic.ashley.core.ComponentType;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
@@ -11,6 +12,7 @@ import game.world.saves.Savable;
 
 public class SpriteTextureComponent extends SpriteComponent implements Savable <SpriteTextureDef>
 {
+	static { ComponentType.registerFor(SpriteComponent.class, SpriteTextureComponent.class); }
 
 	@Override
 	public void init( Entity entity, IComponentDef def, Level level )
@@ -35,6 +37,7 @@ public class SpriteTextureComponent extends SpriteComponent implements Savable <
 	public void load(SpriteTextureDef def, EntityProps props)
 	{
 		super.load(def, props);
+		init(null, def, null);
 	}
 
 }

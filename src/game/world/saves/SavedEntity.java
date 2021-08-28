@@ -4,9 +4,11 @@ import java.util.HashMap;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @AllArgsConstructor
+@NoArgsConstructor
 public class SavedEntity {
-	@Getter String prefab;
+	@Getter String id;
 	@Getter HashMap <String, String> props;
 }

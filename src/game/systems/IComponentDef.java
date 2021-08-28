@@ -4,7 +4,6 @@ import com.badlogic.ashley.core.Component;
 import com.badlogic.ashley.core.Entity;
 
 import game.world.Level;
-import game.world.saves.EntityProps;
 
 public interface IComponentDef<C extends Component>
 {
@@ -16,12 +15,14 @@ public interface IComponentDef<C extends Component>
 	 * @param entity
 	 * @param level
 	 */
+	@Deprecated
 	void initComponent( C component,Entity entity, Level level );
 
-	default void initComponent( C component, EntityProps props, Entity entity, Level level ) {}
+	//	default void initComponent( C component, EntityProps props, Entity entity, Level level ) {}
 	/**
 	 * @return Class of the component defined here
 	 */
+
 	Class<C> getComponentClass();
 	//public IComponentDef<C> copy();
 }

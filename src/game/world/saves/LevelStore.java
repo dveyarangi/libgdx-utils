@@ -19,12 +19,26 @@ import com.badlogic.gdx.utils.JsonValue;
 import com.badlogic.gdx.utils.JsonWriter.OutputType;
 
 import game.debug.Debug;
+import game.resources.ResourceFactory;
+import game.systems.EntityDef;
+import game.systems.EntityPrefab;
+import game.systems.IComponentDef;
+import game.systems.lifecycle.LifecycleComponent;
+import game.systems.lifecycle.LifecycleDef;
+import game.systems.spatial.SpatialComponent;
+import game.systems.spatial.SpatialDef;
+import game.world.BlueprintFactory;
 import game.world.Level;
+import game.world.LevelDef;
+import lombok.AllArgsConstructor;
 
+@AllArgsConstructor
 public class LevelStore
 {
-	// TODO: move saves to USER_HOME or similar folder:
 
+	BlueprintFactory blueprints;
+
+	// TODO: move saves to USER_HOME or similar folder:
 	public static final String SAVE_DIR = "saves";
 	public void save(Level level, String savename)
 	{
@@ -79,10 +93,24 @@ public class LevelStore
 		}*/
 
 		Set <String> nonSavedComponents = new HashSet <> (); // TODO: remove
+
+
+
 		for(Entity entity : level.getEngine().getEntities())
 		{
 			EntityProps savedProps = new EntityProps();
 			List <String> componentTypes = new ArrayList <>();
+			LifecycleComponent lifecycle = entity.getComponent(LifecycleComponent.class);
+			SpatialComponent spatial = entity.getComponent(SpatialComponent.class);
+			if(spatial != null)
+				spatial.save(new SpatialDef(), savedProps);
+			EntityPrefab prefab = blueprints.getBlueprint(lifecycle.type, lifecycle.path, savedProps);
+			if( prefab == null)
+			{
+				Debug.log("Entity of type " + lifecycle.type + " is missing prefab, not saving");
+				continue;
+			}
+
 			for(Component component : entity.getComponents())
 			{
 				if(!Savable.class.isAssignableFrom(component.getClass()))
@@ -93,10 +121,11 @@ public class LevelStore
 				componentTypes.add(component.getClass().getCanonicalName());
 
 				Savable savableComponent = (Savable) component;
-				savableComponent.save(savedProps);
-
+				IComponentDef <?> def = (IComponentDef) prefab.getDef(savableComponent.getDefClass());
+				savableComponent.save(def, savedProps);
 			}
-			savedata.addEntity("prefab_TODO-name/sfsd", savedProps.getProps());
+
+			savedata.addEntity(String.valueOf(savedProps.get(LifecycleDef.PROP_ID)), savedProps.getProps());
 		}
 
 		String jsonStr = json.prettyPrint(savedata);
@@ -112,7 +141,24 @@ public class LevelStore
 
 	public void load(String savename)
 	{
+		FileHandle savefile =  toSaveFile(savename);
+		String processId = "Reading save " + savefile;
+		Debug.startTiming(processId);
+		Json json = new Json(OutputType.minimal);
 
+		SavedLevel savedLevel = json.fromJson(SavedLevel.class, savefile);
+
+		LevelDef level = new LevelDef();
+
+		for(SavedEntity entity :savedLevel.entities)
+		{
+			String type = entity.getProps().get(LifecycleDef.PROP_TYPE);
+			EntityDef def = ResourceFactory.getEntityDef(type);
+
+			blueprints.insertEntity(level, def, new EntityProps(entity.getProps()));
+		}
+
+		Debug.stopTiming(processId);
 	}
 
 

@@ -76,12 +76,6 @@ public class KinematicDef implements IMovementDef<KinematicComponent>
 	}
 
 	@Override
-	public void initComponent( KinematicComponent component, EntityProps props, Entity entity, Level level )
-	{
-		component.load(props);
-	}
-
-	@Override
 	public float getMaxSpeed() { return maxSpeed; }
 
 }

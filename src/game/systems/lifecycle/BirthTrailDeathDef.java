@@ -18,11 +18,11 @@ public class BirthTrailDeathDef implements IComponentDef <LifeAuraComponent>
 		public Distribution sizeDist, angleDist;
 		public EntityPrefab def;
 
-		public Aspect( String id, IMovementDef movementDef,
+		public Aspect( String type, IMovementDef movementDef,
 				RendererDef renderingDef, float lifeDuration, Distribution sizeDist, Distribution angleDist )
 		{
 			def = new EntityPrefab();
-			def.addDef( new LifecycleDef( id, lifeDuration ));
+			def.addDef( new LifecycleDef( type, null, lifeDuration ));
 			def.addDef( new SpatialDef(0, 0, 0, 0, 0) );
 			def.addDef( movementDef );
 			def.addDef( renderingDef );

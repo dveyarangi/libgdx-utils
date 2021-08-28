@@ -1,9 +1,9 @@
 package game.systems.lifecycle;
 
-import static game.systems.lifecycle.LifecycleDef.DEFAULT_LIFELEN;
 import static game.systems.lifecycle.LifecycleDef.PROP_ID;
 import static game.systems.lifecycle.LifecycleDef.PROP_LIFELEN;
 import static game.systems.lifecycle.LifecycleDef.PROP_LIFETIME;
+import static game.systems.lifecycle.LifecycleDef.PROP_PATH;
 import static game.systems.lifecycle.LifecycleDef.PROP_TYPE;
 
 import com.badlogic.ashley.core.Component;
@@ -20,13 +20,15 @@ import game.world.saves.Savable;
  * @author Fima
  */
 
-public class LifecycleComponent implements Component, Poolable, Savable
+public class LifecycleComponent implements Component, Poolable, Savable<LifecycleDef>
 {
 	public int id;
+
+	public String type;
 	/**
 	 * Entity group
 	 */
-	public String type;
+	public String path;
 
 	/**
 	 * Entity elapsed life time
@@ -99,39 +101,33 @@ public class LifecycleComponent implements Component, Poolable, Savable
 	}
 
 	@Override
-	public void save(EntityProps props)
-	{
-		props.put("id", id);
-		props.put("type", type);
-		if(!isImmortal())
-		{
-			props.put("lifelen", lifelen);
-			props.put("lifetime", lifetime);
-
-		}
-	}
-
-	public static EntityProps save(EntityProps props, int id, String type, long lifelen, long lifetime)
+	public void save(LifecycleDef def, EntityProps props)
 	{
 		props.put(PROP_ID, id);
 		props.put(PROP_TYPE, type);
-		if(!Equals.eq(lifelen, DEFAULT_LIFELEN))
-		{
-			props.put(PROP_LIFELEN, lifelen);
-			props.put(PROP_LIFETIME, lifetime);
-		}
-		return props;
+		if(path != null) props.put(PROP_PATH, path);
+		if(!Equals.eq(lifelen, def.getLiveLength()))     props.put(PROP_LIFELEN, lifelen);
+		if(!isImmortal())	props.put(PROP_LIFETIME, lifetime);
+
 	}
 
 
 	@Override
-	public void load(EntityProps props)
+	public void load(LifecycleDef def, EntityProps props)
 	{
-		this.id = props.get(PROP_ID);
-		LifecycleDef.adjustIdGen(this.id);
-		this.type = props.get(PROP_TYPE, null);
-		this.lifelen = props.get(PROP_LIFELEN, DEFAULT_LIFELEN);
-		this.lifetime = props.get(PROP_LIFETIME, 0f);
+		// init/load static component properties
+		type = props.get(PROP_TYPE, def.type);
+		if(props.hasProp(PROP_ID))
+		{
+			id = props.get(PROP_ID);
+			adjustIdGen(id);
+		}
+		else
+			id = createId(type);
+
+		path = props.get(PROP_PATH, def.path);
+		lifelen = props.get(PROP_LIFELEN, def.lifelen);
+		this.lifetime = props.get(PROP_LIFETIME, 0);
 	}
 
 	@Override
@@ -147,4 +143,26 @@ public class LifecycleComponent implements Component, Poolable, Savable
 		sb.append("alive:").append(isAlive);
 		return sb.toString();
 	}
+
+
+	//////////////////////
+	// ID generation
+
+	static int IDGEN = 1;
+	public static int createId(String type)
+	{
+		return IDGEN ++;
+	}
+
+	/** When loading entities, update IDGEN so that new entities won't get repeating ids */
+	static void adjustIdGen(int existingId)
+	{
+		if(existingId > IDGEN)
+			IDGEN = existingId + 1;
+	}
+
+	@Override
+	public Class<LifecycleDef> getDefClass() { return LifecycleDef.class; }
+
+
 }

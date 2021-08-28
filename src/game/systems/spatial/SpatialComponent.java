@@ -24,7 +24,7 @@ import lombok.Setter;
 /**
  * This component defines unit's positioning, orientation and bounding radius.
  */
-public class SpatialComponent implements ISpatialComponent, Savable
+public class SpatialComponent implements ISpatialComponent, Savable<SpatialDef>
 {
 	static
 	{
@@ -159,7 +159,7 @@ public class SpatialComponent implements ISpatialComponent, Savable
 	}
 
 	@Override
-	public void load(EntityProps props)
+	public void load(SpatialDef def, EntityProps props)
 	{
 		load(this, props);
 	}
@@ -175,7 +175,7 @@ public class SpatialComponent implements ISpatialComponent, Savable
 	}
 
 	@Override
-	public void save(EntityProps props)
+	public void save(SpatialDef def, EntityProps props)
 	{
 		save( props, x, y, z, a, r);
 	}
@@ -201,4 +201,7 @@ public class SpatialComponent implements ISpatialComponent, Savable
 				.append("r:").append(r())
 				.toString();
 	}
+
+	@Override
+	public Class getDefClass() { return SpatialDef.class; }
 }

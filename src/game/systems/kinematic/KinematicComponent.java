@@ -18,13 +18,13 @@ import game.world.saves.EntityProps;
 import game.world.saves.Savable;
 import lombok.Getter;
 
-public class KinematicComponent implements IMovementComponent, Savable
+public class KinematicComponent implements IMovementComponent, Savable <KinematicDef>
 {
-	static
+	/*static
 	{
-		// ComponentType.registerFor(IMovementComponent.class,
-		// KinematicComponent.class);
-	}
+		ComponentType.registerFor(IMovementComponent.class,
+		 KinematicComponent.class);
+	}*/
 	private static ComponentMapper<KinematicComponent> MAPPER = ComponentMapper.getFor(KinematicComponent.class);
 
 	public static KinematicComponent get( Entity entity )
@@ -78,7 +78,7 @@ public class KinematicComponent implements IMovementComponent, Savable
 	}
 
 	@Override
-	public void save(EntityProps props)
+	public void save(KinematicDef def, EntityProps props)
 	{
 		save(props, vx, vy, va, vr);
 	}
@@ -94,11 +94,13 @@ public class KinematicComponent implements IMovementComponent, Savable
 	}
 
 	@Override
-	public void load(EntityProps props)
+	public void load(KinematicDef def, EntityProps props)
 	{
 		setLinearVelocity(props.get(PROP_VX, DEFAULT_VX), props.get(PROP_VY, DEFAULT_VY));
 		setAngularVelocity(props.get(PROP_VA, DEFAULT_VA));
 		setExpansion(props.get(PROP_VR, DEFAULT_VR));
 	}
 
+	@Override
+	public Class<KinematicDef> getDefClass() { return KinematicDef.class; }
 }

@@ -3,7 +3,6 @@ package game.systems;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Pool.Poolable;
 
-import game.systems.lifecycle.LifecycleDef;
 import game.world.saves.EntityProps;
 import lombok.Getter;
 import lombok.Setter;
@@ -37,6 +36,12 @@ public class EntityPrefab implements/*Component,*/ Poolable
 
 	public EntityPrefab()
 	{
+		this(new EntityProps());
+	}
+
+	public EntityPrefab(EntityProps props)
+	{
+		this.props = props;
 	}
 
 	//	@Override public int getFactionId() { return faction;}
@@ -90,6 +95,6 @@ public class EntityPrefab implements/*Component,*/ Poolable
 	}
 
 
-	public int id() { return getDef(LifecycleDef.class).id; }
+	//	public int id() { return getDef(LifecycleDef.class).id; }
 
 }

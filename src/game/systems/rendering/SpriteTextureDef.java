@@ -2,7 +2,7 @@ package game.systems.rendering;
 
 import game.resources.TextureName;
 
-public class SpriteTextureDef extends SpriteDef
+public class SpriteTextureDef extends SpriteDef <SpriteTextureComponent>
 {
 	public TextureName textureName;
 

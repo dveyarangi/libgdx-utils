@@ -2,7 +2,7 @@ package game.systems.rendering;
 
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 
-public class SpriteRegionDef extends SpriteDef
+public class SpriteRegionDef extends SpriteDef <SpriteRegionComponent>
 {
 
 	public TextureAtlas atlas;
