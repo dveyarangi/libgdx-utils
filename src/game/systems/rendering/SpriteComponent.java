@@ -8,6 +8,7 @@ import com.badlogic.gdx.graphics.g3d.decals.Decal;
 
 import game.systems.IComponentDef;
 import game.systems.spatial.ISpatialComponent;
+import game.util.Equals;
 import game.world.Level;
 import game.world.saves.EntityProps;
 import lombok.Getter;
@@ -236,20 +237,15 @@ public abstract class SpriteComponent implements IRenderingComponent
 	public void save(SpriteDef def, EntityProps props)
 	{
 
-		props.put(PROP_SX, sx);
-		props.put(PROP_SY, sy);
-		props.put(PROP_DX, dx);
-		props.put(PROP_DY, dy);
-		props.put(PROP_DZ, dz);
+		if(!Equals.eq(def.w, sx)) props.put(PROP_SX, sx);
+		if(!Equals.eq(def.h, sy)) props.put(PROP_SY, sy);
 	}
 
 	public void load(SpriteDef def, EntityProps props)
 	{
-		this.sx = props.get(PROP_SX, DEFAULT_SX);
-		this.sy = props.get(PROP_SY, DEFAULT_SY);
-		float xOffset = props.get(PROP_DX, DEFAULT_DX);
-		float yOffset = props.get(PROP_DY, DEFAULT_DY);
-		float zOffset = props.get(PROP_DZ, DEFAULT_DZ);
+		this.sx = props.get(PROP_SX, def.w);
+		this.sy = props.get(PROP_SY, def.h);
+
 	}
 
 }

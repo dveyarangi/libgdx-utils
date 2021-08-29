@@ -152,8 +152,8 @@ public class LevelStore
 
 		for(SavedEntity entity :savedLevel.entities)
 		{
-			String type = entity.getProps().get(LifecycleDef.PROP_TYPE);
-			EntityDef def = ResourceFactory.getEntityDef(type);
+			String path = entity.getProps().get(LifecycleDef.PROP_PATH);
+			EntityDef def = ResourceFactory.getEntityDef(path);
 
 			blueprints.insertEntity(level, def, new EntityProps(entity.getProps()));
 		}
