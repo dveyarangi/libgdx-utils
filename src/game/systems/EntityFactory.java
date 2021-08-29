@@ -123,8 +123,8 @@ public class EntityFactory
 			// init the component:
 			if( component instanceof Savable )
 				((Savable)component).load(componentDef, prefab.getProps());
-			else
-				componentDef.initComponent( component, entity, level );
+
+			componentDef.initComponent( component, entity, level );
 			// attach the component to the entity:
 			entity.add(component);
 		}

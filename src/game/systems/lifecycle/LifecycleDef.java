@@ -61,10 +61,6 @@ public class LifecycleDef implements IComponentDef <LifecycleComponent>
 	@Override
 	public void initComponent( LifecycleComponent component, Entity entity, Level level )
 	{
-		throw new UnsupportedOperationException();
-		//component.id = createId(type);
-		//component.lifelen = lifelen;
-		//component.type = type;
 	}
 
 }
