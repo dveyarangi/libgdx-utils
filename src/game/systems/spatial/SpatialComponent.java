@@ -35,17 +35,12 @@ public class SpatialComponent extends GenericSpatialComponent implements Savable
 	@Override
 	public void load(SpatialDef def, EntityProps props)
 	{
-		load(this, props);
-	}
-
-	public static void load(SpatialComponent s, EntityProps props)
-	{
-		s.x(props.get(PROP_X, DEFAULT_X));
-		s.y(props.get(PROP_Y, DEFAULT_Y));
-		s.z(props.get(PROP_Z, DEFAULT_Z));
-		s.a(props.get(PROP_A, DEFAULT_A));
-		s.r(props.get(PROP_R, DEFAULT_R));
-		s.setChanged(true);
+		x(props.getFloat(PROP_X));
+		y(props.getFloat(PROP_Y));
+		z(props.get(PROP_Z, def.z));
+		a(props.get(PROP_A, def.a));
+		r(props.get(PROP_R, def.r));
+		setChanged(true);
 	}
 
 	@Override

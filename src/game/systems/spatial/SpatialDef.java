@@ -41,11 +41,11 @@ public class SpatialDef implements ISpatialDef<SpatialComponent>
 	@Override
 	public void initComponent( SpatialComponent component, Entity entity, Level level )
 	{
-		component.x(x);
-		component.y(y);
-		component.z(z);
-		component.a(a);
-		component.r(r);
+		//component.x(x);
+		//component.y(y);
+		//component.z(z);
+		//component.a(a);
+		//component.r(r);
 		//component.load(props);
 	}
 
