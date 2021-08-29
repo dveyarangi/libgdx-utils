@@ -14,7 +14,7 @@ import game.util.Angles;
  *
  * @author Fima
  */
-public class AnchorComponent extends SpatialComponent
+public class AnchorComponent extends GenericSpatialComponent
 {
 
 	public Entity parent;
@@ -44,8 +44,9 @@ public class AnchorComponent extends SpatialComponent
 	@Override
 	public void reset()
 	{
-		super.reset();
 		parent = null;
+		x = y = a = r = 0;
+
 	}
 
 	/**
@@ -65,7 +66,8 @@ public class AnchorComponent extends SpatialComponent
 	{
 		return parentSpatial.y() + parentSpatial.v() * super.x() + parentSpatial.u() * super.y();
 	}
-	
+
+	@Override
 	public float z()
 	{
 		return parentSpatial.z() + super.z();
@@ -118,6 +120,27 @@ public class AnchorComponent extends SpatialComponent
 		return Angles.SIN(this.a() * Angles.TO_RAD);//parentSpatial.u() * super.v() + parentSpatial.v() * super.u();
 	}
 
+	@Override
+	public void r( final float r )
+	{
+		this.r = r;
+	}
+	/*	@Override
+	public void save(AnchorDef def, EntityProps props)
+	{
+
+		props.put("parent", def.parentId);
+	}
+
+	@Override
+	public void load(AnchorDef def, EntityProps props)
+	{
+		def.parentId = props.get("parent", def.parentId);
+		setParent(x, y, z, a, r, parent);
+	}
+
+	@Override
+	public Class<AnchorDef> getDefClass() {return AnchorDef.class;}*/
 	////////////////////////////////////////////////////
 	// component mapping stuff
 	static

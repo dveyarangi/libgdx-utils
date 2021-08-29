@@ -11,26 +11,26 @@ import game.systems.IComponentDef;
  *
  * @param <C>
  */
-public interface ISpatialDef<C extends SpatialComponent> extends IComponentDef<C>
+public interface ISpatialDef<C extends ISpatialComponent> extends IComponentDef<C>
 {
 
-	public float x();
+	float x();
 
-	public float y();
-	public float z();
+	float y();
+	float z();
 
-	public float a();
+	float a();
 
-	public float r();
+	float r();
 
-	public void x( float x );
+	void x( float x );
 
-	public void y( float y );
+	void y( float y );
 
-	public void z( float z );
+	void z( float z );
 
-	public void a( float a );
+	void a( float a );
 
-	public void r( float r );
+	void r( float r );
 
 }

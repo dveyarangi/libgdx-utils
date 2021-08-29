@@ -17,7 +17,7 @@ import com.badlogic.gdx.utils.ObjectIntMap;
 
 import game.resources.ResourceFactory;
 import game.systems.rendering.TileSpritesRendererDef.MeshDef;
-import game.systems.spatial.SpatialComponent;
+import game.systems.spatial.ISpatialComponent;
 import game.systems.tiles.TileSystem;
 import game.util.rendering.TileMultiMesh;
 import game.util.rendering.TileMultiMesh.TileUpdate;
@@ -280,7 +280,7 @@ public class TileSpritesRenderer extends EntitySystem implements EntityListener,
 	@Override
 	public void entityRemoved(Entity entity)
 	{
-		SpatialComponent spatial = entity.getComponent(SpatialComponent.class);
+		ISpatialComponent spatial = entity.getComponent(ISpatialComponent.class);
 		TileSpriteComponent tileSprite = entity.getComponent( TileSpriteComponent.class );
 		if( tileSprite != null)
 		{
@@ -300,7 +300,7 @@ public class TileSpritesRenderer extends EntitySystem implements EntityListener,
 	}
 
 
-	public void removeSprite(SpatialComponent spatial, TileSpriteComponent tileSprite)
+	public void removeSprite(ISpatialComponent spatial, TileSpriteComponent tileSprite)
 	{
 		int meshIndex = meshIndices.get(tileSprite.def.atlas.getName(), 0);
 		TileMultiMesh multimesh = grids[meshIndex].mesh;

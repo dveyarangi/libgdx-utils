@@ -1,9 +1,5 @@
 package game.systems.kinematic;
 
-import static game.systems.kinematic.KinematicDef.DEFAULT_VA;
-import static game.systems.kinematic.KinematicDef.DEFAULT_VR;
-import static game.systems.kinematic.KinematicDef.DEFAULT_VX;
-import static game.systems.kinematic.KinematicDef.DEFAULT_VY;
 import static game.systems.kinematic.KinematicDef.PROP_VA;
 import static game.systems.kinematic.KinematicDef.PROP_VR;
 import static game.systems.kinematic.KinematicDef.PROP_VX;
@@ -80,15 +76,14 @@ public class KinematicComponent implements IMovementComponent, Savable <Kinemati
 	@Override
 	public void save(KinematicDef def, EntityProps props)
 	{
-		save(props, vx, vy, va, vr);
+		if( !Equals.eq(vx, def.vx ) ) props.put(PROP_VX, vx);
+		if( !Equals.eq(vy, def.vy ) ) props.put(PROP_VY, vy);
+		if( !Equals.eq(va, def.va ) ) props.put(PROP_VA, va);
+		if( !Equals.eq(vr, def.vr ) ) props.put(PROP_VR, vr);
 	}
 
 	public static EntityProps save(EntityProps props, float vx, float vy, float va, float vr)
 	{
-		if( Equals.eq(vx, DEFAULT_VX ) ) props.put(PROP_VX, vx);
-		if( Equals.eq(vy, DEFAULT_VY ) ) props.put(PROP_VY, vy);
-		if( Equals.eq(va, DEFAULT_VA ) ) props.put(PROP_VA, va);
-		if( Equals.eq(vr, DEFAULT_VR ) ) props.put(PROP_VR, vr);
 
 		return props;
 	}
@@ -96,9 +91,9 @@ public class KinematicComponent implements IMovementComponent, Savable <Kinemati
 	@Override
 	public void load(KinematicDef def, EntityProps props)
 	{
-		setLinearVelocity(props.get(PROP_VX, DEFAULT_VX), props.get(PROP_VY, DEFAULT_VY));
-		setAngularVelocity(props.get(PROP_VA, DEFAULT_VA));
-		setExpansion(props.get(PROP_VR, DEFAULT_VR));
+		setLinearVelocity(props.get(PROP_VX, def.vx), props.get(PROP_VY, def.vy));
+		setAngularVelocity(props.get(PROP_VA, def.va));
+		setExpansion(props.get(PROP_VR, def.vr));
 	}
 
 	@Override
