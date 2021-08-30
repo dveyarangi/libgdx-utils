@@ -18,10 +18,18 @@ import com.badlogic.gdx.utils.ObjectIntMap;
 import game.resources.ResourceFactory;
 import game.systems.rendering.TileSpritesRendererDef.MeshDef;
 import game.systems.spatial.ISpatialComponent;
+import game.systems.tiles.ITile;
 import game.systems.tiles.TileSystem;
 import game.util.rendering.TileMultiMesh;
 import game.util.rendering.TileMultiMesh.TileUpdate;
 
+
+/**
+ * Renders multiple quad sprites located on rectangular grid,
+ * each grid tile containing one and only one sprite.
+ *
+ * @author fimar
+ */
 public class TileSpritesRenderer extends EntitySystem implements EntityListener, IRenderingContext
 {
 	//static { ComponentType.registerFor(IRenderingComponent.class, MeshRenderingComponent.class); }
@@ -53,7 +61,10 @@ public class TileSpritesRenderer extends EntitySystem implements EntityListener,
 		super.addedToEngine(engine);
 		engine.addEntityListener(this);
 
-		this.tilemap = engine.getSystem(TileSystem.class);
+		// looking up for TileSystem to allow binding tile sprites to tile coordinates
+		for(EntitySystem system : engine.getSystems())
+			if(system instanceof TileSystem)
+				this.tilemap = (TileSystem) system;
 
 		//		ResourceFactory factory = level.getModules().getGameFactory();
 		int meshNum = rendererDef.meshes.length;
@@ -127,7 +138,16 @@ public class TileSpritesRenderer extends EntitySystem implements EntityListener,
 	}
 
 
-	public void updateTile(int tx, int ty, float ex, float ey, float ez, float opacity,  float [] buffer, TileSpriteComponent sprite)
+	/**
+	 *
+	 * @param ex entity x
+	 * @param ey entity y
+	 * @param ez entity rendering priority
+	 * @param opacity
+	 * @param buffer output
+	 * @param sprite
+	 */
+	public void updateTileGeometry(float ex, float ey, float ez, float opacity,  float [] buffer, TileSpriteComponent sprite)
 	{
 		float x = ex - sprite.dx;
 		float y = ey - sprite.dy;
@@ -200,9 +220,10 @@ public class TileSpritesRenderer extends EntitySystem implements EntityListener,
 	public void entityAdded(Entity entity)
 	{
 		TileSpriteComponent tileSprite = entity.getComponent( TileSpriteComponent.class );
+		ISpatialComponent spatial = entity.getComponent(ISpatialComponent.class);
 		if( tileSprite != null)
 		{
-			updateSprite(tileSprite);
+			updateSprite(tileSprite, spatial);
 		}
 
 		TileMultiSpriteComponent tileMultiSprite = entity.getComponent( TileMultiSpriteComponent.class );
@@ -211,13 +232,13 @@ public class TileSpritesRenderer extends EntitySystem implements EntityListener,
 			for(int i = 0; i < tileMultiSprite.sprites.size; i ++)
 			{
 				TileSpriteComponent sprite = tileMultiSprite.sprites.get(i);
-				updateSprite( sprite );
+				updateSprite( sprite, spatial );
 			}
 		}
 	}
 
 
-	public void updateSprite(TileSpriteComponent tileSprite)
+	private void updateSprite(TileSpriteComponent tileSprite, ISpatialComponent spatial)
 	{
 
 		int meshIndex = meshIndices.get(tileSprite.def.atlas.getName(), -1);
@@ -227,12 +248,19 @@ public class TileSpritesRenderer extends EntitySystem implements EntityListener,
 		TileMultiMesh multimesh = grids[meshIndex].mesh;
 		MeshDef meshDef = rendererDef.meshes[meshIndex];
 
-		multimesh.updateTile(meshDef.getUnitsPerTile()*tileSprite.def.tx, meshDef.getUnitsPerTile()*tileSprite.def.ty, new TileUpdate() {
+		float x = spatial.x();
+		float y = spatial.y();
+		ITile tile = tilemap.getTileAt(x, y);
+
+		tileSprite.update(x, y, tile);
+
+
+		multimesh.updateTile(meshDef.getUnitsPerTile()*tile.getX(), meshDef.getUnitsPerTile()*tile.getY(), new TileUpdate() {
 
 			@Override
 			public void updateVertexBuffer(int tx, int ty, float[] vertexBufferUpdate)
 			{
-				updateTile(tx, ty, tileSprite.def.x, tileSprite.def.y, tileSprite.def.priority, grids[meshIndex].opacity, vertexBufferUpdate, tileSprite);
+				updateTileGeometry(tileSprite.x, tileSprite.y, tileSprite.priority, grids[meshIndex].opacity, vertexBufferUpdate, tileSprite);
 			}
 		});
 	}
@@ -248,17 +276,35 @@ public class TileSpritesRenderer extends EntitySystem implements EntityListener,
 			this.tileSprite = tileSprite;
 			this.opacity = opacity;
 		}
+
 		@Override
 		public void updateVertexBuffer(int tx, int ty, float[] vertexBufferUpdate)
 		{
-			updateTile(tx, ty, tileSprite.def.x, tileSprite.def.y, tileSprite.def.priority, opacity, vertexBufferUpdate, tileSprite);
+			updateTileGeometry(tileSprite.x, tileSprite.y, tileSprite.priority, opacity, vertexBufferUpdate, tileSprite);
 		}
 
 	}
 
 	TileSpriteUpdate update = new TileSpriteUpdate();
 
-	public void entityUpdated(TileSpriteComponent tileSprite)
+
+	private class TileSpriteRemove implements TileUpdate
+	{
+		private TileSpriteComponent tileSprite;
+		void setSprite(TileSpriteComponent tileSprite)
+		{
+			this.tileSprite = tileSprite;
+		}
+		@Override
+		public void updateVertexBuffer(int tx, int ty, float[] vertexBufferUpdate)
+		{
+			updateTileGeometry(0,0, 200, 0, vertexBufferUpdate, tileSprite);
+		}
+	}
+
+	TileSpriteRemove remove = new TileSpriteRemove();
+
+	void entityUpdated(TileSpriteComponent tileSprite)
 	{
 
 		if( tileSprite == null)
@@ -269,7 +315,7 @@ public class TileSpritesRenderer extends EntitySystem implements EntityListener,
 		TileMultiMesh multimesh = grids[meshIndex].mesh;
 		float opacity = grids[meshIndex].opacity;
 		update.setSprite(tileSprite, opacity);
-		multimesh.updateTile(tileSprite.def.tx, tileSprite.def.ty, update);
+		multimesh.updateTile(tileSprite.tx, tileSprite.ty, update);
 
 	}
 	@Override
@@ -284,7 +330,7 @@ public class TileSpritesRenderer extends EntitySystem implements EntityListener,
 		TileSpriteComponent tileSprite = entity.getComponent( TileSpriteComponent.class );
 		if( tileSprite != null)
 		{
-			removeSprite(spatial, tileSprite);
+			removeSprite(tileSprite, spatial);
 		}
 
 		TileMultiSpriteComponent tileMultiSprite = entity.getComponent( TileMultiSpriteComponent.class );
@@ -293,25 +339,20 @@ public class TileSpritesRenderer extends EntitySystem implements EntityListener,
 			for(int i = 0; i < tileMultiSprite.sprites.size; i ++)
 			{
 				TileSpriteComponent sprite = tileMultiSprite.sprites.get(i);
-				removeSprite(spatial, sprite);
+				removeSprite(sprite, spatial);
 			}
 		}
 
 	}
 
 
-	public void removeSprite(ISpatialComponent spatial, TileSpriteComponent tileSprite)
+	public void removeSprite(TileSpriteComponent tileSprite, ISpatialComponent spatial)
 	{
 		int meshIndex = meshIndices.get(tileSprite.def.atlas.getName(), 0);
 		TileMultiMesh multimesh = grids[meshIndex].mesh;
-		multimesh.updateTile(tileSprite.def.tx, tileSprite.def.ty, new TileUpdate() {
-
-			@Override
-			public void updateVertexBuffer(int tx, int ty, float[] vertexBufferUpdate)
-			{
-				updateTile(tx, ty, 0,0, 200, 0, vertexBufferUpdate, tileSprite);
-			}
-		});
+		ITile tile = tilemap.getTileAt(spatial.x(), spatial.y());
+		remove.setSprite(tileSprite);
+		multimesh.updateTile(tile.getX(), tile.getY(), remove);
 	}
 
 	/*public void render( Entity entity, IRenderer renderer, IRenderingContext context, float deltaTime )
@@ -390,7 +431,7 @@ public class TileSpritesRenderer extends EntitySystem implements EntityListener,
 			grid.texture.bind();
 
 			ShaderProgram shader = grid.shader;
-			shader.begin();
+			shader.bind();
 
 
 			if( meshDef.context != null)
@@ -407,7 +448,6 @@ public class TileSpritesRenderer extends EntitySystem implements EntityListener,
 			for(int midx = 0; midx < multimesh.getMeshes().size(); midx ++)
 				multimesh.getMeshes().get(midx).render( shader, GL20.GL_TRIANGLES );
 
-			shader.end();
 		}
 	}
 

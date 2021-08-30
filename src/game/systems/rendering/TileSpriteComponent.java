@@ -8,9 +8,12 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
 import game.resources.ResourceFactory;
 import game.systems.IComponentDef;
+import game.systems.tiles.ITile;
 import game.world.Level;
+import game.world.saves.EntityProps;
+import game.world.saves.Savable;
 
-public class TileSpriteComponent implements IRenderingComponent
+public class TileSpriteComponent implements IRenderingComponent, Savable<TileSpriteDef>
 {
 
 	static ComponentMapper<TileSpriteComponent> MAPPER = ComponentMapper.getFor(TileSpriteComponent.class);
@@ -19,8 +22,20 @@ public class TileSpriteComponent implements IRenderingComponent
 	TileSpriteDef def;
 	String atlasName;
 	TextureRegion region = new TextureRegion();
-	float dx;
-	float dy;
+
+	//////////////////////////
+	// derived state:
+	int tx;
+	int ty;
+	float priority;
+	float x,y;
+	float dx, dy;
+
+	/**
+	 * Size scale
+	 */
+	float dw = 1;
+	//	float dy;
 
 	float width;
 	float height;
@@ -30,14 +45,10 @@ public class TileSpriteComponent implements IRenderingComponent
 
 	public transient TileSpritesRenderer renderer;
 
-	/**
-	 * Size scale
-	 */
-	float dw = 1;
-
 	float xOffset, yOffset;
 
 	Color color = new Color();
+
 
 	public static TileSpriteComponent get( Entity entity )
 	{
@@ -116,7 +127,6 @@ public class TileSpriteComponent implements IRenderingComponent
 		this.dw = dw;
 
 		dx = (0.5f - xOffset)*dw*width;
-
 		dy = (0.5f - yOffset)*dw*height;
 
 		if( renderer != null)
@@ -154,5 +164,36 @@ public class TileSpriteComponent implements IRenderingComponent
 		this.region.flip(false, false);
 		renderer.entityUpdated(this);
 	}
+
+
+	public void update(float x, float y, ITile tile)
+	{
+		this.x = x;
+		this.y = y; // TODO: this maybe not the best idea to hold copies of SpatialComponent xy here
+		this.tx = tile.getX();
+		this.ty = tile.getY();
+
+		float zOffset = def.zOffset+def.layer;
+		this.priority = tile.getSpritePriority(x, y, zOffset);
+
+	}
+
+	public static final String PROP_COLOR = "color";
+
+	@Override
+	public void save(TileSpriteDef def, EntityProps props)
+	{
+		props.put(PROP_COLOR, color);
+
+	}
+
+	@Override
+	public void load(TileSpriteDef def, EntityProps props)
+	{
+	}
+
+	@Override
+	public Class<TileSpriteDef> getDefClass() { return TileSpriteDef.class; }
+
 
 }
