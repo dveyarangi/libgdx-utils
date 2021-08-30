@@ -8,7 +8,7 @@ import game.world.saves.EntityProps;
 
 public class SpatialDef implements ISpatialDef<SpatialComponent>
 {
-	public float x, y, z, a, r;
+	public float x, y, z=DEFAULT_Z, a=DEFAULT_A, r=DEFAULT_R;
 
 	@Deprecated
 	public SpatialDef( float x, float y, float z, float a, float r )

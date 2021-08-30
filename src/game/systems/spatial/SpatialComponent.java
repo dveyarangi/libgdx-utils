@@ -2,8 +2,6 @@ package game.systems.spatial;
 
 import static game.systems.spatial.SpatialDef.DEFAULT_A;
 import static game.systems.spatial.SpatialDef.DEFAULT_R;
-import static game.systems.spatial.SpatialDef.DEFAULT_X;
-import static game.systems.spatial.SpatialDef.DEFAULT_Y;
 import static game.systems.spatial.SpatialDef.DEFAULT_Z;
 import static game.systems.spatial.SpatialDef.PROP_A;
 import static game.systems.spatial.SpatialDef.PROP_R;
@@ -26,11 +24,6 @@ public class SpatialComponent extends GenericSpatialComponent implements Savable
 	{
 		ComponentType.registerFor(ISpatialComponent.class, SpatialComponent.class);
 	}
-	// public static ComponentMapper<SpatialComponent> MAPPER =
-	// ComponentMapper.getFor(SpatialComponent.class);
-	// public static SpatialComponent get(Entity entity) { return MAPPER.get(
-	// entity ); }
-
 
 	@Override
 	public void load(SpatialDef def, EntityProps props)
@@ -46,13 +39,17 @@ public class SpatialComponent extends GenericSpatialComponent implements Savable
 	@Override
 	public void save(SpatialDef def, EntityProps props)
 	{
-		save( props, x, y, z, a, r);
+		props.put(PROP_X, x);
+		props.put(PROP_Y, y);
+		if(!Equals.eq(z, def.z)) props.put(PROP_Z, z);
+		if(!Equals.eq(a, def.a)) props.put(PROP_A, a);
+		if(!Equals.eq(r, def.r)) props.put(PROP_R, r);
 	}
 
 	public static EntityProps save(EntityProps props, float x, float y, float z, float a, float r )
 	{
-		if(!Equals.eq(x, DEFAULT_X)) props.put(PROP_X, x);
-		if(!Equals.eq(y, DEFAULT_Y)) props.put(PROP_Y, y);
+		props.put(PROP_X, x);
+		props.put(PROP_Y, y);
 		if(!Equals.eq(z, DEFAULT_Z)) props.put(PROP_Z, z);
 		if(!Equals.eq(a, DEFAULT_A)) props.put(PROP_A, a);
 		if(!Equals.eq(r, DEFAULT_R)) props.put(PROP_R, r);
