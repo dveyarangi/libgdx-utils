@@ -45,7 +45,6 @@ public class SpriteRegionComponent extends SpriteComponent implements Savable <S
 	public void load(SpriteRegionDef def, EntityProps props)
 	{
 		super.load(def, props);
-		init(null, def, null);
 	}
 
 }

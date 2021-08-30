@@ -2,6 +2,8 @@ package game.world.saves;
 
 import java.util.HashMap;
 
+import com.badlogic.gdx.graphics.Color;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -21,6 +23,10 @@ public class EntityProps
 	}
 	public void put(String prop, String val) {
 		props.put(prop, val);
+	}
+	public void put(String prop, Color color)
+	{
+		props.put(prop, color.toString());
 	}
 
 	public int get(String prop)

@@ -37,7 +37,6 @@ public class SpriteTextureComponent extends SpriteComponent implements Savable <
 	public void load(SpriteTextureDef def, EntityProps props)
 	{
 		super.load(def, props);
-		init(null, def, null);
 	}
 
 }
