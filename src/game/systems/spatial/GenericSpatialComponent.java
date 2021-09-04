@@ -33,6 +33,11 @@ public class GenericSpatialComponent implements ISpatialComponent
 	 */
 	protected float r;
 
+	/**
+	 * Whether this entity is mirrored along y axis
+	 */
+	protected boolean inv;
+
 	@Getter @Setter private boolean isChanged = true;
 
 	@Override public float x() { return x; }
@@ -43,6 +48,7 @@ public class GenericSpatialComponent implements ISpatialComponent
 	@Override public float v() { return uv.y; }
 	@Override public Vector2 uv() { return uv; }
 	@Override public float r() { return r; }
+	@Override public boolean inv() { return inv; }
 
 	@Override public void x( float x )
 	{
@@ -105,6 +111,16 @@ public class GenericSpatialComponent implements ISpatialComponent
 		}
 	}
 
+	@Override
+	public void mirror( boolean inv )
+	{
+		if (this.inv != inv)
+		{
+			isChanged = true;
+			this.inv = inv;
+		}
+	}
+
 
 	@Override
 	public void transpose( float x, float y )
@@ -140,7 +156,8 @@ public class GenericSpatialComponent implements ISpatialComponent
 				.append("y:").append(y()).append(",")
 				.append("z:").append(z()).append(",")
 				.append("a:").append(a()).append(",")
-				.append("r:").append(r())
+				.append("r:").append(r()).append(",")
+				.append("i:").append(inv())
 				.toString();
 	}
 

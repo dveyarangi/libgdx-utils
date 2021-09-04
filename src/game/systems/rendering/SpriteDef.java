@@ -10,11 +10,11 @@ public abstract class SpriteDef <R extends SpriteComponent> extends RendererDef<
 	public float zOffset = Float.NaN;
 	public float w = Float.NaN;
 	public float h = Float.NaN;
-	public boolean xFlip = false;
-	public boolean yFlip = false;
+	//public boolean xFlip = false;
+	//public boolean yFlip = false;
 
 
-	public SpriteDef( float xOffset, float yOffset, float zOffset, float w, float h, boolean xFlip, boolean yFlip)
+	public SpriteDef( float xOffset, float yOffset, float zOffset, float w, float h)
 	{
 		super();
 		this.xOffset = xOffset;
@@ -22,8 +22,6 @@ public abstract class SpriteDef <R extends SpriteComponent> extends RendererDef<
 		this.zOffset = zOffset;
 		this.w = w;
 		this.h = h;
-		this.xFlip = xFlip;
-		this.yFlip = yFlip;
 
 	}
 }

@@ -155,7 +155,7 @@ public class TileSpritesRenderer extends EntitySystem implements EntityListener,
 		//z = -ty;
 		int vidx = 0;
 		buffer[vidx++] = x;
-		buffer[vidx++] = y+sprite.dw*sprite.height;
+		buffer[vidx++] = y+sprite.sizeCoef*sprite.height;
 		buffer[vidx++] = z;
 		buffer[vidx++] = opacity <= 0 ? 0 : sprite.region.getU();
 		buffer[vidx++] = opacity <= 0 ? 0 : sprite.region.getV();
@@ -184,8 +184,8 @@ public class TileSpritesRenderer extends EntitySystem implements EntityListener,
 		buffer[vidx++] = sprite.color.b;
 		buffer[vidx++] = opacity;
 
-		buffer[vidx++] = x+sprite.dw*sprite.width;
-		buffer[vidx++] = y+sprite.dw*sprite.height;
+		buffer[vidx++] = x+sprite.sizeCoef*sprite.width;
+		buffer[vidx++] = y+sprite.sizeCoef*sprite.height;
 		buffer[vidx++] = z;
 		buffer[vidx++] = opacity <= 0 ? 0 : sprite.region.getU2();
 		buffer[vidx++] = opacity <= 0 ? 0 : sprite.region.getV();
@@ -199,7 +199,7 @@ public class TileSpritesRenderer extends EntitySystem implements EntityListener,
 		buffer[vidx++] = sprite.color.b;
 		buffer[vidx++] = opacity;
 
-		buffer[vidx++] = x+sprite.dw*sprite.width;
+		buffer[vidx++] = x+sprite.sizeCoef*sprite.width;
 		buffer[vidx++] = y;
 		buffer[vidx++] = z;
 		buffer[vidx++] = opacity <= 0 ? 0 : sprite.region.getU2();
@@ -241,9 +241,9 @@ public class TileSpritesRenderer extends EntitySystem implements EntityListener,
 	private void updateSprite(TileSpriteComponent tileSprite, ISpatialComponent spatial)
 	{
 
-		int meshIndex = meshIndices.get(tileSprite.def.atlas.getName(), -1);
+		int meshIndex = meshIndices.get(tileSprite.atlasName, -1);
 		if( meshIndex < 0)
-			throw new IllegalArgumentException("No mesh for defined for atlas " + tileSprite.def.atlas.getName());
+			throw new IllegalArgumentException("No mesh for defined for atlas " + tileSprite.atlasName);
 
 		TileMultiMesh multimesh = grids[meshIndex].mesh;
 		MeshDef meshDef = rendererDef.meshes[meshIndex];
@@ -252,7 +252,7 @@ public class TileSpritesRenderer extends EntitySystem implements EntityListener,
 		float y = spatial.y();
 		ITile tile = tilemap.getTileAt(x, y);
 
-		tileSprite.update(x, y, tile);
+		tileSprite.update(x, y, spatial.inv(), tile);
 
 
 		multimesh.updateTile(meshDef.getUnitsPerTile()*tile.getX(), meshDef.getUnitsPerTile()*tile.getY(), new TileUpdate() {
@@ -311,7 +311,7 @@ public class TileSpritesRenderer extends EntitySystem implements EntityListener,
 			return; // ignore
 
 
-		int meshIndex = meshIndices.get(tileSprite.def.atlas.getName(), 0);
+		int meshIndex = meshIndices.get(tileSprite.atlasName, 0);
 		TileMultiMesh multimesh = grids[meshIndex].mesh;
 		float opacity = grids[meshIndex].opacity;
 		update.setSprite(tileSprite, opacity);
@@ -348,7 +348,7 @@ public class TileSpritesRenderer extends EntitySystem implements EntityListener,
 
 	public void removeSprite(TileSpriteComponent tileSprite, ISpatialComponent spatial)
 	{
-		int meshIndex = meshIndices.get(tileSprite.def.atlas.getName(), 0);
+		int meshIndex = meshIndices.get(tileSprite.atlasName, 0);
 		TileMultiMesh multimesh = grids[meshIndex].mesh;
 		ITile tile = tilemap.getTileAt(spatial.x(), spatial.y());
 		remove.setSprite(tileSprite);

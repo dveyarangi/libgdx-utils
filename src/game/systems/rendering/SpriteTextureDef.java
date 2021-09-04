@@ -9,11 +9,12 @@ public class SpriteTextureDef extends SpriteDef <SpriteTextureComponent>
 
 	public SpriteTextureDef(String textureName)
 	{
-		this(new TextureName(textureName), 0, 0, 0, 1, 1, false, false);
+		this(new TextureName(textureName), 0, 0, 0, 1, 1);
 	}
-	public SpriteTextureDef(TextureName textureName, float xOffset, float yOffset, float zOffset, float w, float h, boolean xFlip, boolean yFlip)
+
+	public SpriteTextureDef(TextureName textureName, float xOffset, float yOffset, float zOffset, float w, float h)
 	{
-		super(xOffset, yOffset, zOffset, w, h, xFlip, yFlip);
+		super(xOffset, yOffset, zOffset, w, h);
 		this.textureName = textureName;
 	}
 

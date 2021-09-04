@@ -8,9 +8,9 @@ public class SpriteRegionDef extends SpriteDef <SpriteRegionComponent>
 	public TextureAtlas atlas;
 	public String regionName;
 
-	public SpriteRegionDef(TextureAtlas atlas, String regionName, float priority, float ox, float oy, float zOffset, float w, float h, boolean xFlip, boolean yFlip)
+	public SpriteRegionDef(TextureAtlas atlas, String regionName, float priority, float ox, float oy, float zOffset, float w, float h)
 	{
-		super(ox, oy, zOffset, w, h, xFlip, yFlip);
+		super(ox, oy, zOffset, w, h);
 		this.atlas = atlas;
 		this.regionName = regionName;
 	}

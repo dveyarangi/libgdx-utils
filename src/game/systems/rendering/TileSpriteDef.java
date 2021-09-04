@@ -4,6 +4,10 @@ import com.badlogic.gdx.graphics.Color;
 
 import game.resources.TextureAtlasName;
 
+/**
+ *
+ * @author fimar
+ */
 public class TileSpriteDef extends RendererDef<TileSpriteComponent>
 {
 
@@ -11,13 +15,10 @@ public class TileSpriteDef extends RendererDef<TileSpriteComponent>
 	public String regionName;
 	public Color color;
 
-	public float w = Float.NaN;
-	public float dw = 1;
-	public float layer = 0;
+	/** Sprite size coefficient, applied to entity's spatial size */
+	public float sizeCoef = 1;
+	/** Sprite position offset, relative to entity's spatial position */
 	public float xOffset = 0, yOffset = 0, zOffset = 0;
-
-	public boolean xFlip = false;
-	public boolean yFlip = false;
 
 
 	public TileSpriteDef( TextureAtlasName atlas, String regionName )
@@ -27,23 +28,19 @@ public class TileSpriteDef extends RendererDef<TileSpriteComponent>
 		this.regionName = regionName;
 	}
 
-	public TileSpriteDef(TextureAtlasName atlas, String regionName, float layer, Color color, float w, float dw, float xOffset, float yOffset, float zOffset, boolean xFlip, boolean yFlip)
+	public TileSpriteDef(TextureAtlasName atlas, String regionName, Color color, float sizeCoef, float xOffset, float yOffset, float zOffset)
 	{
 		super();
 		this.atlas = atlas;
 		this.regionName = regionName;
-		//this.x = x;
-		//this.y = y;
-		this.layer = layer;
+
 		this.color = color;
-		//this.tx = tx;
-		//this.ty = ty;
-		this.w = w;
+
+		this.sizeCoef = sizeCoef;
 		this.xOffset = xOffset;
 		this.yOffset = yOffset;
 		this.zOffset = zOffset;
-		this.xFlip = xFlip;
-		this.yFlip = yFlip;
+
 
 	}
 

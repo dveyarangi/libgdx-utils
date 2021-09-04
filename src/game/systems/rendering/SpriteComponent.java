@@ -70,7 +70,7 @@ public abstract class SpriteComponent implements IRenderingComponent
 	{
 		SpriteDef sdef = (SpriteDef) def;
 
-		this.region.flip(sdef.xFlip, sdef.yFlip);
+		//this.region.flip(sdef.xFlip, sdef.yFlip);
 
 		float rw = region.getRegionWidth();
 		float rh = region.getRegionHeight();
