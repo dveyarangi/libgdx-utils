@@ -25,13 +25,13 @@ public abstract class TileGridOverlay extends WorldOverlay
 {
 	private final float width;
 	private final float height;
-	
+
 	public TileGridOverlay( int width, int height )
 	{
 		this.width = width;
 		this.height = height;
 	}
-	
+
 	protected abstract float getValue(int x, int y);
 
 	/**
@@ -50,7 +50,7 @@ public abstract class TileGridOverlay extends WorldOverlay
 	// Color lineColor = new Color( 0x8DA1AA0A );
 
 	Color color = new Color();
-	
+
 	@Override
 	public void draw( final IRenderer renderer )
 	{
@@ -72,7 +72,7 @@ public abstract class TileGridOverlay extends WorldOverlay
 		// higher right screen corner in world coordinates
 		float screenMaxX = camera.position.x + camera.viewportWidth / 2 * cameraProvider.zoom();
 		float screenMaxY = camera.position.y + camera.viewportHeight / 2 * cameraProvider.zoom();
-		
+
 		int rminx = FastMath.floor(Math.max(0, screenMinX));
 		int rmaxx = FastMath.ceil(Math.min(width, screenMaxX));
 		int rminy = FastMath.floor(Math.max(0, screenMinY));
@@ -80,18 +80,18 @@ public abstract class TileGridOverlay extends WorldOverlay
 
 		shape.set(ShapeType.Filled);
 		shape.setColor(lineColor);
-		
-		
+
+
 		for(int x = rminx; x < rmaxx; x ++)
 			for(int y = rminy; y < rmaxy; y ++)
 			{
 				color = getColor(x, y, color);
 				if(color.a == 0)
 					continue;
-				
+
 				shape.setColor(color.r, color.g, color.b, color.a);
-				shape.rect(x, y, 1, 1);
-			
+				shape.rect(x-0.5f, y-0.5f, 1, 1);
+
 			}
 
 

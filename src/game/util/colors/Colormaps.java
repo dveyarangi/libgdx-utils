@@ -20,28 +20,28 @@ import com.google.gson.JsonPrimitive;
 import com.google.gson.JsonSerializationContext;
 import com.google.gson.JsonSerializer;
 
-public class Colormaps 
+public class Colormaps
 {
-	
+
 	/**
 	 * Cache of loaded colormap configurations
 	 */
 	private static Map <String, ColormapConf> confs = new HashMap <> ();
-	
+
 	public static ColormapConf getColormapConf(String filename)
 	{
 		ColormapConf conf = confs.get(filename);
 		if( conf == null )
 		{
 			conf = read(filename);
-			confs.put(filename, conf);	
+			confs.put(filename, conf);
 		}
-		
+
 		return conf;
-	}	
-	
+	}
+
 	/**
-	 * 
+	 *
 	 * @param filename
 	 * @param min
 	 * @param max
@@ -50,22 +50,22 @@ public class Colormaps
 	public static Colormap getColormap(String filename, float min, float max)
 	{
 		ColormapConf conf = getColormapConf(filename);
-		
+
 		return new Colormap(min, max, conf);
 	}
-	
+
 	private static ColormapConf read( String filename )
 	{
 		try (FileReader reader = new FileReader( new File( filename )) )
 		{
 			return read( reader );
-		} 
+		}
 		catch( IOException e ){
 			throw new IllegalArgumentException("Failed to read " + filename, e);
 		}
 	}
-	
-	private static ColormapConf read( Reader reader ) throws IOException
+
+	public static ColormapConf read( Reader reader ) throws IOException
 	{
 		GsonBuilder builder = new GsonBuilder();
 		buildGson(builder);
@@ -79,7 +79,7 @@ public class Colormaps
 			throw new IOException( e );
 		}
 	}
-	
+
 	public static ColormapConf readJson( String colormapJson ) throws IOException
 	{
 		GsonBuilder builder = new GsonBuilder();
@@ -94,7 +94,7 @@ public class Colormaps
 			throw new IOException( e );
 		}
 	}
-	
+
 	public static GsonBuilder buildGson( GsonBuilder builder)
 	{
 		return builder
@@ -103,7 +103,7 @@ public class Colormaps
 		// converts property set references to PropertySet objects:
 		//.registerTypeAdapter(Map.class, new PropertySetDeserializer())
 	}
-	
+
 	public static class LibGDXColorDeserializer implements JsonDeserializer <Color>, JsonSerializer<Color>
 	{
 
@@ -120,7 +120,7 @@ public class Colormaps
 				float a = colorObject.has("a") ? colorObject.get("a").getAsFloat()/255f : 1;
 				color = new Color(r, g, b, a);
 			}
-			else 
+			else
 			{
 				long hex = Long.parseLong( element.getAsString(), 16 );
 				color = new Color( (int)hex );
