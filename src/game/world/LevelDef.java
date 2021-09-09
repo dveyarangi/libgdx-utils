@@ -20,11 +20,11 @@ import lombok.Setter;
 public class LevelDef
 {
 	private String name;
-	
+
 	@Getter @Setter private float centerX, centerY;
 
-	@Getter private int width, halfWidth;
-	@Getter private int height, halfHeight;
+	@Getter private int width;
+	@Getter private int height;
 
 	private LevelInitialSettings initialSettings;
 
@@ -37,13 +37,11 @@ public class LevelDef
 	public void setWidth( final int width )
 	{
 		this.width = width;
-		halfWidth = width / 2;
 	}
 
 	public void setHeight( final int height )
 	{
 		this.height = height;
-		halfHeight = height / 2;
 	}
 
 	// public IBackground getBackgroundDef() { return background; }
@@ -53,7 +51,7 @@ public class LevelDef
 	{
 		return systems;
 	}
-	
+
 	public void addSystem(SystemDef <?> systemDef)
 	{
 		systems.add(systemDef);
@@ -63,7 +61,7 @@ public class LevelDef
 	{
 		return entities;
 	}
-	
+
 	public void addEntity(EntityPrefab entityDef)
 	{
 		entities.add(entityDef);

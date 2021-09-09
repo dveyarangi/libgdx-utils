@@ -163,7 +163,7 @@ public class Debug
 
 		// coordinate grid:
 		addOverlay(Hotkeys.TOGGLE_COORDINATE_GRID, "Coordinate Grid",
-				new CoordinateGrid(level.getDef().getCenterX(), level.getDef().getCenterY(), level.def().getHalfWidth(), level.def().getHalfHeight())
+				new CoordinateGrid(level.getDef().getCenterX(), level.getDef().getCenterY(), level.def().getWidth()/2, level.def().getHeight()/2)
 				);
 
 		// navigation mesh

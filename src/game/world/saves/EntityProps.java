@@ -28,6 +28,10 @@ public class EntityProps
 	{
 		props.put(prop, color.toString());
 	}
+	public void put(String prop, boolean value)
+	{
+		this.props.put(prop, String.valueOf(value));
+	}
 
 	public int get(String prop)
 	{
@@ -49,9 +53,18 @@ public class EntityProps
 		return props.containsKey(prop) ? Integer.parseInt(props.get(prop)) : defval;
 	}
 
+	public <E> E get(String prop, E defval)
+	{
+		return props.containsKey(prop) ? (E)props.get(prop) : defval;
+	}
+
 	public float get(String prop, float defval)
 	{
 		return props.containsKey(prop) ? Float.parseFloat(props.get(prop)) : defval;
+	}
+	public boolean get(String prop, boolean defval)
+	{
+		return props.containsKey(prop) ? Boolean.parseBoolean(props.get(prop)) : defval;
 	}
 
 	public String get(String prop, String defval)
