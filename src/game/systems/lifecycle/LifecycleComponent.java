@@ -119,7 +119,7 @@ public class LifecycleComponent implements Component, Poolable, Savable<Lifecycl
 		type = props.get(PROP_TYPE, def.type);
 		if(props.hasProp(PROP_ID))
 		{
-			id = props.get(PROP_ID);
+			id = props.getInt(PROP_ID);
 			adjustIdGen(id);
 		}
 		else

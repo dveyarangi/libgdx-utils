@@ -39,7 +39,7 @@ public abstract class AbstractScreen<G extends AbstractGame> implements Screen
 	protected int worldWidth, worldHeight;
 
 	public AbstractScreen( final G game )
-	{		
+	{
 		this(game, 500,500 );
 	}
 
@@ -153,11 +153,8 @@ public abstract class AbstractScreen<G extends AbstractGame> implements Screen
 
 	}
 
-	
-	protected abstract GraphicOptions getOptions();
-
 	/**
-	 * Allows specifying pre-loadable module 
+	 * Allows specifying pre-loadable module
 	 * @return
 	 */
 	protected LoadableModule getLoadable() { return null; };

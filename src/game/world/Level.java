@@ -4,9 +4,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.badlogic.ashley.core.Engine;
+import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.EntitySystem;
 import com.badlogic.ashley.core.PooledEngine;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.utils.ObjectSet;
 
 import game.config.GraphicOptions;
 import game.debug.Debug;
@@ -64,28 +66,33 @@ public class Level extends EntitySystem
 	// //////////////////////////////////////////////////////////////
 	// renderer
 	private EntityRenderingSystem renderer;
-	
-	
+
+
 	@Getter private GraphicOptions graphicOptions;
+
+
+	private ObjectSet<Entity> modifiedEntities = new ObjectSet<>();
+
+
 	/**
 	 *
 	 */
 	public Level( GameboardModules modules, GraphicOptions options )
 	{
-		
+
 		this.modules = modules;
 
 		this.def = modules.getLevelDef();
-		
+
 		this.graphicOptions = options;
-		
+
 		// game entities manager:
 		this.engine = new PooledEngine(INITIAL_UNITS_NUM, Integer.MAX_VALUE, 10 * INITIAL_UNITS_NUM, Integer.MAX_VALUE);
 		// flattening game modules:
 		this.unitsFactory = new EntityFactory( this, engine );
 
 		engine.addSystem( this );
-		
+
 	}
 
 	/**
@@ -107,10 +114,10 @@ public class Level extends EntitySystem
 		engine.addSystem( new LifecycleSystem( unitsFactory ) );
 
 		////////////////////////////////////////////////////
-		// this system controls the physical environment, manages cursor picking and collisions 
+		// this system controls the physical environment, manages cursor picking and collisions
 		engine.addSystem( (EntitySystem) modules.getEnvironment() );
 
-		
+
 		List <IRenderingContext> systemRenderers = new ArrayList <> ();
 		////////////////////////////////////////////////////
 		// initialize and add EntitySystems from definitions:
@@ -119,7 +126,7 @@ public class Level extends EntitySystem
 			EntitySystem system = systemDef.createSystem();
 			systemDef.initSystem( this, system );
 			engine.addSystem( system );
-			
+
 			IRenderingContext systemRenderer = systemDef.createRenderer();
 			if( systemRenderer != null )
 				systemRenderers.add(systemRenderer);
@@ -138,12 +145,12 @@ public class Level extends EntitySystem
 
 		// ////////////////////////////////////////////////////
 		//
-		Runtime.getRuntime().gc(); 
- 
-		
+		Runtime.getRuntime().gc();
+
+
 		Debug.stopTiming("level initialization");
 
-		
+
 	}
 
 	/**
@@ -153,7 +160,7 @@ public class Level extends EntitySystem
 	{
 		// //////////////////////////////////////////////////////
 		// some profiling
-		this.profile( delta );
+		profile( delta );
 
 		// //////////////////////////////////////////////////////
 		if( data != null )
@@ -244,5 +251,8 @@ public class Level extends EntitySystem
 	@Override
 	public PooledEngine getEngine() { return engine; }
 
-
+	public void entityModified(Entity entity)
+	{
+		modifiedEntities.add(entity);
+	}
 }

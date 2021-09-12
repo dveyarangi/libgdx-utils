@@ -60,14 +60,6 @@ public abstract class WorldScreen<G extends AbstractGame> extends AbstractScreen
 	{
 		progress.update(0, "Loading level...");
 
-		// /////////////////////////////////////////////////////////////////////////
-		// CREATING INTERACTIVE ENVIRONMENT
-		//
-		// this provides entity-entity and UI-entity interaction methods
-		//
-		IFabric environment = createFabric(progress);
-
-
 
 		// /////////////////////////////////////////////////////////////////////////
 		// GENERATING/LOADING LEVEL DEFINITIONS:
@@ -100,6 +92,14 @@ public abstract class WorldScreen<G extends AbstractGame> extends AbstractScreen
 		}
 
 		ResourceFactory factory = super.game.getResourceFactory();
+
+
+		// /////////////////////////////////////////////////////////////////////////
+		// CREATING INTERACTIVE ENVIRONMENT
+		//
+		// this provides entity-entity and UI-entity interaction methods
+		//
+		IFabric environment = createFabric(progress);
 
 		gameSetup = new GameboardModules(factory, def, environment, worldCameraProvider);
 		extendModules(gameSetup);
