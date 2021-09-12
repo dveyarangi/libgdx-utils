@@ -19,8 +19,6 @@ import com.badlogic.gdx.utils.JsonValue;
 import com.badlogic.gdx.utils.JsonWriter.OutputType;
 
 import game.debug.Debug;
-import game.resources.ResourceFactory;
-import game.systems.EntityDef;
 import game.systems.EntityPrefab;
 import game.systems.IComponentDef;
 import game.systems.lifecycle.LifecycleComponent;
@@ -82,7 +80,8 @@ public class LevelStore
 				return null;
 			}});
 
-		SavedLevel savedata = new SavedLevel();
+
+		SavedLevel savedata = new SavedLevel( level.getDef().getSettings() );
 
 		/*for(EntitySystem system : level.getEngine().getSystems())
 		{
@@ -125,7 +124,7 @@ public class LevelStore
 				savableComponent.save(def, savedProps);
 			}
 
-			savedata.addEntity(String.valueOf(savedProps.get(LifecycleDef.PROP_ID)), savedProps.getProps());
+			savedata.addEntity(String.valueOf(savedProps.get(LifecycleDef.PROP_ID)), savedProps);
 		}
 
 		String jsonStr = json.prettyPrint(savedata);
@@ -139,7 +138,7 @@ public class LevelStore
 		Debug.stopTiming(processId);
 	}
 
-	public void load(String savename)
+	public LevelDef load(String savename)
 	{
 		FileHandle savefile =  toSaveFile(savename);
 		String processId = "Reading save " + savefile;
@@ -148,17 +147,19 @@ public class LevelStore
 
 		SavedLevel savedLevel = json.fromJson(SavedLevel.class, savefile);
 
-		LevelDef level = new LevelDef();
+		LevelDef level = new LevelDef(savedLevel.getSettings());
 
 		for(SavedEntity entity :savedLevel.entities)
 		{
+			String type = entity.getProps().get(LifecycleDef.PROP_TYPE);
 			String path = entity.getProps().get(LifecycleDef.PROP_PATH);
-			EntityDef def = ResourceFactory.getEntityDef(path);
-
-			blueprints.insertEntity(level, def, new EntityProps(entity.getProps()));
+			EntityPrefab entityPrefab = blueprints.getBlueprint(type, path, new EntityProps(entity.getProps()));
+			level.addEntity(entityPrefab);
 		}
 
 		Debug.stopTiming(processId);
+
+		return level;
 	}
 
 

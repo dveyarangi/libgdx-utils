@@ -23,6 +23,8 @@ public class LevelDef
 
 	@Getter @Setter private float centerX, centerY;
 
+	@Getter private IGameSettings settings;
+
 	@Getter private int width;
 	@Getter private int height;
 
@@ -33,6 +35,11 @@ public class LevelDef
 	private ArrayList<SystemDef<?>> systems = new ArrayList<> ();
 
 	private ArrayList<EntityPrefab> entities = new ArrayList<>();
+
+	public LevelDef(IGameSettings settings)
+	{
+		this.settings = settings;
+	}
 
 	public void setWidth( final int width )
 	{
