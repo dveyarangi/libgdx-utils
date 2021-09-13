@@ -174,7 +174,7 @@ public class TileSpriteComponent implements IRenderingComponent, Savable<TileSpr
 	@Override
 	public void load(TileSpriteDef def, EntityProps props)
 	{
-		color = props.get(PROP_COLOR, def.color);
+		color = props.getColor(PROP_COLOR, def.color);
 	}
 
 	@Override

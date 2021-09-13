@@ -47,6 +47,10 @@ public class EntityProps extends HashMap <String,String>
 		return Float.parseFloat(get(prop));
 	}
 
+	public float getFloat(String prop, float defval)
+	{
+		return containsKey(prop) ? Float.parseFloat(get(prop)) : defval;
+	}
 
 
 	public int get(String prop, int defval)
@@ -75,6 +79,10 @@ public class EntityProps extends HashMap <String,String>
 	public boolean hasProp(String prop)
 	{
 		return containsKey(prop);
+	}
+	public Color getColor(String prop, Color color)
+	{
+		return containsKey(prop) ? Color.valueOf(get(prop)) : color;
 	}
 
 }
