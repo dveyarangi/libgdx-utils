@@ -2,7 +2,9 @@ package game.world.saves;
 
 import java.io.IOException;
 import java.io.Writer;
+import java.nio.ByteBuffer;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -27,7 +29,6 @@ import game.systems.spatial.SpatialComponent;
 import game.systems.spatial.SpatialDef;
 import game.world.BlueprintFactory;
 import game.world.Level;
-import game.world.LevelDef;
 import lombok.AllArgsConstructor;
 
 @AllArgsConstructor
@@ -103,7 +104,7 @@ public class LevelStore
 			SpatialComponent spatial = entity.getComponent(SpatialComponent.class);
 			if(spatial != null)
 				spatial.save(new SpatialDef(), savedProps);
-			EntityPrefab prefab = blueprints.getBlueprint(lifecycle.type, lifecycle.path, savedProps);
+			EntityPrefab prefab = blueprints.getPrefab(lifecycle.type, lifecycle.path, savedProps);
 			if( prefab == null)
 			{
 				Debug.log("Entity of type " + lifecycle.type + " is missing prefab, not saving");
@@ -138,7 +139,7 @@ public class LevelStore
 		Debug.stopTiming(processId);
 	}
 
-	public LevelDef load(String savename)
+	public SavedLevel load(String savename)
 	{
 		FileHandle savefile =  toSaveFile(savename);
 		String processId = "Reading save " + savefile;
@@ -147,19 +148,11 @@ public class LevelStore
 
 		SavedLevel savedLevel = json.fromJson(SavedLevel.class, savefile);
 
-		LevelDef level = new LevelDef(savedLevel.getSettings());
 
-		for(SavedEntity entity :savedLevel.entities)
-		{
-			String type = entity.getProps().get(LifecycleDef.PROP_TYPE);
-			String path = entity.getProps().get(LifecycleDef.PROP_PATH);
-			EntityPrefab entityPrefab = blueprints.getBlueprint(type, path, new EntityProps(entity.getProps()));
-			level.addEntity(entityPrefab);
-		}
 
 		Debug.stopTiming(processId);
 
-		return level;
+		return savedLevel;
 	}
 
 
@@ -167,5 +160,31 @@ public class LevelStore
 	{
 		FileHandle savefile = Gdx.files.local(SAVE_DIR + "/" + savename);
 		return savefile;
+	}
+
+	public static String gridToBase64(float [][] grid)
+	{
+		ByteBuffer buff = ByteBuffer.allocate(4*grid[0].length*grid.length);
+		for (int i = 0; i < grid[0].length; i++)
+			for (int j = 0; j < grid.length; j++){
+				float value = grid[i][j];
+				buff.putFloat(value);
+			}
+		String data = Base64.getEncoder().encodeToString(buff.array());
+		return data;
+	}
+	public static float [][] base64ToGrid(String base64, int w, int h)
+	{
+		float [][] grid = new float [w][h];
+		byte [] bytes = Base64.getDecoder().decode(base64);
+		ByteBuffer bb = ByteBuffer.wrap(bytes);
+
+		for (int i = 0; i < w; i++)
+			for (int j = 0; j < h; j++){
+				float value = bb.getFloat();
+				grid[i][j] = value;
+			}
+
+		return grid;
 	}
 }

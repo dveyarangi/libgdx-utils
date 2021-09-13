@@ -4,35 +4,44 @@ import java.util.HashMap;
 
 import com.badlogic.gdx.graphics.Color;
 
-import lombok.NoArgsConstructor;
 
-
-@NoArgsConstructor
-public class EntityProps extends HashMap <String,String>
+public class EntityProps
 {
+	HashMap <String,String> props;
 
-	private static final long serialVersionUID = -2612984146255094863L;
+	public EntityProps()
+	{
+		this(new HashMap <> ());
+	}
 
 	public EntityProps(HashMap<String, String> props)
 	{
-		super(props);
+		this.props = props;
 	}
+	public void put(String prop, String val)
+	{
+		props.put(prop, val);
+	}
+
 	public void put(String prop, int val) {
-		put(prop, String.valueOf(val));
+		props.put(prop, String.valueOf(val));
 	}
 	public void put(String prop, float val) {
-		put(prop, String.valueOf(val));
+		props.put(prop, String.valueOf(val));
 	}
 
 	public void put(String prop, Color color)
 	{
-		put(prop, color.toString());
+		props.put(prop, color.toString());
 	}
 	public void put(String prop, boolean value)
 	{
-		this.put(prop, String.valueOf(value));
+		props.put(prop, String.valueOf(value));
 	}
 
+	public boolean containsKey(String prop) { return props.containsKey(prop); }
+
+	public String get(String prop) { return props.get(prop); }
 	public int getInt(String prop)
 	{
 		if(!containsKey(prop))

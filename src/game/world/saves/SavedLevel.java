@@ -1,7 +1,6 @@
 package game.world.saves;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 import game.world.IGameSettings;
@@ -18,7 +17,7 @@ public class SavedLevel
 
 
 	//List <EntitySystem> systems = new ArrayList <> ();
-	List <SavedEntity> entities = new ArrayList <> ();
+	@Getter List <SavedEntity> entities = new ArrayList <> ();
 
 
 	public SavedLevel(IGameSettings settings)
@@ -26,9 +25,9 @@ public class SavedLevel
 		this.settings = settings;
 	}
 
-	public void addEntity(String id, HashMap<String, String> properties)
+	public void addEntity(String id, EntityProps properties)
 	{
-		entities.add(new SavedEntity(id, properties));
+		entities.add(new SavedEntity(id, properties.props));
 	}
 
 }

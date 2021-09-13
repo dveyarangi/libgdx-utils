@@ -6,8 +6,26 @@ import game.world.saves.EntityProps;
 
 public interface BlueprintFactory
 {
-	EntityPrefab getBlueprint(String type, String path, EntityProps props);
+	EntityDef getBlueprint(String type, String path);
 
+	/**
+	 * Add entity to level that is being loaded
+	 * @param level
+	 * @param type
+	 * @param path
+	 * @param props
+	 */
+	void prepareEntity(LevelDef level, String type, String path, EntityProps props);
+
+	/**
+	 * Add entity to level that is already running
+	 * @param level
+	 * @param def
+	 * @param props
+	 */
 	void insertEntity(LevelDef level, EntityDef def, EntityProps props);
+
+
+	EntityPrefab getPrefab(String type, String path, EntityProps props);
 
 }
