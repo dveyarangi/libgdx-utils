@@ -22,16 +22,13 @@ import game.world.saves.Savable;
  */
 public class SpatialComponent extends GenericSpatialComponent implements Savable<SpatialDef>
 {
-	static
-	{
-		ComponentType.registerFor(ISpatialComponent.class, SpatialComponent.class);
-	}
+	static { ComponentType.registerFor(ISpatialComponent.class, SpatialComponent.class); }
 
 	@Override
 	public void load(SpatialDef def, EntityProps props)
 	{
-		x(props.getFloat(PROP_X));
-		y(props.getFloat(PROP_Y));
+		x(props.getFloat(PROP_X, def.x));
+		y(props.getFloat(PROP_Y, def.y));
 		z(props.get(PROP_Z, def.z));
 		a(props.get(PROP_A, def.a));
 		r(props.get(PROP_R, def.r));
