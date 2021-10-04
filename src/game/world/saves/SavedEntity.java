@@ -1,6 +1,6 @@
 package game.world.saves;
 
-import java.util.HashMap;
+import com.badlogic.gdx.utils.ObjectMap;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -10,5 +10,5 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class SavedEntity {
 	@Getter String id;
-	@Getter HashMap <String, String> props;
+	@Getter ObjectMap <String, String> props;
 }

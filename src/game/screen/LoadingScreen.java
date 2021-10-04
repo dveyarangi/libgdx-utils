@@ -34,16 +34,16 @@ public class LoadingScreen<G extends AbstractGame> extends AbstractScreen<G>
 
 	Sprite loadingSprite;
 	static float loadingSpriteAngle = 0;
-	
-	
+
+
 	/**
 	 * Progress bar dims
 	 */
 	private int pbarminx, pbarminy, pbarlw, pbarlh;
 
 	private float barProgress = 0;
-	
-	/** 
+
+	/**
 	 * Delay before moving to the next screen after loading is complete
 	 */
 	private float cullinTime;
@@ -53,20 +53,20 @@ public class LoadingScreen<G extends AbstractGame> extends AbstractScreen<G>
 	 * Target screen to show after loading is complete
 	 */
 	AbstractScreen<G> targetScreen;
-	
+
 	@Getter private GraphicOptions options = new GraphicOptions();
-	
+
 	FadeGameOverlay overlay = new FadeGameOverlay();
-	
+
 	FileHandle font = Gdx.files.internal("fonts/VisOpenSans.ttf");
-    FreeTypeFontGenerator generator = new FreeTypeFontGenerator(font);
-    BitmapFont fontLabel;
+	FreeTypeFontGenerator generator = new FreeTypeFontGenerator(font);
+	BitmapFont fontLabel;
 
 	public LoadingScreen( AbstractScreen<G> targetScreen )
 	{
 		this(targetScreen, targetScreen.getLoadable());
 	}
-	
+
 	public LoadingScreen( AbstractScreen<G> targetScreen, LoadableModule loadable )
 	{
 		super(targetScreen.game);
@@ -74,12 +74,12 @@ public class LoadingScreen<G extends AbstractGame> extends AbstractScreen<G>
 		this.targetScreen = targetScreen;
 
 		this.loadable = loadable;
-		
+
 		var param = new FreeTypeFontGenerator.FreeTypeFontParameter();
 		param.size = 12;
-		
+
 		fontLabel = generator.generateFont(param);
-		
+
 		loadingSprite = new Sprite(new Texture("images//lotus.png"));
 		loadingSprite.setSize(Gdx.graphics.getHeight() / 4,Gdx.graphics.getHeight() / 4);
 	}
@@ -101,10 +101,10 @@ public class LoadingScreen<G extends AbstractGame> extends AbstractScreen<G>
 			overlay.updateOverlay(delta);
 			overlay.drawOverlay(renderer);
 		}
-		
-		if(loadable == null)
+
+		if(loadable == null && targetScreen != null)
 		{
-			this.getGame().setScreen(targetScreen);
+			getGame().setScreen(targetScreen);
 			return;
 		}
 		// load some data:
@@ -112,19 +112,19 @@ public class LoadingScreen<G extends AbstractGame> extends AbstractScreen<G>
 		float progress = loadingProgress.getProgress();
 		if( loadingProgress.getThr() != null )
 			throw new RuntimeException(loadingProgress.getThr());
-			
+
 		if(progress == 1)
 		{
 			culloutTime += delta;
 			if(culloutTime > FadeGameOverlay.OUTERVAL)
 			{
 				//this.dispose();
-				this.setScreen(targetScreen);
+				setScreen(targetScreen);
 
 				loadable.finishLoading();
 				Debug.stopTiming("resource loading");
-				this.getGame().setScreen(targetScreen);
-				
+				getGame().setScreen(targetScreen);
+
 				// TODO: maybe this helps:
 				Runtime.getRuntime().gc();
 
@@ -137,12 +137,12 @@ public class LoadingScreen<G extends AbstractGame> extends AbstractScreen<G>
 				overlay.drawOverlay(renderer);
 			}
 		}
-		
+
 		Gdx.gl.glClearColor(0, 0, 0, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
 		animateSprite(delta);
-		
+
 		animateBar(delta, progress);
 
 		showMessage(loadingProgress);
@@ -161,23 +161,23 @@ public class LoadingScreen<G extends AbstractGame> extends AbstractScreen<G>
 		renderer.sprites().begin();
 		renderer.sprites().draw( loadingSprite, cx-w/2, cy-h/2, w/2,h/2, w,h,1,1,
 				loadingSpriteAngle);
-		
-		renderer.sprites().end();	
+
+		renderer.sprites().end();
 	}
-	
+
 	private void animateBar(float delta, float progress)
 	{
 
 		// smoothing a little:
 		barProgress += (progress - barProgress)/3;
-		
+
 		renderer.shaper().begin( ShapeType.Line );
 		renderer.shaper().setColor(1,1,1,1);
 		renderer.shaper().rect( pbarminx, pbarminy, pbarlw, pbarlh );
 		renderer.shaper().end();
 		renderer.shaper().begin( ShapeType.Filled );
 		renderer.shaper().rect( pbarminx, pbarminy, barProgress*pbarlw, pbarlh );
-		renderer.shaper().end();	
+		renderer.shaper().end();
 	}
 
 	private void showMessage(LoadingProgress progress)
@@ -188,8 +188,8 @@ public class LoadingScreen<G extends AbstractGame> extends AbstractScreen<G>
 
 		fontLabel.setColor(1,1,1,1);
 		fontLabel.draw(renderer.sprites(), progress.getMessage(), pbarminx, pbarminy + 2*pbarlh);
-		
-		renderer.sprites().end();	
+
+		renderer.sprites().end();
 	}
 
 	@Override
@@ -198,16 +198,16 @@ public class LoadingScreen<G extends AbstractGame> extends AbstractScreen<G>
 		super.resize(width, height);
 		//float w = loadingSprite.getWidth();
 		float h = loadingSprite.getHeight();
-		
+
 		this.pbarminx = width / 2 - width / 4;
-    	int pbarmaxx = width / 2 + width / 4;
-    	pbarlw = pbarmaxx - pbarminx;
-    	this.pbarminy = (int) (height/2 - h/2 - 2*height / 100);
-    	int pbarmaxy = (int)(height/2 - h/2- 3*height / 100);
-    	//int maxy = 3*height / 100;
-    	pbarlh = pbarmaxy - pbarminy;
+		int pbarmaxx = width / 2 + width / 4;
+		pbarlw = pbarmaxx - pbarminx;
+		this.pbarminy = (int) (height/2 - h/2 - 2*height / 100);
+		int pbarmaxy = (int)(height/2 - h/2- 3*height / 100);
+		//int maxy = 3*height / 100;
+		pbarlh = pbarmaxy - pbarminy;
 	}
-	
+
 	@Override
 	public void dispose()
 	{

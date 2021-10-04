@@ -121,6 +121,8 @@ public class LevelStore
 				componentTypes.add(component.getClass().getCanonicalName());
 
 				Savable savableComponent = (Savable) component;
+				if(savableComponent.getDefClass() == null)
+					throw new RuntimeException("Def class is null for component type " + savableComponent.getClass());
 				IComponentDef <?> def = (IComponentDef) prefab.getDef(savableComponent.getDefClass());
 				savableComponent.save(def, savedProps);
 			}

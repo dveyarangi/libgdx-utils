@@ -1,20 +1,21 @@
 package game.world.saves;
 
-import java.util.HashMap;
-
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.utils.ObjectMap;
+
+import lombok.Getter;
 
 
 public class EntityProps
 {
-	HashMap <String,String> props;
+	@Getter private ObjectMap<String,String> props;
 
 	public EntityProps()
 	{
-		this(new HashMap <> ());
+		this(new ObjectMap <> ());
 	}
 
-	public EntityProps(HashMap<String, String> props)
+	public EntityProps(ObjectMap<String, String> props)
 	{
 		this.props = props;
 	}
@@ -47,6 +48,10 @@ public class EntityProps
 		if(!containsKey(prop))
 			throw new IllegalArgumentException("Required property " + prop + " is missing.");
 		return Integer.parseInt(get(prop));
+	}
+	public int getInt(String prop, int defval)
+	{
+		return containsKey(prop) ? Integer.parseInt(get(prop)) : defval;
 	}
 
 	public float getFloat(String prop)

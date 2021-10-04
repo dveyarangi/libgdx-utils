@@ -133,8 +133,16 @@ AsynchronousAssetLoader<Configuration, Configuration.Parameter>
 
 		this.dependenciesLoader = preJsonBuilder.create();
 
-
-
+		/////////////////////////////////////////////////////
+		// interning string on load
+		postJsonBuilder.registerTypeAdapter(String.class, new JsonDeserializer <String>() {
+			@Override
+			public String deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException
+			{
+				String string = json.getAsString();
+				return string.intern();
+			}
+		});
 		postJsonBuilder.registerTypeAdapter(TextureAtlasName.class, new JsonDeserializer <TextureAtlasName>() {
 			@Override
 			public TextureAtlasName deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException
