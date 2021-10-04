@@ -93,6 +93,8 @@ public class Level extends EntitySystem
 
 		engine.addSystem( this );
 
+
+
 	}
 
 	/**
@@ -139,9 +141,14 @@ public class Level extends EntitySystem
 
 		engine.addSystem( this.renderer );
 
+		// ////////////////////////////////////////////////////
+		for(GameModule module : getModules().getCustomModules())
+			module.init(this);
 
 		// ////////////////////////////////////////////////////
 		unitsFactory.createUnits( def );
+
+
 
 		// ////////////////////////////////////////////////////
 		//

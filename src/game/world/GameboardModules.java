@@ -1,7 +1,7 @@
 package game.world;
 
-import java.util.HashMap;
-import java.util.Map;
+import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.ObjectMap;
 
 import game.resources.ResourceFactory;
 import game.world.camera.ICameraProvider;
@@ -27,10 +27,10 @@ public class GameboardModules
 
 	@Getter private IFabric environment;
 
-	@Getter private ICameraProvider cameraProvider; 
+	@Getter private ICameraProvider cameraProvider;
 
-	private Map <Class<?>, Object> customModules = new HashMap <> ();
-	
+	private ObjectMap <Class<? extends GameModule>, GameModule> customModules = new ObjectMap <> ();
+
 
 	public GameboardModules( ResourceFactory resourceFactory, LevelDef def, IFabric environment, ICameraProvider cameraProvider)
 	{
@@ -45,15 +45,20 @@ public class GameboardModules
 
 	}
 
-	public void addModule(Object object)
+	public void addModule(GameModule object)
 	{
 		customModules.put(object.getClass(), object);
 	}
 
-	@SuppressWarnings("unchecked")
-	public <M> M getModule(Class <M> clazz)
+
+	public <M extends GameModule> M getModule(Class <M> clazz)
 	{
 		return (M) customModules.get(clazz);
+	}
+
+	public Array <GameModule> getCustomModules()
+	{
+		return customModules.values().toArray();
 	}
 
 
