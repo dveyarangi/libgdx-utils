@@ -5,6 +5,7 @@ import com.badlogic.ashley.core.Entity;
 import game.systems.movement.IMovementDef;
 import game.world.Level;
 import game.world.saves.EntityProps;
+import lombok.Getter;
 
 /**
  * Defines a simple movement behavior. TODO: non-linear movements
@@ -16,6 +17,8 @@ public class KinematicDef implements IMovementDef<KinematicComponent>
 	public static final String PROP_VY = "vy";
 	public static final String PROP_VA = "va";
 	public static final String PROP_VR = "vr";
+	public static final String PROP_MAX_SPEED = "max_speed";
+	public static final String PROP_MAX_THRUST = "max_thrust";
 
 	public static final float DEFAULT_VX = 0;
 	public static final float DEFAULT_VY = 0;
@@ -33,32 +36,38 @@ public class KinematicDef implements IMovementDef<KinematicComponent>
 	public float va;
 	/** radius change */
 	public float vr;
+
+	@Getter public float maxThrust;
 	/**
 	 *  maximal movement speed
 	 *  TODO: should not be here?
 	 */
-	public float maxSpeed;
+	@Getter public float maxSpeed;
 
-	public KinematicDef()
+	/*public KinematicDef()
 	{
 		this.vx = 0;
 		this.vy = 0;
 		this.va = 0;
-	}
-	public KinematicDef(float maxSpeed)
+		this.vr = 0;
+		this.maxSpeed = 0;
+		this.maxThrust = 0;
+	}*/
+	public KinematicDef(float maxSpeed, float maxThrust)
 	{
-		this();
 		this.maxSpeed = maxSpeed;
+		this.maxThrust = maxThrust;
 	}
 
 	@Deprecated
-	public KinematicDef( float vx, float vy, float va, float vr, float maxSpeed )
+	public KinematicDef( float vx, float vy, float va, float vr, float maxSpeed, float maxThrust )
 	{
 		this.vx = vx;
 		this.vy = vy;
 		this.va = va;
 		this.vr = vr;
 		this.maxSpeed = maxSpeed;
+		this.maxThrust = maxThrust;
 	}
 
 	@Override
@@ -74,8 +83,5 @@ public class KinematicDef implements IMovementDef<KinematicComponent>
 		component.setAngularVelocity(va);
 		component.setExpansion(vr);
 	}
-
-	@Override
-	public float getMaxSpeed() { return maxSpeed; }
 
 }

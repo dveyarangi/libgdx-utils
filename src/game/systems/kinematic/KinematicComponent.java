@@ -1,5 +1,7 @@
 package game.systems.kinematic;
 
+import static game.systems.kinematic.KinematicDef.PROP_MAX_SPEED;
+import static game.systems.kinematic.KinematicDef.PROP_MAX_THRUST;
 import static game.systems.kinematic.KinematicDef.PROP_VA;
 import static game.systems.kinematic.KinematicDef.PROP_VR;
 import static game.systems.kinematic.KinematicDef.PROP_VX;
@@ -32,6 +34,7 @@ public class KinematicComponent implements IMovementComponent, Savable <Kinemati
 	@Getter private float vy;
 	@Getter private float va;
 	@Getter private float vr;
+	@Getter private float maxThrust;
 	@Getter private float maxSpeed;
 
 	@Getter private boolean isStatic = true;
@@ -39,7 +42,7 @@ public class KinematicComponent implements IMovementComponent, Savable <Kinemati
 	@Override
 	public void reset()
 	{
-		vx = vy = va = vr = 0;
+		vx = vy = va = vr = maxThrust = maxSpeed = 0;
 	}
 
 	protected boolean areStatic()
@@ -80,6 +83,8 @@ public class KinematicComponent implements IMovementComponent, Savable <Kinemati
 		if( !Equals.eq(vy, def.vy ) ) props.put(PROP_VY, vy);
 		if( !Equals.eq(va, def.va ) ) props.put(PROP_VA, va);
 		if( !Equals.eq(vr, def.vr ) ) props.put(PROP_VR, vr);
+		if( !Equals.eq(maxSpeed, def.maxSpeed ) ) props.put(PROP_MAX_SPEED, maxSpeed);
+		if( !Equals.eq(maxThrust, def.maxThrust ) ) props.put(PROP_MAX_THRUST, maxSpeed);
 	}
 
 	public static EntityProps save(EntityProps props, float vx, float vy, float va, float vr)
@@ -94,6 +99,8 @@ public class KinematicComponent implements IMovementComponent, Savable <Kinemati
 		setLinearVelocity(props.get(PROP_VX, def.vx), props.get(PROP_VY, def.vy));
 		setAngularVelocity(props.get(PROP_VA, def.va));
 		setExpansion(props.get(PROP_VR, def.vr));
+		this.maxSpeed = props.get(PROP_MAX_SPEED, def.maxSpeed);
+		this.maxThrust = props.get(PROP_MAX_THRUST, def.maxThrust);
 	}
 
 	@Override
