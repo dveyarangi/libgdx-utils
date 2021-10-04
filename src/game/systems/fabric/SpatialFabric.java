@@ -25,18 +25,18 @@ import yarangi.spatial.SpatialHashMap;
 public class SpatialFabric extends EntitySystem implements IFabric, EntityListener
 {
 	public SpatialHashMap <SpatialIndexComponent> space;
-	
-	private ObjectSet<Entity> dynamicEntities = new ObjectSet <Entity>();
-	
-	private ImmutableArray<Entity> sensorEntities;
-	
-	private ComponentMapper<SpatialIndexComponent> mapper;
-	
-	private SensorFilter sensorFilter = new SensorFilter();
-	
-	@Setter private IEntityFilter entityFilter;
 
-	
+	private ObjectSet<Entity> dynamicEntities = new ObjectSet <>();
+
+	private ImmutableArray<Entity> sensorEntities;
+
+	private ComponentMapper<SpatialIndexComponent> mapper;
+
+	private SensorFilter sensorFilter = new SensorFilter();
+
+	//@Setter private IEntityFilter entityFilter;
+
+
 	public SpatialFabric(int width, int height)
 	{
 		space = new SpatialHashMap<>("spatial-index", width*height, 1, width, height);
@@ -69,7 +69,7 @@ public class SpatialFabric extends EntitySystem implements IFabric, EntityListen
 
 		// copy bodies positions into entities:
 		for(Entity entity : dynamicEntities)
-		{			
+		{
 			ISpatialComponent spatial = ISpatialComponent.get(entity);
 			SpatialIndexComponent index = mapper.get(entity);
 			if( spatial.isChanged() )
@@ -86,14 +86,16 @@ public class SpatialFabric extends EntitySystem implements IFabric, EntityListen
 			Entity entity = sensorEntities.get(idx);
 			ISpatialComponent spatial = ISpatialComponent.get(entity);
 			SensorComponent sensor = SensorComponent.get(entity);
-			
+
 			if(sensor.shouldSense() )
 			{
 				sensorFilter.setSensor(sensor);
 				sensor.clear();
-				space.queryRadius(sensorFilter, spatial.x(), spatial.y(), sensor.def.getRadius());
+				space.queryRadius(sensorFilter, spatial.x()-space.getWidth()/2, spatial.y()-space.getHeight()/2, sensor.radius);
+				sensor.timeSinceSensing = 0;
 			}
-
+			else
+				sensor.timeSinceSensing += delta;
 		}
 
 		/*
@@ -107,17 +109,17 @@ public class SpatialFabric extends EntitySystem implements IFabric, EntityListen
 		 */
 	}
 
-	
+
 	class PickProvider implements IPickProvider, ISpatialSensor<SpatialIndexComponent>
 	{
 		private PriorityQueue<PickComponent> sensed = new PriorityQueue<>();
-		
+
 		private float pickRadius = 1;
 		private AABB cursor = AABB.createSquare(0, 0, 1, 0);
-		
-		
+
+
 		@Setter private IEntityFilter entityFilter;
-		
+
 
 		@Override
 		public Entity pick(float x, float y, float pickRadius)
@@ -132,7 +134,7 @@ public class SpatialFabric extends EntitySystem implements IFabric, EntityListen
 				this.pickRadius = pickRadius;
 			}
 			space.queryAABB(this, cursor);
-			
+
 			if( sensed.size() == 0)
 				return null;
 
@@ -152,9 +154,9 @@ public class SpatialFabric extends EntitySystem implements IFabric, EntityListen
 
 		@Override
 		public void clear() { }
-		
+
 	}
-	
+
 	@Override
 	public IPickProvider createPickProvider()
 	{
@@ -165,7 +167,7 @@ public class SpatialFabric extends EntitySystem implements IFabric, EntityListen
 	public void debugDraw(Matrix4 proj)
 	{
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
@@ -174,7 +176,7 @@ public class SpatialFabric extends EntitySystem implements IFabric, EntityListen
 		// TODO Auto-generated method stub
 		return false;
 	}
-	
+
 	@Override
 	public void addedToEngine( Engine engine )
 	{
@@ -186,22 +188,22 @@ public class SpatialFabric extends EntitySystem implements IFabric, EntityListen
 		engine.addEntityListener(Family.one(SpatialIndexComponent.class, SensorComponent.class).get(), this);
 
 		sensorEntities = engine.getEntitiesFor(sensorfamily);
-		
+
 		super.addedToEngine(engine);
 	}
-	
+
 	@Override
 	public void removedFromEngine( Engine engine )
 	{
 		engine.removeEntityListener(this);
 		super.removedFromEngine(engine);
 	}
-	
-	
+
+
 	static class SensorFilter implements ISpatialSensor<SpatialIndexComponent>
 	{
 		SensorComponent sensor;
-		
+
 		public void setSensor(SensorComponent sensor)
 		{
 			this.sensor = sensor;
@@ -210,7 +212,7 @@ public class SpatialFabric extends EntitySystem implements IFabric, EntityListen
 		public boolean objectFound(SpatialIndexComponent object)
 		{
 			sensor.sense(object.getEntity());
-			
+
 			return false;
 		}
 
@@ -218,8 +220,8 @@ public class SpatialFabric extends EntitySystem implements IFabric, EntityListen
 		public void clear()
 		{
 			// TODO Auto-generated method stub
-			
+
 		}
 	};
-	
+
 }

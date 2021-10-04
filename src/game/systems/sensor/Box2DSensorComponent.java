@@ -3,10 +3,12 @@ package game.systems.sensor;
 import com.badlogic.ashley.core.Component;
 import com.badlogic.ashley.core.ComponentMapper;
 import com.badlogic.ashley.core.Entity;
-import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.utils.Pool.Poolable;
+import com.badlogic.gdx.utils.PooledLinkedList;
 
 import game.systems.faction.FactionComponent;
+import game.world.Constants;
 
 /**
  * Defines box2d sensor body.
@@ -15,18 +17,23 @@ import game.systems.faction.FactionComponent;
  *
  * @author Fima
  */
-public class SensorComponent implements Component, Poolable
+public class Box2DSensorComponent implements Component, Poolable
 {
-	public static ComponentMapper<SensorComponent> MAPPER = ComponentMapper.getFor(SensorComponent.class);
+	public static ComponentMapper<Box2DSensorComponent> MAPPER = ComponentMapper.getFor(Box2DSensorComponent.class);
 
-	public static SensorComponent get( Entity entity )
+	public static Box2DSensorComponent get( Entity entity )
 	{
 		return MAPPER.get(entity);
 	}
 
-	public SensorDef def;
+	public Box2DSensorDef def;
 
 	public float radius;
+
+	/**
+	 * Sensor body
+	 */
+	public Body body;
 
 	/**
 	 * If true, sensed entities will be propagated to children that have TargetComponent
@@ -38,12 +45,12 @@ public class SensorComponent implements Component, Poolable
 
 	public int factionId;
 
-	public Array<Entity> sensed = new Array<>();
+	public PooledLinkedList<Entity> sensed = new PooledLinkedList<>( Constants.SENSOR_POOL_SIZE );
 
 	@Override
 	public void reset()
 	{
-
+		body = null;
 		timeSinceSensing = 0;
 	}
 
@@ -58,10 +65,12 @@ public class SensorComponent implements Component, Poolable
 		if(shouldSense())
 		{
 			FactionComponent faction = FactionComponent.get(sensedEntity);
-			//if( faction == null)
-			//	return;
-			if( factionId == 0 || faction.id() == factionId )
+			if( faction == null)
+				return;
+			if( faction.id() == factionId )
 				sensed.add(sensedEntity);
+
+
 		}
 	}
 	/**
@@ -71,11 +80,20 @@ public class SensorComponent implements Component, Poolable
 	public void unsense( Entity sensedEntity )
 	{
 		FactionComponent faction = FactionComponent.get(sensedEntity);
-		//if( faction == null)
-		//	return;
-		if( factionId == 0 || faction.id() == factionId )
+		if( faction == null)
+			return;
+		if( faction.id() == factionId )
 		{
-			sensed.removeValue(sensedEntity, true);
+			sensed.iter();
+			Entity entity;
+			while( ( entity = sensed.next() ) != null )
+			{
+				if( entity == sensedEntity )
+				{
+					sensed.remove();
+					break;
+				}
+			}
 		}
 	}
 	public boolean shouldSense()
@@ -83,7 +101,7 @@ public class SensorComponent implements Component, Poolable
 		return timeSinceSensing >= sensingInterval;
 	}
 
-	public Array<Entity> getSensedEntities()
+	public PooledLinkedList<Entity> getSensedEntities()
 	{
 		return sensed;
 	}

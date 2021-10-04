@@ -37,7 +37,7 @@ public class SensorTargetingSystem extends IteratingSystem
 					if( target == null )
 						continue;
 
-					if( sensor.getSensedEntities().size() != 0 )
+					if( sensor.getSensedEntities().size != 0 )
 					{
 						//fabric.checkVisible( )
 						target.acquireTarget( sensor.getSensedEntities(), entity, fabric );

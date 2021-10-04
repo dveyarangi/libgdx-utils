@@ -20,8 +20,9 @@ import com.badlogic.gdx.physics.box2d.World;
 
 import game.systems.box2d.Box2DPhysicalDef.PartDef;
 import game.systems.control.IEntityFilter;
+import game.systems.sensor.Box2DSensorComponent;
+import game.systems.sensor.Box2DSensorDef;
 import game.systems.sensor.SensorComponent;
-import game.systems.sensor.SensorDef;
 import game.systems.spatial.ISpatialComponent;
 import game.util.Angles;
 import game.world.IFabric;
@@ -147,9 +148,9 @@ public class Box2DFabric extends EntitySystem implements IFabric, EntityListener
 	@Override
 	public void entityAdded( Entity entity )
 	{
-		this.initBodyComponent(entity);
+		initBodyComponent(entity);
 
-		this.initSensorComponent(entity);
+		initSensorComponent(entity);
 
 	}
 
@@ -179,10 +180,10 @@ public class Box2DFabric extends EntitySystem implements IFabric, EntityListener
 
 	private void initSensorComponent( Entity entity )
 	{
-		SensorComponent sensor = SensorComponent.get(entity);
+		Box2DSensorComponent sensor = Box2DSensorComponent.get(entity);
 		if( sensor != null && sensor.body == null )
 		{
-			SensorDef sensorDef = sensor.def;
+			Box2DSensorDef sensorDef = sensor.def;
 			BodyDef bodyDef = sensorDef.getBodyDef();
 
 			Body body = world.createBody(bodyDef);
@@ -199,7 +200,7 @@ public class Box2DFabric extends EntitySystem implements IFabric, EntityListener
 	public void update( final float delta )
 	{
 		// make physics steps:
-		this.processPhysicsWorld(delta);
+		processPhysicsWorld(delta);
 
 		// copy bodies positions into entities:
 		for( int idx = 0; idx < physicalEntities.size(); idx++ )
