@@ -1,12 +1,14 @@
 package game.debug;
 
+import lombok.Getter;
+
 public class InvokationTimer
 {
 	private long lastMeasureTime;
 	private int count;
 	private long measureInterval;
 
-	private float average = 1;
+	@Getter private float average = 1;
 	private String tag;
 
 
@@ -30,10 +32,17 @@ public class InvokationTimer
 
 
 		average = average*0.5f + count*0.5f;
-		System.out.println(tag + ": average calls per second: " + average);
-
 		lastMeasureTime = now;
 		count = 0;
+
+	}
+
+	public void measureAndPrint()
+	{
+		measure();
+		if(count == 0)
+			System.out.println(tag + ": average calls per second: " + average);
+
 
 	}
 }

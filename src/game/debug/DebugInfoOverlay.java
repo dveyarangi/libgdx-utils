@@ -6,6 +6,7 @@ import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.Align;
+import com.badlogic.gdx.utils.IdentityMap;
 import com.badlogic.gdx.utils.IntMap;
 import com.badlogic.gdx.utils.IntMap.Entry;
 import com.badlogic.gdx.utils.TimeUtils;
@@ -36,6 +37,8 @@ public class DebugInfoOverlay implements IOverlay
 	VisLabel entitiesLabel;
 	VisLabel cameraPosLabel;
 
+	IdentityMap <String, VisLabel> timerLabels = new IdentityMap <> ();
+
 	public DebugInfoOverlay(GameInputProcessor inputController, IntMap<OverlayBinding> debugOverlays)
 	{
 		this.inputController = inputController;
@@ -65,6 +68,19 @@ public class DebugInfoOverlay implements IOverlay
 		cameraPosLabel = new VisLabel();
 		debugWindow.add(cameraPosLabel);
 
+		debugWindow.row().align(Align.left).colspan(2);
+		debugWindow.add("- CALL COUNT ------------------------------");
+		for(String debugTag : Debug.timers.keys())
+		{
+			debugWindow.row().align(Align.left);
+			debugWindow.add(debugTag + ":");
+			VisLabel timerLabel = new VisLabel();
+			timerLabels.put(debugTag, timerLabel);
+			debugWindow.add(timerLabel);
+		}
+
+		debugWindow.row().align(Align.left).colspan(2);
+		debugWindow.add("-------------------------------------------");
 		debugWindow.row().align(Align.left);
 		debugWindow.add("Overlays: ");
 
@@ -121,6 +137,9 @@ public class DebugInfoOverlay implements IOverlay
 
 	}
 
+	private static final String CAMERA_POS_FMT = "%3.2f, %3.2f, z%2.2f";
+	private static final String FLOAT_FMT = "%5.2f";
+
 	@Override
 	public void draw(IRenderer renderer)
 	{
@@ -146,9 +165,19 @@ public class DebugInfoOverlay implements IOverlay
 
 			Vector3 cameraPos = level.getModules().getCameraProvider().position();
 			float cameraZoom = level.getModules().getCameraProvider().zoom();
-			String cameraInfo = String.format("%3.2f, %3.2f, z%2.2f",cameraPos.x, cameraPos.y, cameraZoom);
+			String cameraInfo = String.format(CAMERA_POS_FMT,cameraPos.x, cameraPos.y, cameraZoom);
 
 			cameraPosLabel.setText(cameraInfo);
+
+
+
+			for(String debugTag : timerLabels.keys())
+			{
+				InvokationTimer timer = Debug.timers.get(debugTag);
+				VisLabel timerLabel = timerLabels.get(debugTag);
+				timerLabel.setText(String.format(FLOAT_FMT,  timer.getAverage()));
+			}
+
 		}
 
 		debugWindow.pack();

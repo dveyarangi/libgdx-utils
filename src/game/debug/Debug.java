@@ -17,6 +17,7 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.IdentityMap;
 import com.badlogic.gdx.utils.IntMap;
 import com.badlogic.gdx.utils.IntMap.Entry;
 
@@ -61,8 +62,19 @@ public class Debug
 
 	public static boolean DEBUG_UI = false;
 
+	static IdentityMap <String, InvokationTimer> timers = new IdentityMap();
+	public static boolean registerCallAverageTag(String tag)
+	{
+		timers.put(tag, new InvokationTimer(tag));
+		return true;
+	}
+	public static boolean callAverage(String tag)
+	{
+		InvokationTimer timer = timers.get(tag);
 
-	//public ShapeRenderingContext projectedShapeRenderer;
+		timer.measure();
+		return true;
+	}
 
 
 	public static class OverlayBinding
