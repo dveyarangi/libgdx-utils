@@ -226,7 +226,7 @@ public class Box2DFabric extends EntitySystem implements IFabric, EntityListener
 		{
 			Entity entity = sensorEntities.get(idx);
 			ISpatialComponent spatial = ISpatialComponent.get(entity);
-			SensorComponent sensor = SensorComponent.get(entity);
+			Box2DSensorComponent sensor = Box2DSensorComponent.get(entity);
 
 			sensor.body.setTransform(spatial.x(), spatial.y(), spatial.a() * Angles.TO_RAD);
 		}
@@ -303,7 +303,7 @@ public class Box2DFabric extends EntitySystem implements IFabric, EntityListener
 		if( body != null )
 			world.destroyBody(body.getBody());
 
-		SensorComponent sensor = SensorComponent.get(entity);
+		Box2DSensorComponent sensor = Box2DSensorComponent.get(entity);
 		if( sensor != null )
 			world.destroyBody(sensor.body);
 	}
