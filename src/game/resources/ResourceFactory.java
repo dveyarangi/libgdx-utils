@@ -739,7 +739,13 @@ public class ResourceFactory implements LoadableModule
 								if( group.getName() == null)
 									throw new IllegalArgumentException("Missing name for EntityDef group in " + filename);
 
-								entityDefGroups.put(group.getName(), group);
+								// merge if group already loaded (from another file)
+								if( entityDefGroups.containsKey(group.getName()))
+									entityDefGroups.get(group.getName()).getEntities()
+									.addAll(group.getEntities());
+								else
+									entityDefGroups.put(group.getName(), group);
+
 								for(EntityDef def : group.getEntities())
 									def.setPath(group.getName() + "/" + def.getName());
 							}
