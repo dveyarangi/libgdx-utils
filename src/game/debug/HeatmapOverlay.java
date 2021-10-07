@@ -7,7 +7,7 @@ import game.util.colors.Colormap;
 import game.util.colors.ColormapConf;
 import yarangi.math.Pair;
 
-public class HeatmapOverlay extends TileGridOverlay 
+public class HeatmapOverlay extends TileGridOverlay
 {
 
 	private float[][] heatmap;
@@ -16,9 +16,9 @@ public class HeatmapOverlay extends TileGridOverlay
 	public HeatmapOverlay(float [][] heatmap, ColormapConf colormap)
 	{
 		super(heatmap.length, heatmap[0].length);
-		
+
 		this.heatmap = heatmap;
-		
+
 		Pair <Float> minmax = Heightmap.minmax(heatmap);
 		this.colormap = new Colormap(minmax, colormap);
 	}
@@ -34,8 +34,8 @@ public class HeatmapOverlay extends TileGridOverlay
 	@Override
 	protected float getValue(int x, int y)
 	{
-		// TODO Auto-generated method stub
-		return 0;
+
+		return heatmap[x][y];
 	}
 
 }
