@@ -13,6 +13,7 @@ import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonDeserializationContext;
@@ -227,8 +228,12 @@ AsynchronousAssetLoader<Configuration, Configuration.Parameter>
 			FileHandle file, Configuration.Parameter parameter )
 	{
 		dependencies.clear();
+		String jsonText;
+		try {
+			jsonText = file.readString();
+		}
+		catch(GdxRuntimeException e) { throw new GdxRuntimeException("Failed to load dependency file '" + file.path() + " 'for json file '" +fileName + "'", e); }
 
-		String jsonText = file.readString();
 		if( jsonText.contains("{")) // TODO: this is a bit awkward
 		{
 			try {
