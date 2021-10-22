@@ -3,6 +3,8 @@ package game.world;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.badlogic.ashley.core.EntitySystem;
+
 import game.systems.EntityPrefab;
 import game.systems.SystemDef;
 import lombok.Getter;
@@ -57,6 +59,15 @@ public class LevelDef
 	List<SystemDef<?>> getSystemDefs()
 	{
 		return systems;
+	}
+
+	public void addSystem (EntitySystem system)
+	{
+		systems.add(new SystemDef<>(system));
+	}
+	public void addSystem (Class <? extends EntitySystem> system)
+	{
+		systems.add(new SystemDef<>(system));
 	}
 
 	public void addSystem(SystemDef <?> systemDef)

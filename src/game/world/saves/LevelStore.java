@@ -25,6 +25,7 @@ import game.systems.EntityPrefab;
 import game.systems.IComponentDef;
 import game.systems.lifecycle.LifecycleComponent;
 import game.systems.lifecycle.LifecycleDef;
+import game.systems.spatial.ISpatialComponent;
 import game.world.BlueprintFactory;
 import game.world.Level;
 import lombok.AllArgsConstructor;
@@ -99,13 +100,12 @@ public class LevelStore
 			EntityProps savedProps = new EntityProps();
 			List <String> componentTypes = new ArrayList <>();
 			LifecycleComponent lifecycle = entity.getComponent(LifecycleComponent.class);
-			//ISpatialComponent spatial = entity.getComponent(ISpatialComponent.class);
-			//if(spatial != null)
-			//	spatial.save(new SpatialDef(), savedProps);
+
+			ISpatialComponent spatial = entity.getComponent(ISpatialComponent.class);
 			EntityPrefab prefab = blueprints.getPrefab(lifecycle.type, lifecycle.path, savedProps);
 			if( prefab == null)
 			{
-				Debug.log("Entity of type " + lifecycle.type + " is missing prefab, not saving");
+				Debug.warn("Entity of type " + lifecycle.type + " is missing prefab, not saving");
 				continue;
 			}
 
