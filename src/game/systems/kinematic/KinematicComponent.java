@@ -7,6 +7,8 @@ import static game.systems.kinematic.KinematicDef.PROP_VR;
 import static game.systems.kinematic.KinematicDef.PROP_VX;
 import static game.systems.kinematic.KinematicDef.PROP_VY;
 
+import java.text.DecimalFormat;
+
 import com.badlogic.ashley.core.ComponentMapper;
 import com.badlogic.ashley.core.Entity;
 
@@ -105,4 +107,22 @@ public class KinematicComponent implements IMovementComponent, Savable <Kinemati
 
 	@Override
 	public Class<KinematicDef> getDefClass() { return KinematicDef.class; }
+
+
+	static DecimalFormat fmt = new DecimalFormat("0.##");
+
+	@Override
+	public String toString()
+	{
+		StringBuilder sb = new StringBuilder();
+
+		sb		.append("(dx dy da dr)=(")
+		.append(fmt.format(vx)).append(" ")
+		.append(fmt.format(vy)).append(" ")
+		.append(fmt.format(va)).append(" ")
+		.append(fmt.format(vr)).append(")");
+
+
+		return sb.toString();
+	}
 }

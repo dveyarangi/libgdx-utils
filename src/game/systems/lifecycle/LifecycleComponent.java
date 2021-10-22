@@ -135,12 +135,12 @@ public class LifecycleComponent implements Component, Poolable, Savable<Lifecycl
 	{
 		StringBuilder sb = new StringBuilder();
 
-		sb.append(type).append(" ").append(path).append(" (").append(id).append(")");
+		sb.append(type).append(":").append(path).append("(").append(id).append(")");
 		if(isImmortal())
-			sb.append(", age:immortal, ");
+			sb.append("|immortal|");
 		else
-			sb.append(", age:").append(lifetime).append("/").append(lifelen).append(", ");
-		sb.append("alive:").append(isAlive);
+			sb.append("|age:").append(lifetime).append("/").append(lifelen).append("|");
+		sb.append(isAlive?"alive":"dead");
 		return sb.toString();
 	}
 

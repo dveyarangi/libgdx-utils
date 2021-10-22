@@ -5,7 +5,6 @@ package game.systems;
 
 import com.badlogic.ashley.core.Component;
 import com.badlogic.ashley.core.Entity;
-import com.badlogic.ashley.core.PooledEngine;
 
 import game.systems.lifecycle.LifecycleComponent;
 import game.systems.lifecycle.LifecycleSystem;

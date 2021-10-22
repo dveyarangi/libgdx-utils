@@ -1,5 +1,7 @@
 package game.systems.spatial;
 
+import java.text.DecimalFormat;
+
 import com.badlogic.gdx.math.Vector2;
 
 import game.util.Angles;
@@ -148,17 +150,23 @@ public class GenericSpatialComponent implements ISpatialComponent
 		isChanged = false;
 	}
 
+	static DecimalFormat fmt = new DecimalFormat("0.##");
+
 	@Override
 	public String toString()
 	{
-		return new StringBuilder()
-				.append("x:").append(x()).append(",")
-				.append("y:").append(y()).append(",")
-				.append("z:").append(z()).append(",")
-				.append("a:").append(a()).append(",")
-				.append("r:").append(r()).append(",")
-				.append("i:").append(inv())
-				.toString();
+		StringBuilder sb = new StringBuilder();
+
+		sb		.append("(x y z)=(")
+		.append(fmt.format(x())).append(" ")
+		.append(fmt.format(y())).append(" ")
+		.append(fmt.format(z())).append(")")
+		.append("|a=").append(fmt.format(a()))
+		.append("|r=").append(fmt.format(r()));
+		if(inv())
+			sb.append("|mirrored");
+
+		return sb.toString();
 	}
 
 }
