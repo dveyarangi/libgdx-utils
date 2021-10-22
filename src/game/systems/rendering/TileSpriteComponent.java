@@ -62,7 +62,8 @@ public class TileSpriteComponent implements IRenderingComponent, Savable<TileSpr
 	@Override
 	public void reset()
 	{
-
+		tx = Integer.MAX_VALUE;
+		ty = Integer.MAX_VALUE;
 	}
 
 	@Override
@@ -93,7 +94,7 @@ public class TileSpriteComponent implements IRenderingComponent, Savable<TileSpr
 		this.zOffset = def.zOffset;
 		this.sizeCoef = def.sizeCoef;
 
-		scale(1);
+		_scale(1);
 
 	}
 
@@ -103,8 +104,7 @@ public class TileSpriteComponent implements IRenderingComponent, Savable<TileSpr
 		// TODO Auto-generated method stub
 
 	}
-
-	public void scale(float size)
+	public void _scale(float size)
 	{
 		this.width = size; // TODO: this maybe not the best idea to hold copies of SpatialComponent props here
 		float rw = region.getRegionWidth();
@@ -114,7 +114,11 @@ public class TileSpriteComponent implements IRenderingComponent, Savable<TileSpr
 
 		dx = (0.5f - xOffset)*sizeCoef*width;
 		dy = (0.5f - yOffset)*sizeCoef*height;
+	}
 
+	public void scale(float size)
+	{
+		_scale(size);
 		if( renderer != null)
 			renderer.entityUpdated(this);
 	}

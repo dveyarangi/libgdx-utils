@@ -253,7 +253,8 @@ public class TileSpritesRenderer extends EntitySystem implements EntityListener,
 		ITile tile = tilemap.getTileAt(x, y);
 
 		tileSprite.update(x, y, spatial.inv(), tile);
-
+		//if( tile.getX() == 140 && tile.getY() == 135)
+		//	System.out.print("");
 
 		multimesh.updateTile(meshDef.getUnitsPerTile()*tile.getX(), meshDef.getUnitsPerTile()*tile.getY(), new TileUpdate() {
 
@@ -310,8 +311,13 @@ public class TileSpritesRenderer extends EntitySystem implements EntityListener,
 		if( tileSprite == null)
 			return; // ignore
 
+		if( tilemap.getTileAt(tileSprite.tx, tileSprite.ty) == null )
+			return; // ignore TODO: this is caused by early calls to entityUpdated
+		// from the TileSpriteCompo
+
 
 		int meshIndex = meshIndices.get(tileSprite.atlasName, 0);
+		//System.out.println("updated: " + meshIndex + " " + tileSprite.atlasName);
 		TileMultiMesh multimesh = grids[meshIndex].mesh;
 		float opacity = grids[meshIndex].opacity;
 		update.setSprite(tileSprite, opacity);
@@ -328,7 +334,7 @@ public class TileSpritesRenderer extends EntitySystem implements EntityListener,
 	{
 		ISpatialComponent spatial = entity.getComponent(ISpatialComponent.class);
 		TileSpriteComponent tileSprite = entity.getComponent( TileSpriteComponent.class );
-		if( tileSprite != null)
+		if( tileSprite != null )
 		{
 			removeSprite(tileSprite, spatial);
 		}
@@ -349,6 +355,7 @@ public class TileSpritesRenderer extends EntitySystem implements EntityListener,
 	public void removeSprite(TileSpriteComponent tileSprite, ISpatialComponent spatial)
 	{
 		int meshIndex = meshIndices.get(tileSprite.atlasName, 0);
+		//System.out.println("removed: " + meshIndex + " " + tileSprite.atlasName);
 		TileMultiMesh multimesh = grids[meshIndex].mesh;
 		ITile tile = tilemap.getTileAt(spatial.x(), spatial.y());
 		remove.setSprite(tileSprite);
