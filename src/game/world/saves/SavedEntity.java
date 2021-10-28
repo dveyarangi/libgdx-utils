@@ -1,6 +1,6 @@
 package game.world.saves;
 
-import com.badlogic.gdx.utils.ObjectMap;
+import com.badlogic.gdx.utils.OrderedMap;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -10,5 +10,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class SavedEntity {
 
-	@Getter ObjectMap <String, String> props;
+	@Getter OrderedMap <String, String> props;
+
+
 }

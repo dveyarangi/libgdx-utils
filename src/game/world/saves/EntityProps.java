@@ -1,21 +1,21 @@
 package game.world.saves;
 
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.utils.ObjectMap;
+import com.badlogic.gdx.utils.OrderedMap;
 
 import lombok.Getter;
 
 
 public class EntityProps
 {
-	@Getter private ObjectMap<String,String> props;
+	@Getter private OrderedMap<String,String> props;
 
 	public EntityProps()
 	{
-		this(new ObjectMap <> ());
+		this(new OrderedMap <> ());
 	}
 
-	public EntityProps(ObjectMap<String, String> props)
+	public EntityProps(OrderedMap<String, String> props)
 	{
 		this.props = props;
 	}

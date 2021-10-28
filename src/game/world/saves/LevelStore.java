@@ -3,6 +3,7 @@ package game.world.saves;
 import java.io.IOException;
 import java.io.Writer;
 import java.nio.ByteBuffer;
+import java.text.DecimalFormat;
 import java.util.Base64;
 import java.util.HashSet;
 import java.util.Set;
@@ -23,6 +24,8 @@ import game.systems.lifecycle.LifecycleComponent;
 import game.world.BlueprintFactory;
 import game.world.Level;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.NoArgsConstructor;
 
 /**
  * Provides methods to save and load game levels
@@ -31,11 +34,24 @@ import lombok.AllArgsConstructor;
 @AllArgsConstructor
 public class LevelStore
 {
-
+	@Builder
+	@NoArgsConstructor
+	@AllArgsConstructor
+	public static class Settings
+	{
+		@Builder.Default
+		public int maxFractionDigits = 2;
+	}
 	private BlueprintFactory blueprints;
+	private Settings settings;
 
 	// TODO: move saves to USER_HOME or similar folder:
 	public static final String SAVE_DIR = "saves";
+
+	public LevelStore(BlueprintFactory factory)
+	{
+		this(factory, new Settings());
+	}
 
 
 	public void save(Level level, String savename)
@@ -100,7 +116,20 @@ public class LevelStore
 
 		////////////////////////////////////////////////////////////
 		// write save file
+		// internalize loaded strings
+		json.setSerializer( Float.class, new Serializer<Float>()
+		{
+			String FMT_STR = String.format("0.%" + settings.maxFractionDigits + "d", 0);
+			DecimalFormat format = new DecimalFormat(FMT_STR);
+
+			@Override public Float read(Json json, JsonValue value, Class type) { return value.asFloat(); }
+
+			@Override public void write(Json json, Float value, Class type) {
+				json.writeValue( format.format(value));
+			}
+		});
 		String jsonStr = json.prettyPrint(savedata);
+
 		try (Writer writer = savefile.writer(false, "UTF-8"))
 		{
 			writer.write(jsonStr);
