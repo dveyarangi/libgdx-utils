@@ -9,6 +9,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class SavedEntity {
-	@Getter String id;
+
 	@Getter ObjectMap <String, String> props;
 }

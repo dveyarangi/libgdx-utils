@@ -25,9 +25,9 @@ public class SavedLevel
 		this.settings = settings;
 	}
 
-	public void addEntity(String id, EntityProps properties)
+	public void addEntity(EntityProps properties)
 	{
-		entities.add(new SavedEntity(id, properties.getProps()));
+		entities.add(new SavedEntity(properties.getProps()));
 	}
 
 }
