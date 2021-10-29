@@ -164,5 +164,9 @@ public class LifecycleComponent implements Component, Poolable, Savable<Lifecycl
 	@Override
 	public Class<LifecycleDef> getDefClass() { return LifecycleDef.class; }
 
+	public static boolean isId(Entity entity, int id)
+	{
+		return entity.getComponent(LifecycleComponent.class).id == id;
+	}
 
 }

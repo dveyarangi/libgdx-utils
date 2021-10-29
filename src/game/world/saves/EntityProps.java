@@ -99,4 +99,9 @@ public class EntityProps
 		return containsKey(prop) ? Color.valueOf(get(prop)) : color;
 	}
 
+	@Override
+	public String toString()
+	{
+		return props.toString();
+	}
 }
