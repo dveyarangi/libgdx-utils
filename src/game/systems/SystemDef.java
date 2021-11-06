@@ -12,6 +12,8 @@ public class SystemDef <S extends EntitySystem>
 
 	@Getter protected S system;
 
+	
+
 	protected IRenderingContext renderer;
 
 	public SystemDef()
@@ -26,6 +28,7 @@ public class SystemDef <S extends EntitySystem>
 	{
 		this.system = system;
 	}
+
 	public SystemDef( S system, IRenderingContext renderer )
 	{
 		this.system = system;
@@ -54,7 +57,7 @@ public class SystemDef <S extends EntitySystem>
 		// TODO Auto-generated method stub
 
 	}
-	
+
 	public IRenderingContext createRenderer() { return renderer; }
 
 }

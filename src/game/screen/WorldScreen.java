@@ -108,7 +108,6 @@ public abstract class WorldScreen<G extends AbstractGame> extends AbstractScreen
 		progress.update(1, "Populating world...");
 		progress.setFinished(true);
 
-
 	}
 
 
@@ -118,12 +117,13 @@ public abstract class WorldScreen<G extends AbstractGame> extends AbstractScreen
 		super.show();
 
 
-
-		//progress.update(0.8f, "Populating world...");
 		level = new Level( gameSetup, options );
-		level.update(0);
+
+
 		// TODO: remove
 		Debug.init(level);
+		
+		level.warmUp();
 
 	}
 

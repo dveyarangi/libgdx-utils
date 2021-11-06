@@ -27,13 +27,19 @@ public class LevelDef
 
 	@Getter private IGameSettings settings;
 
-	@Getter private int width;
-	@Getter private int height;
+	@Getter @Setter private int width;
+	@Getter @Setter private int height;
 
 	private LevelInitialSettings initialSettings;
 
 	// private IBackground background = new DummyBackground();
-
+	
+	/*
+	 * number of ticks in the start of the new level, that are allocated for background 
+	 * simulation without rendering
+	 */
+	@Getter @Setter private int simulationTicks = 0;
+	
 	private ArrayList<SystemDef<?>> systems = new ArrayList<> ();
 
 	private ArrayList<EntityPrefab> entities = new ArrayList<>();
@@ -43,15 +49,6 @@ public class LevelDef
 		this.settings = settings;
 	}
 
-	public void setWidth( final int width )
-	{
-		this.width = width;
-	}
-
-	public void setHeight( final int height )
-	{
-		this.height = height;
-	}
 
 	// public IBackground getBackgroundDef() { return background; }
 	// public void setBackgroundDef( final IBackground background ) {
@@ -61,10 +58,10 @@ public class LevelDef
 		return systems;
 	}
 
-	public void addSystem (EntitySystem system)
+	/*public void addSystem (EntitySystem system)
 	{
 		systems.add(new SystemDef<>(system));
-	}
+	}*/
 	public void addSystem (Class <? extends EntitySystem> system)
 	{
 		systems.add(new SystemDef<>(system));

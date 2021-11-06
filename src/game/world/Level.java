@@ -14,6 +14,7 @@ import game.debug.Debug;
 import game.systems.EntityFactory;
 import game.systems.PooledEngine;
 import game.systems.SystemDef;
+import game.systems.WarmedUpSystem;
 import game.systems.control.GameInputProcessor;
 import game.systems.lifecycle.LifecycleSystem;
 import game.systems.rendering.EntityRenderingSystem;
@@ -72,6 +73,9 @@ public class Level extends EntitySystem
 
 
 	private ObjectSet<Entity> modifiedEntities = new ObjectSet<>();
+	
+	
+	private List <WarmedUpSystem> warmedUpSystems = new ArrayList <> ();
 
 
 	/**
@@ -128,6 +132,9 @@ public class Level extends EntitySystem
 			EntitySystem system = systemDef.createSystem();
 			systemDef.initSystem( this, system );
 			engine.addSystem( system );
+			
+			if( system instanceof WarmedUpSystem )
+				warmedUpSystems.add((WarmedUpSystem)system);
 
 			IRenderingContext systemRenderer = systemDef.createRenderer();
 			if( systemRenderer != null )
@@ -261,5 +268,20 @@ public class Level extends EntitySystem
 	public void entityModified(Entity entity)
 	{
 		modifiedEntities.add(entity);
+	}
+
+	public void warmUp() 
+	{
+		for(WarmedUpSystem system : warmedUpSystems)
+			system.initWarmup();
+		
+		for(int tick = 0; tick < def.getSimulationTicks(); tick ++)
+			for(WarmedUpSystem system : warmedUpSystems)
+				system.warmup(100);
+
+		for(WarmedUpSystem system : warmedUpSystems)
+			system.finishWarmup();
+		
+		this.update(0);
 	}
 }
