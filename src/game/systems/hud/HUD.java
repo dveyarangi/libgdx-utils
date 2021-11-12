@@ -7,13 +7,14 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
 import game.systems.control.GameInputProcessor;
+import game.world.Level;
 import lombok.Getter;
 
 public abstract class HUD
 {
 	@Getter protected Stage stage;
 	
-	
+	protected Level level;
 	
 	protected Table canvas;
 	
@@ -25,8 +26,10 @@ public abstract class HUD
 	{
 	}
 	
-	public void init(GameInputProcessor gameInputProcessor) 
+	public void init(GameInputProcessor gameInputProcessor, Level level) 
 	{
+		this.level = level;
+		
 		this.stage = new Stage(new ScreenViewport());
 
 		this.input = gameInputProcessor;

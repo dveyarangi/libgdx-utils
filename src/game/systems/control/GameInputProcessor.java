@@ -127,7 +127,7 @@ public class GameInputProcessor extends EntitySystem implements InputProcessor
 		controlModes.init( level );
 
 
-		this.ui.init( this );
+		this.ui.init( this, level );
 
 
 		inputMultiplexer.addProcessor(uiProcessor);
