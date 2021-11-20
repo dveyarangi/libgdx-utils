@@ -1,6 +1,10 @@
 package game.util;
 
+import java.util.List;
+
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.utils.Array;
 
 import yarangi.math.Pair;
 
@@ -58,5 +62,38 @@ public class Heightmap
 			}
 		
 		return new Pair<>(min,max);
+	}
+	
+	public static Pair <Array <Vector2>> findExtrema(float [][] hm, int radius)
+	{
+		int w = hm.length;
+		int h = hm[0].length;
+		Array <Vector2> minima = new Array <> ();
+		Array <Vector2> maxima = new Array <> ();
+		for(int x = 0; x < w; x ++)
+			for(int y = 0; y < h; y ++)
+			{
+				float v = hm[x][y];
+				boolean isMinimum = true, isMaximum = true;
+				for(int i = -radius; i <= radius; i ++)
+					for(int j = -radius; j <= radius; j ++)
+					{
+						if(i == 0 && j == 0)
+							continue;
+						if( x+i < 0 || x+i >= w || y+j < 0 || y+j >=h )
+							continue;
+						if(hm[x+i][y+j] <= v)
+							isMinimum = false;
+						if(hm[x+i][y+j] >= v)
+							isMaximum = false;
+					}
+				if( isMinimum )
+					minima.add(new Vector2(x,y));
+				if( isMaximum )
+					maxima.add(new Vector2(x,y));
+					
+			}
+		
+		return new Pair<>(minima, maxima);
 	}
 }

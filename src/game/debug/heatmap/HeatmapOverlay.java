@@ -1,7 +1,8 @@
-package game.debug;
+package game.debug.heatmap;
 
 import com.badlogic.gdx.graphics.Color;
 
+import game.debug.TileGridOverlay;
 import game.util.Heightmap;
 import game.util.colors.Colormap;
 import game.util.colors.ColormapConf;

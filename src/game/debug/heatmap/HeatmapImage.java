@@ -1,15 +1,20 @@
-package game.debug;
+package game.debug.heatmap;
 
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-
+import java.awt.Graphics2D;
+import java.awt.Shape;
+import java.awt.geom.Ellipse2D;
 import javax.imageio.ImageIO;
 
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.utils.Array;
 
+import game.debug.Debug;
 import game.util.Heightmap;
 import game.util.colors.Colormap;
 import game.util.colors.ColormapConf;
@@ -27,15 +32,15 @@ public class HeatmapImage
 			DEFAULT_COLORMAP = Colormaps.read(new InputStreamReader(in));
 		} catch(IOException e) { throw new RuntimeException(e);	}
 	}
-	public static void makeImage(float [][] heatmap, int scale, String path )
+	public static void makeImage(float [][] heatmap, int scale, String path, Array<HeatmapLayer> layers )
 	{
-		makeImage(heatmap, scale, DEFAULT_COLORMAP, Heightmap.minmax(heatmap), path);
+		makeImage(heatmap, scale, DEFAULT_COLORMAP, Heightmap.minmax(heatmap), path, layers);
 	}
-	public static void makeImage(float [][] heatmap, int scale, ColormapConf colormap, float min, float max, String path )
+	public static void makeImage(float [][] heatmap, int scale, ColormapConf colormap, float min, float max, String path, Array<HeatmapLayer> layers )
 	{
-		makeImage(heatmap, scale, colormap, new Pair<>(min, max), path);
+		makeImage(heatmap, scale, colormap, new Pair<>(min, max), path, layers);
 	}
-	public static void makeImage(float [][] heatmap, int scale, ColormapConf colormap, Pair<Float> minmax, String path )
+	public static void makeImage(float [][] heatmap, int scale, ColormapConf colormap, Pair<Float> minmax, String path, Array<HeatmapLayer> layers )
 	{
 
 		int w = heatmap[0].length;
@@ -46,15 +51,20 @@ public class HeatmapImage
 
 
 		BufferedImage image = new BufferedImage(w*scale, h*scale, BufferedImage.TYPE_INT_ARGB);
-
+		
 		Color color = new Color();
 		for(int x = 0; x < w*scale; x ++)
 			for(int y = 0; y < h*scale; y ++)
 			{
 				cm.toColor(heatmap[x/scale][y/scale], color);
-				image.setRGB(x, h*scale-y-1, Color.argb8888(color));
+				image.setRGB(x, y, Color.argb8888(color));
 			}
-
+		
+		Graphics2D g2d = (Graphics2D) image.getGraphics();
+		if( layers != null)
+			for(HeatmapLayer layer : layers)
+				layer.render(g2d, scale);
+	
 		File outfile =  new File(path);
 		try
 		{
