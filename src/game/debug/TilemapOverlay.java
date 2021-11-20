@@ -39,6 +39,44 @@ public class TilemapOverlay extends TileGridOverlay
 
 	}
 
+	@AllArgsConstructor
+	public static class EnumArray implements Provider
+	{
+		Object [][] array;
+		Object [] values;
+		EnumArray(Object [][] array)
+		{
+			values = array[0][0].getClass().getEnumConstants();
+			if(values == null )
+				throw new IllegalArgumentException("Must be an enum type");
+
+			this.array = array;
+		}
+
+		@Override
+		public float at(int x, int y)
+		{
+			for(int idx = 0; idx < values.length; idx ++)
+
+				if( values[idx] == array[x][y] )
+					return (float)idx/values.length;
+
+			throw new IllegalStateException();
+		}
+		@Override
+		public int w() { return array[0].length; }
+
+		@Override
+		public int h() { return array.length; }
+
+		@Override
+		public Pair<Float> minmax()
+		{
+			return new Pair <>(0f,1f);
+		}
+
+	}
+
 	private Provider provider;
 
 	private Colormap colormap;
@@ -56,6 +94,11 @@ public class TilemapOverlay extends TileGridOverlay
 	public TilemapOverlay(float [][] heatmap, ColormapConf colormap)
 	{
 		this(new FloatArray(heatmap), colormap);
+	}
+
+	public TilemapOverlay(Object [][]enumap, ColormapConf colormap)
+	{
+		this(new EnumArray(enumap), colormap);
 	}
 
 	@Override

@@ -35,7 +35,9 @@ public class SpatialIndexComponent implements ISpatialObject, Component, Poolabl
 		update();
 	}
 
-	public void update()
+	// TODO: when updating, SpatialFabric translates the area to it's coordinate system
+	// this is redundant and can cause mirky bugs
+	void update()
 	{
 		ISpatialComponent spatial = ISpatialComponent.get(entity);
 		oldArea.paste(area);
