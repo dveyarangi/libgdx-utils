@@ -36,7 +36,7 @@ public class EntityPrefab implements/*Component,*/ Poolable
 
 	public EntityPrefab()
 	{
-		this(new EntityProps());
+		this(EntityProps.get());
 	}
 
 	public EntityPrefab(EntityProps props)

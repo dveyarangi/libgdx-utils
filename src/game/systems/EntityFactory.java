@@ -122,6 +122,8 @@ public class EntityFactory
 			// init the component:
 			if( component instanceof Savable )
 				((Savable)component).load(componentDef, prefab.getProps());
+			
+			//prefab.getProps().free();
 
 			componentDef.initComponent( component, entity, level );
 			// attach the component to the entity:

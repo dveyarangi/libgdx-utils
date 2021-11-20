@@ -2,6 +2,7 @@ package game.world.saves;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.utils.OrderedMap;
+import com.badlogic.gdx.utils.Pool;
 
 import lombok.Getter;
 
@@ -9,8 +10,16 @@ import lombok.Getter;
 public class EntityProps
 {
 	@Getter private OrderedMap<String,String> props;
+	
+	private static Pool<EntityProps> pool = new Pool<EntityProps> () {
+		@Override protected EntityProps newObject() { return new EntityProps(); }
+	};
+	
+	public static EntityProps get() { return pool.obtain(); }
+	
+	public void free() { pool.free(this); }
 
-	public EntityProps()
+	private EntityProps()
 	{
 		this(new OrderedMap <> ());
 	}

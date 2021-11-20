@@ -81,7 +81,7 @@ public class LevelStore
 		for(Entity entity : level.getEngine().getEntities())
 		{
 			// this props objects will receive values to save from entity components
-			EntityProps savedProps = new EntityProps();
+			EntityProps savedProps = EntityProps.get();
 
 			// get object blueprint to analyze components
 			LifecycleComponent lifecycle = entity.getComponent(LifecycleComponent.class);
@@ -112,6 +112,8 @@ public class LevelStore
 			}
 
 			savedata.addEntity(savedProps);
+			
+			// TODO: free savedProps
 		}
 
 		////////////////////////////////////////////////////////////
@@ -136,6 +138,7 @@ public class LevelStore
 		}
 		catch (IOException e) { e.printStackTrace(); }
 
+		
 		//json.toJson(savedata, savefile);
 		Debug.stopTiming(processId);
 	}
