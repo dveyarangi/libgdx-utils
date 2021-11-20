@@ -12,6 +12,7 @@ import game.systems.tiles.ITile;
 import game.world.Level;
 import game.world.saves.EntityProps;
 import game.world.saves.Savable;
+import lombok.Getter;
 
 public class TileSpriteComponent implements IRenderingComponent, Savable<TileSpriteDef>
 {
@@ -20,7 +21,7 @@ public class TileSpriteComponent implements IRenderingComponent, Savable<TileSpr
 
 
 	String atlasName;
-	TextureRegion region = new TextureRegion();
+	@Getter TextureRegion region = new TextureRegion();
 
 	//////////////////////////
 	// derived state:
