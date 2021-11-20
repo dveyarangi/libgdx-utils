@@ -1,6 +1,7 @@
 package game.systems.rendering;
 
 import com.badlogic.ashley.core.Entity;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -53,6 +54,8 @@ public abstract class SpriteComponent implements IRenderingComponent
 	 * Region area and x/y flip
 	 */
 	@Getter protected TextureRegion region = new TextureRegion();
+	
+	protected Color color = new Color();
 
 	protected Decal decal = Decal.newDecal(this.sx, this.sy, this.region, false);
 
@@ -123,7 +126,7 @@ public abstract class SpriteComponent implements IRenderingComponent
 
 		this.decal.setTextureRegion(region);
 
-
+		this.decal.setColor(color);
 
 	}
 

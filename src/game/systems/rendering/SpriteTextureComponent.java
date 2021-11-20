@@ -23,6 +23,8 @@ public class SpriteTextureComponent extends SpriteComponent implements Savable <
 
 
 		this.region.setRegion(origRegion);
+		if( tdef.color != null )
+			this.color.set(tdef.color);
 
 		super.init(entity, tdef, level);
 	}

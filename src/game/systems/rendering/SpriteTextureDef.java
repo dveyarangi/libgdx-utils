@@ -1,21 +1,25 @@
 package game.systems.rendering;
 
+import com.badlogic.gdx.graphics.Color;
+
 import game.resources.TextureName;
+import lombok.Getter;
 
 public class SpriteTextureDef extends SpriteDef <SpriteTextureComponent>
 {
 	public TextureName textureName;
-
+	public Color color;
 
 	public SpriteTextureDef(String textureName)
 	{
-		this(new TextureName(textureName), 0, 0, 0, 1, 1);
+		this(new TextureName(textureName), 0, 0, 0, 1, 1, null);
 	}
 
-	public SpriteTextureDef(TextureName textureName, float xOffset, float yOffset, float zOffset, float w, float h)
+	public SpriteTextureDef(TextureName textureName, float xOffset, float yOffset, float zOffset, float w, float h, Color color)
 	{
 		super(xOffset, yOffset, zOffset, w, h);
 		this.textureName = textureName;
+		this.color = color;
 	}
 
 	@Override
