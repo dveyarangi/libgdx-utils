@@ -5,7 +5,6 @@ import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 
 import game.systems.IComponentDef;
-import game.util.RandomUtil;
 import game.world.Level;
 import lombok.Getter;
 
@@ -45,7 +44,7 @@ public class Box2DSensorDef implements IComponentDef<Box2DSensorComponent>, ISen
 		component.sensingInterval = sensingInterval;
 
 		// desynchronizing sensor phase:
-		component.timeSinceSensing = RandomUtil.R(sensingInterval);
+		component.timeSinceSensing = level.getDef().getInitialSettings().getSeed().R(sensingInterval);
 
 		component.factionId = factionId;
 

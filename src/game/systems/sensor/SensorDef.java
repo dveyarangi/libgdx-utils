@@ -3,7 +3,6 @@ package game.systems.sensor;
 import com.badlogic.ashley.core.Entity;
 
 import game.systems.IComponentDef;
-import game.util.RandomUtil;
 import game.world.Level;
 import lombok.Getter;
 
@@ -40,7 +39,7 @@ public class SensorDef implements IComponentDef<SensorComponent>, ISensorDef
 		component.sensingInterval = sensingInterval;
 
 		// desynchronizing sensor phase:
-		component.timeSinceSensing = RandomUtil.R(sensingInterval);
+		component.timeSinceSensing = level.getDef().getInitialSettings().getSeed().R(sensingInterval);
 
 		component.factionId = factionId;
 

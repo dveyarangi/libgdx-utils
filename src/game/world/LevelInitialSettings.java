@@ -2,6 +2,7 @@ package game.world;
 
 import com.badlogic.gdx.math.Vector2;
 
+import game.util.RandomSeed;
 import lombok.Getter;
 
 /**
@@ -24,14 +25,17 @@ public class LevelInitialSettings
 	@Getter private float initZoom;
 
 	@Getter private float minZoom, maxZoom;
+	
+	@Getter private RandomSeed seed;
 
-	public LevelInitialSettings( CameraMode cameraMode,final Vector2 cameraPosition, float initZoom, float minZoom, float maxZoom )
+	public LevelInitialSettings( CameraMode cameraMode,final Vector2 cameraPosition, float initZoom, float minZoom, float maxZoom, RandomSeed seed )
 	{
 		this.cameraMode = cameraMode;
 		this.cameraPosition = cameraPosition;
 		this.initZoom = initZoom;
 		this.minZoom = minZoom;
 		this.maxZoom = maxZoom;
+		this.seed = seed;
 	}
 
 
