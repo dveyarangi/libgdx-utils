@@ -55,7 +55,7 @@ public abstract class SpriteComponent implements IRenderingComponent
 	 */
 	@Getter protected TextureRegion region = new TextureRegion();
 	
-	protected Color color = new Color();
+	@Getter protected Color color = new Color();
 
 	protected Decal decal = Decal.newDecal(this.sx, this.sy, this.region, false);
 

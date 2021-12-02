@@ -101,15 +101,18 @@ public class TileSpritesRenderer extends EntitySystem implements EntityListener,
 				int vidx = 0;
 				vertexBuffer.set(vidx++, x+dx);
 				vertexBuffer.set(vidx++, y+dy);
-				vertexBuffer.set(vidx++, -y);//heightmap[xx][yy];
+				vertexBuffer.set(vidx++, 200);//heightmap[xx][yy];
 				vertexBuffer.set(vidx++, 0);
 				vertexBuffer.set(vidx++, 0);
+				vertexBuffer.set(vidx++, 0);
+				vertexBuffer.set(vidx++, 0);
+				vertexBuffer.set(vidx++, 1);
 
 				// color
 				vertexBuffer.set(vidx++, 1);
 				vertexBuffer.set(vidx++, 1);
 				vertexBuffer.set(vidx++, 1);
-				vertexBuffer.set(vidx++, 1);
+				vertexBuffer.set(vidx++, 0);
 
 				int c00 = verticesPerTile*tileIdx+0;
 				int c10 = verticesPerTile*tileIdx+1;
@@ -299,7 +302,7 @@ public class TileSpritesRenderer extends EntitySystem implements EntityListener,
 		@Override
 		public void updateVertexBuffer(int tx, int ty, float[] vertexBufferUpdate)
 		{
-			updateTileGeometry(0,0, 200, 0, vertexBufferUpdate, tileSprite);
+			updateTileGeometry(tx,ty, 200, 1, vertexBufferUpdate, tileSprite);
 		}
 	}
 
