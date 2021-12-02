@@ -19,7 +19,6 @@ import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
@@ -28,7 +27,6 @@ import com.google.gson.JsonDeserializer;
 
 import game.debug.Debug;
 import game.systems.EntityDef;
-import game.util.Angles;
 import game.util.LoadableModule;
 import game.util.LoadingProgress;
 import game.util.colors.Colormaps;
@@ -218,11 +216,11 @@ public class ResourceFactory implements LoadableModule
 		factory.loadAtlases();
 		// factory.loadResources(Animation.class,
 		// com.badlogic.gdx.graphics.g2d.Animation.class );
-		factory.loadResources(Font.class, com.badlogic.gdx.graphics.g2d.BitmapFont.class);
+		factory.loadGenericResources(Font.class, com.badlogic.gdx.graphics.g2d.BitmapFont.class);
 
-		factory.loadResources(Skin.class, com.badlogic.gdx.scenes.scene2d.ui.Skin.class);
+		factory.loadGenericResources(Skin.class, com.badlogic.gdx.scenes.scene2d.ui.Skin.class);
 
-		factory.loadResources(Sound.class, com.badlogic.gdx.audio.Sound.class);
+		factory.loadGenericResources(Sound.class, com.badlogic.gdx.audio.Sound.class);
 
 		factory.loadShaders();
 
@@ -233,41 +231,6 @@ public class ResourceFactory implements LoadableModule
 
 		return factory;
 	}
-
-	/**
-	 * Register a custom resource factory
-	 * @param customFactory
-	 */
-	/*public void registerCustomResource(ResourceTypeFactory <?,?> customFactory)
-	{
-		customFactories.add(customFactory);
-	}
-
-	private void loadCustomResources()
-	{
-
-		for(ResourceTypeFactory <Object, AssetLoaderParameters<Object>> rtFactory : customFactories)
-		{
-
-			Class <?> annoClass = rtFactory.getAnnotation();
-			manager.setLoader(rtFactory.getResourceType(), rtFactory.createLoader(resolver));
-			try
-			{
-				for( Field field : resourceSetType.getDeclaredFields() )
-				{
-					Annotation[] annos = field.getDeclaredAnnotations();
-					for( Annotation anno : annos )
-					{
-						if( anno.annotationType().equals(annoClass) )
-							manager.load((String) field.get(null), rtFactory.getResourceType());
-					}
-				}
-			}
-			catch( IllegalArgumentException e ) { e.printStackTrace(); }
-			catch( IllegalAccessException e ) { e.printStackTrace(); }
-		}
-	}*/
-
 
 	/**
 	 * Load some resources
@@ -313,8 +276,12 @@ public class ResourceFactory implements LoadableModule
 		manager.dispose();
 		factory = null;
 	}
-
-	private void loadResources( Class<?> annotationType, Class<?> resourceType )
+	
+	private static interface LoaderMethod <A extends Annotation> {
+		public void load(String resourceId, A paramAnno);
+	}
+	
+	private <A extends Annotation> void loadResources( Class<?> annotationType, LoaderMethod<A> method )
 	{
 		try
 		{
@@ -324,35 +291,33 @@ public class ResourceFactory implements LoadableModule
 				for( Annotation anno : annos )
 				{
 					if( anno.annotationType().equals(annotationType) )
-						manager.load((String) field.get(null), resourceType);
+					{
+						String resourceId = (String) field.get(null);
+						method.load(resourceId, (A) anno);
+					}
 				}
 			}
 		}
 		catch( IllegalArgumentException e ) { e.printStackTrace(); }
 		catch( IllegalAccessException e ) { e.printStackTrace(); }
+		
+	}
+
+	private void loadGenericResources( Class<?> annotationType, Class<?> resourceType )
+	{
+		loadResources(annotationType, (resId, anno) ->
+			manager.load(resId, resourceType));
 	}
 
 	public void loadTextures(Class<?> resourceSetType)
 	{
-		try
-		{
-			for( Field field : resourceSetType.getDeclaredFields() )
-			{
-				Annotation[] annos = field.getDeclaredAnnotations();
-				for( Annotation anno : annos )
-				{
-					if( anno instanceof Texture )
-					{
-						Texture texxanno = (Texture) anno;
-						String textureFile = (String) field.get(null);
-
-						loadTexture(textureFile, texxanno.useMipMap(), texxanno.priority());
-					}
+		this.<Texture>loadResources(Texture.class, 
+				(resId, anno) -> {
+					loadTexture(resId, anno.useMipMap(), anno.priority());
 				}
-			}
-		} catch( IllegalArgumentException e ){e.printStackTrace();
-		} catch( IllegalAccessException e ){e.printStackTrace();}
+		);
 	}
+	
 	void loadTexture(String textureFile, boolean useMipMap, int priority)
 	{
 		TextureLoader.TextureParameter p = new TextureLoader.TextureParameter();
@@ -369,46 +334,22 @@ public class ResourceFactory implements LoadableModule
 
 	public void loadPixmaps()
 	{
-		try
-		{
-			for( Field field : resourceSetType.getDeclaredFields() )
-			{
-				Annotation[] annos = field.getDeclaredAnnotations();
-				for( Annotation anno : annos )
-				{
-					if( anno instanceof Pixmap )
-					{
-						//Pixmap pixanno = (Pixmap) anno;
-						String file = (String) field.get(null);
 
-						PixmapLoader.PixmapParameter p = new PixmapLoader.PixmapParameter();
-						manager.load( file, com.badlogic.gdx.graphics.Pixmap.class, p);
-					}
+		this.<Pixmap>loadResources(Pixmap.class, 
+				(resId, anno) -> {
+					PixmapLoader.PixmapParameter p = new PixmapLoader.PixmapParameter();
+					manager.load( resId, com.badlogic.gdx.graphics.Pixmap.class, p);
 				}
-			}
-		} catch( IllegalArgumentException e ){e.printStackTrace();
-		} catch( IllegalAccessException e ){e.printStackTrace();}
+		);
 	}
 
 	private void loadAtlases()
 	{
-		try
-		{
-			for( Field field : resourceSetType.getDeclaredFields() )
-			{
-				Annotation[] annos = field.getDeclaredAnnotations();
-				for( Annotation anno : annos )
-				{
-					if( anno instanceof Atlas )
-					{
-						Atlas atlanno = (Atlas) anno;
-						String atlasName = (String) field.get(null);
-						loadAtlas(atlasName, atlanno.priority());
-					}
+		this.<Atlas>loadResources(Atlas.class,
+				(resId, anno) -> {
+					loadAtlas(resId, anno.priority());
 				}
-			}
-		} catch( IllegalArgumentException e ) { e.printStackTrace();
-		} catch( IllegalAccessException e ) { e.printStackTrace(); }
+		);
 	}
 
 	void loadAtlas(String atlasName, int proirity)
@@ -423,107 +364,47 @@ public class ResourceFactory implements LoadableModule
 
 	private void loadShaders()
 	{
-
 		manager.setLoader(ShaderProgram.class, new ShaderLoader(resolver));
-
-		try
-		{
-			for( Field field : resourceSetType.getDeclaredFields() )
-			{
-				Annotation[] annos = field.getDeclaredAnnotations();
-				for( Annotation anno : annos )
-				{
-					if( anno instanceof Shader )
-					{
-						Shader shaderanno = (Shader) anno;
-						manager.load(
-								(String) field.get(null),
-								ShaderProgram.class,
-								new ShaderParameters(shaderanno.vertex(), shaderanno.fragment())
-								);
-					}
+		
+		this.<Shader>loadResources(Shader.class,
+				(resId, anno) -> {
+					manager.load(
+							resId,
+							ShaderProgram.class,
+							new ShaderParameters(anno.vertex(), anno.fragment())
+							);
 				}
-			}
-		} catch( IllegalArgumentException e )
-		{
-			e.printStackTrace();
-		} catch( IllegalAccessException e )
-		{
-			e.printStackTrace();
-		}
-
+		);
 	}
 
 	private void loadConfigurations()
 	{
 
 		manager.setLoader(Configuration.class, jsonLoader);
+		this.<Cfg>loadResources(Cfg.class,
+				(resId, anno) -> {
+					Configuration.Parameter param = new Configuration.Parameter(anno.type());
 
-		try
-		{
-			for( Field field : resourceSetType.getDeclaredFields() )
-			{
-				Annotation[] annos = field.getDeclaredAnnotations();
-				for( Annotation anno : annos )
-				{
-					if( anno instanceof Cfg )
-					{
-						Cfg cfganno = (Cfg) anno;
-
-						String filename = (String) field.get(null);
-						Configuration.Parameter param = new Configuration.Parameter(cfganno.type());
-						//FileHandle configFile = resolver.resolve(filename);
-
-						//jsonLoader.getDependencies(filename, configFile, param);
-
-						manager.load(filename,
-								Configuration.class,
-								param
-								);
-					}
+					manager.load(resId, Configuration.class, param );
 				}
-			}
-		} catch( IllegalArgumentException e )
-		{
-			e.printStackTrace();
-		} catch( IllegalAccessException e )
-		{
-			e.printStackTrace();
-		}
-
+		);
 	}
 
 	private void loadRegions()
 	{
-		try
-		{
-			for( Field field : resourceSetType.getDeclaredFields() )
-			{
-				Annotation[] annos = field.getDeclaredAnnotations();
-				for( Annotation anno : annos )
-				{
-					if( anno instanceof Region )
-					{
-						Region regianno = (Region) anno;
+		this.<Region>loadResources(Region.class,
+				(resId, anno) -> {
+					String atlasName = anno.atlas();
+				manager.load(atlasName, TextureAtlas.class);
+				regionList.put(resId, anno);
 
-						String atlasName = regianno.atlas();
-						manager.load(atlasName, TextureAtlas.class);
-						regionList.put((String) field.get(null), regianno);
-
-						String textureFile = atlasName.substring(0, atlasName.length()-6) + ".png";
-						TextureHandle textureHandle = new TextureHandle( textureFile, regianno.priority() );
-						if(!textures.contains( textureHandle))
-							textures.offer( textureHandle );
-					}
-				}
+				String textureFile = atlasName.substring(0, atlasName.length()-6) + ".png";
+				TextureHandle textureHandle = new TextureHandle( textureFile, anno.priority() );
+				if(!textures.contains( textureHandle))
+					textures.offer( textureHandle );
 			}
-		} catch( IllegalArgumentException e )
-		{
-			e.printStackTrace();
-		} catch( IllegalAccessException e )
-		{
-			e.printStackTrace();
-		}
+		);
+
 	}
 
 	public static BitmapFont getFont( String fontPath )
@@ -581,20 +462,6 @@ public class ResourceFactory implements LoadableModule
 		return factory.manager.get(sound);
 	}
 
-	public static Sprite createCenteredSprite( String textureName, float size )
-	{
-		Sprite sprite;
-		float halfsize = size / 2;
-		// Vector2 position = game.getPlayerBody().getPosition();
-		com.badlogic.gdx.graphics.Texture texture = ResourceFactory.getTexture(textureName);
-		sprite = new Sprite(texture);
-		sprite.setOrigin(halfsize, halfsize);
-		sprite.setRotation(0 * Angles.TO_DEG);
-		sprite.setScale(size / texture.getWidth(), size / texture.getHeight());
-
-		return sprite;
-	}
-
 	public static BitmapFont loadFont( String path )
 	{
 		return new BitmapFont(new FileHandle(path));
@@ -607,32 +474,7 @@ public class ResourceFactory implements LoadableModule
 
 	private static final float DEFAULT_FRAME_DURATION = 1;
 
-	/*
-	 * public Animation getAnimation(TextureAtlas atlas) { new
-	 * Animation(DEFAULT_FRAME_DURATION, atlas.getRegions()); return null; }
-	 */
 
-	/*
-	 * private Animation createAnimation(final AnimationHandle handle) {
-	 * TextureAtlas atlas = manager.get( handle.getAtlas().getPath(),
-	 * TextureAtlas.class );
-	 *
-	 * int size = atlas.getRegions().size; TextureRegion[] frames = new
-	 * TextureRegion[size];
-	 *
-	 * for(int fidx = 0; fidx < size; fidx ++) { frames[fidx] =
-	 * atlas.findRegion( handle.getRegionName() + "." +
-	 * ANIMA_NUMBERING.format(fidx) ); if(frames[fidx] == null) throw new
-	 * IllegalArgumentException( "Region array " + handle.getRegionName() +
-	 * " was not found in atlas " + handle ); }
-	 *
-	 * Animation animation = new Animation( 0.05f, frames ); return animation; }
-	 */
-	/*
-	 * public Animation getAnimation( final AnimationHandle handle ) {
-	 *
-	 * }
-	 */
 	public Animation <TextureRegion> getAnimation( String atlasName )
 	{
 		Animation <TextureRegion> animation = animationCache.get(atlasName);
