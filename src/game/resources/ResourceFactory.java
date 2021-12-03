@@ -23,6 +23,7 @@ import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.utils.GdxRuntimeException;
+import com.badlogic.gdx.utils.I18NBundle;
 import com.google.gson.JsonDeserializer;
 
 import game.debug.Debug;
@@ -134,6 +135,8 @@ public class ResourceFactory implements LoadableModule
 		int priority() default 0;
 	}
 
+	@Target( ElementType.FIELD ) @Retention( RetentionPolicy.RUNTIME ) public static @interface Strings {
+	}
 
 	// /////////////////////////////////////////////////////////////////////////////////////////////////////
 	// FACTORY MEMBERS:
@@ -225,6 +228,8 @@ public class ResourceFactory implements LoadableModule
 		factory.loadShaders();
 
 		factory.loadRegions();
+		
+		factory.loadI18NBundles();
 
 		//factory.loadCustomResources();
 
@@ -406,6 +411,15 @@ public class ResourceFactory implements LoadableModule
 		);
 
 	}
+	
+	private void loadI18NBundles()
+	{
+		this.<Strings>loadResources(Strings.class,
+				(resId, anno) -> {
+					manager.load(resId, I18NBundle.class);
+				}
+		);
+	}
 
 	public static BitmapFont getFont( String fontPath )
 	{
@@ -420,6 +434,11 @@ public class ResourceFactory implements LoadableModule
 	public static <T> T getConfiguration( String id )
 	{
 		return ((Configuration)factory.manager.get(id)).getObject();
+	}
+	
+	public static I18NBundle getStrings(String id)
+	{
+		return factory.manager.get(id);
 	}
 
 	public static com.badlogic.gdx.graphics.Texture getTexture( String textureName )
