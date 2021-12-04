@@ -3,11 +3,11 @@ package game.systems.spatial;
 import java.text.DecimalFormat;
 
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.utils.Array;
 
 import game.util.Angles;
 import game.util.Equals;
 import lombok.Getter;
-import lombok.Setter;
 
 public class GenericSpatialComponent implements ISpatialComponent
 {
@@ -40,7 +40,8 @@ public class GenericSpatialComponent implements ISpatialComponent
 	 */
 	protected boolean inv;
 
-	@Getter @Setter private boolean isChanged = true;
+	@Getter private boolean isChanged = true;
+	private Array <SpatialListener> listeners = new Array <> ();
 
 	@Override public float x() { return x; }
 	@Override public float y() { return y; }
@@ -57,16 +58,18 @@ public class GenericSpatialComponent implements ISpatialComponent
 		assert !Float.isNaN(x);
 		if( !Equals.eq(this.x, x ))
 		{
-			isChanged = true;
+			setChanged(true);
+
 			this.x = x;
 		}
 	}
+
 	@Override public void y( float y )
 	{
 		assert !Float.isNaN(y);
 		if( !Equals.eq(this.y, y ))
 		{
-			isChanged = true;
+			setChanged(true);
 			this.y = y;
 		}
 	}
@@ -75,7 +78,7 @@ public class GenericSpatialComponent implements ISpatialComponent
 		assert !Float.isNaN(z);
 		if( !Equals.eq(this.z, z ))
 		{
-			isChanged = true;
+			setChanged(true);
 			this.z = z;
 		}
 	}
@@ -86,7 +89,7 @@ public class GenericSpatialComponent implements ISpatialComponent
 		assert !Float.isNaN(a);
 		if( !Equals.eq(this.a, a ))
 		{
-			isChanged = true;
+			setChanged(true);
 			this.a = a;
 			this.uv.set(Angles.COS(this.a() * Angles.TO_RAD), Angles.SIN(this.a() * Angles.TO_RAD));
 		}
@@ -108,7 +111,7 @@ public class GenericSpatialComponent implements ISpatialComponent
 	{
 		if( !Equals.eq(this.r, r ))
 		{
-			isChanged = true;
+			setChanged(true);
 			this.r = r;
 		}
 	}
@@ -118,7 +121,7 @@ public class GenericSpatialComponent implements ISpatialComponent
 	{
 		if (this.inv != inv)
 		{
-			isChanged = true;
+			setChanged(true);
 			this.inv = inv;
 		}
 	}
@@ -148,6 +151,22 @@ public class GenericSpatialComponent implements ISpatialComponent
 		x = y = a = r = 0;
 		this.uv.set(0,0); // should it be (1,0)?
 		isChanged = false;
+		listeners.clear();
+	}
+	
+	@Override
+	public void setChanged(boolean isChanged)
+	{
+		this.isChanged = isChanged;
+		if( isChanged )
+			fireChanged();
+	}
+	
+	private void fireChanged() 
+	{
+		for(SpatialListener l : listeners)
+			l.positionChanged(this);
+
 	}
 
 	static DecimalFormat fmt = new DecimalFormat("0.##");
