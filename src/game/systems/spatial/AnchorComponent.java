@@ -20,7 +20,7 @@ public class AnchorComponent extends GenericSpatialComponent
 	public Entity parent;
 	public ISpatialComponent parentSpatial;
 
-	public void setParent( float x, float y, float z, float a, float r, Entity parent )
+	public void setParent( float x, float y, float z, float a, float s, Entity parent )
 	{
 		this.parent = parent;
 		this.parentSpatial = parent.getComponent(ISpatialComponent.class);
@@ -28,7 +28,7 @@ public class AnchorComponent extends GenericSpatialComponent
 		this.y(y);
 		this.z(z);
 		this.a(a);
-		this.r(r);
+		this.resize(s);
 	}
 
 	/**
@@ -45,7 +45,7 @@ public class AnchorComponent extends GenericSpatialComponent
 	public void reset()
 	{
 		parent = null;
-		x = y = a = r = 0;
+		x = y = a = s = 0;
 
 	}
 
@@ -121,9 +121,9 @@ public class AnchorComponent extends GenericSpatialComponent
 	}
 
 	@Override
-	public void r( final float r )
+	public void resize( final float s )
 	{
-		this.r = r;
+		this.s = s;
 	}
 	/*	@Override
 	public void save(AnchorDef def, EntityProps props)

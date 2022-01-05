@@ -5,9 +5,12 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.utils.Array;
 
 import game.systems.IComponentDef;
+import game.systems.spatial.GenericSpatialComponent;
+import game.systems.spatial.SpatialComponent;
+import game.systems.spatial.SpatialListener;
 import game.world.Level;
 
-public class TileMultiSpriteComponent  implements IRenderingComponent
+public class TileMultiSpriteComponent  implements IRenderingComponent, SpatialListener
 {
 	//TileMultiSpriteDef def;
 	Array <TileSpriteComponent> sprites = new Array <> ();
@@ -27,6 +30,9 @@ public class TileMultiSpriteComponent  implements IRenderingComponent
 			sprites.add(tileSprite);
 			
 		}
+		
+		SpatialComponent spatial = entity.getComponent(SpatialComponent.class);
+		spatial.addListener(this);
 	}
 
 	@Override
@@ -56,6 +62,12 @@ public class TileMultiSpriteComponent  implements IRenderingComponent
 	{
 		for(int idx = 0; idx < sprites.size; idx ++)
 			sprites.get(idx).setColor(color);
+	}
+	
+	@Override
+	public void spatialChanged(GenericSpatialComponent component)
+	{
+		scale(component.r());
 	}
 
 }

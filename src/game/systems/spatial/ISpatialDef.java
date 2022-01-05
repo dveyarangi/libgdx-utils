@@ -21,7 +21,7 @@ public interface ISpatialDef<C extends ISpatialComponent> extends IComponentDef<
 
 	float a();
 
-	float r();
+	float s();
 
 	void x( float x );
 
@@ -31,6 +31,6 @@ public interface ISpatialDef<C extends ISpatialComponent> extends IComponentDef<
 
 	void a( float a );
 
-	void r( float r );
+	void resize( float r );
 
 }

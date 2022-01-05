@@ -1,17 +1,15 @@
 package game.debug.heatmap;
 
+import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.awt.Graphics2D;
-import java.awt.Shape;
-import java.awt.geom.Ellipse2D;
+
 import javax.imageio.ImageIO;
 
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 
 import game.debug.Debug;
@@ -51,7 +49,8 @@ public class HeatmapImage
 
 
 		BufferedImage image = new BufferedImage(w*scale, h*scale, BufferedImage.TYPE_INT_ARGB);
-		
+	
+		// draw heatmap
 		Color color = new Color();
 		for(int x = 0; x < w*scale; x ++)
 			for(int y = 0; y < h*scale; y ++)
@@ -59,12 +58,24 @@ public class HeatmapImage
 				cm.toColor(heatmap[x/scale][y/scale], color);
 				image.setRGB(x, y, Color.argb8888(color));
 			}
-		
+	
+		// add layers
 		Graphics2D g2d = (Graphics2D) image.getGraphics();
 		if( layers != null)
 			for(HeatmapLayer layer : layers)
 				layer.render(g2d, scale);
 	
+//		BufferedImage image = new BufferedImage(w*scale, h*scale, BufferedImage.TYPE_INT_ARGB);
+		// flip vertically
+		for(int x = 0; x < w*scale; x ++)
+			for(int y = 0; y < h*scale/2; y ++)
+			{
+				int y2 = h*scale-y-1;
+				int rgb = image.getRGB(x,y);
+				image.setRGB(x, y, image.getRGB(x,y2));
+				image.setRGB(x,y2,rgb);
+			}
+		
 		File outfile =  new File(path);
 		try
 		{

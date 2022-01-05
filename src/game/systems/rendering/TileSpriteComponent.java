@@ -8,13 +8,16 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
 import game.resources.ResourceFactory;
 import game.systems.IComponentDef;
+import game.systems.spatial.GenericSpatialComponent;
+import game.systems.spatial.SpatialComponent;
+import game.systems.spatial.SpatialListener;
 import game.systems.tiles.ITile;
 import game.world.Level;
 import game.world.saves.EntityProps;
 import game.world.saves.Savable;
 import lombok.Getter;
 
-public class TileSpriteComponent implements IRenderingComponent, Savable<TileSpriteDef>
+public class TileSpriteComponent implements IRenderingComponent, Savable<TileSpriteDef>, SpatialListener
 {
 
 	static ComponentMapper<TileSpriteComponent> MAPPER = ComponentMapper.getFor(TileSpriteComponent.class);
@@ -94,6 +97,9 @@ public class TileSpriteComponent implements IRenderingComponent, Savable<TileSpr
 		this.yOffset = def.yOffset;
 		this.zOffset = def.zOffset;
 		this.sizeCoef = def.sizeCoef;
+		
+		SpatialComponent spatial = entity.getComponent(SpatialComponent.class);
+		spatial.addListener(this);
 
 		_scale(1);
 
@@ -184,6 +190,12 @@ public class TileSpriteComponent implements IRenderingComponent, Savable<TileSpr
 
 	@Override
 	public Class<TileSpriteDef> getDefClass() { return TileSpriteDef.class; }
+
+	@Override
+	public void spatialChanged(GenericSpatialComponent component)
+	{
+		scale(component.r());
+	}
 
 
 }

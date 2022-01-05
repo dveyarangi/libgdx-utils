@@ -63,7 +63,7 @@ public class LifeAuraComponent implements Component, Poolable
 		spatialDef.x(spatial.x());
 		spatialDef.y(spatial.y());
 		spatialDef.a(aspect.angleDist.eval());
-		spatialDef.r(aspect.sizeDist.eval());
+		spatialDef.resize(aspect.sizeDist.eval());
 
 		IMovementComponent movement = entity.getComponent( IMovementComponent.class );
 		if(movement != null)

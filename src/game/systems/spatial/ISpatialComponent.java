@@ -34,6 +34,9 @@ public interface ISpatialComponent extends Component, Poolable
 
 	/** gets entity radius */
 	float r();
+	
+	/** gets entity diameter/size */
+	float s();
 
 	/** whether entity is mirrored along y axis */
 	boolean inv();

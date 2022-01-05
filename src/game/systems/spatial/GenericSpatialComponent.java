@@ -31,9 +31,9 @@ public class GenericSpatialComponent implements ISpatialComponent
 	protected Vector2 uv = new Vector2();
 
 	/*
-	 * Unit radius
+	 * Unit size
 	 */
-	protected float r;
+	protected float s;
 
 	/**
 	 * Whether this entity is mirrored along y axis
@@ -50,7 +50,8 @@ public class GenericSpatialComponent implements ISpatialComponent
 	@Override public float u() { return uv.x; }
 	@Override public float v() { return uv.y; }
 	@Override public Vector2 uv() { return uv; }
-	@Override public float r() { return r; }
+	@Override public float r() { return s/2; }
+	@Override public float s() { return s; }
 	@Override public boolean inv() { return inv; }
 
 	@Override public void x( float x )
@@ -58,9 +59,8 @@ public class GenericSpatialComponent implements ISpatialComponent
 		assert !Float.isNaN(x);
 		if( !Equals.eq(this.x, x ))
 		{
-			setChanged(true);
-
 			this.x = x;
+			setChanged(true);
 		}
 	}
 
@@ -69,8 +69,8 @@ public class GenericSpatialComponent implements ISpatialComponent
 		assert !Float.isNaN(y);
 		if( !Equals.eq(this.y, y ))
 		{
-			setChanged(true);
 			this.y = y;
+			setChanged(true);
 		}
 	}
 	@Override public void z( float z )
@@ -78,8 +78,8 @@ public class GenericSpatialComponent implements ISpatialComponent
 		assert !Float.isNaN(z);
 		if( !Equals.eq(this.z, z ))
 		{
-			setChanged(true);
 			this.z = z;
+			setChanged(true);
 		}
 	}
 
@@ -89,9 +89,9 @@ public class GenericSpatialComponent implements ISpatialComponent
 		assert !Float.isNaN(a);
 		if( !Equals.eq(this.a, a ))
 		{
-			setChanged(true);
 			this.a = a;
 			this.uv.set(Angles.COS(this.a() * Angles.TO_RAD), Angles.SIN(this.a() * Angles.TO_RAD));
+			setChanged(true);
 		}
 	}
 
@@ -107,22 +107,23 @@ public class GenericSpatialComponent implements ISpatialComponent
 		}
 	}
 
-	public void r( float r )
+	@Override
+	public void resize( float s )
 	{
-		if( !Equals.eq(this.r, r ))
+		if( !Equals.eq(this.s, s ))
 		{
+			this.s = s;
 			setChanged(true);
-			this.r = r;
 		}
-	}
+	}	
 
 	@Override
 	public void mirror( boolean inv )
 	{
 		if (this.inv != inv)
 		{
-			setChanged(true);
 			this.inv = inv;
+			setChanged(true);
 		}
 	}
 
@@ -139,20 +140,18 @@ public class GenericSpatialComponent implements ISpatialComponent
 	{
 		this.a(this.a + a);
 	}
-
-	@Override public void resize( float newR )
-	{
-		this.r(newR);
-	}
-
+	
 	@Override
 	public void reset()
 	{
-		x = y = a = r = 0;
+		x = y = a = s = 0;
 		this.uv.set(0,0); // should it be (1,0)?
 		isChanged = false;
 		listeners.clear();
 	}
+	
+	public void addListener(SpatialListener l ) { listeners.add(l); }
+	public void removeistener(SpatialListener l ) { listeners.removeValue(l, true); }
 	
 	@Override
 	public void setChanged(boolean isChanged)
@@ -165,7 +164,7 @@ public class GenericSpatialComponent implements ISpatialComponent
 	private void fireChanged() 
 	{
 		for(SpatialListener l : listeners)
-			l.positionChanged(this);
+			l.spatialChanged(this);
 
 	}
 

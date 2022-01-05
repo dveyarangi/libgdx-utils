@@ -10,18 +10,18 @@ import game.world.Level;
 
 public class AnchorDef implements ISpatialDef<AnchorComponent>
 {
-	public float x, y, z, a, r;
+	public float x, y, z, a, s;
 
 	public int parentId;
 
-	public AnchorDef( int parentId, final float x, final float y, final float z, final float a, final float r )
+	public AnchorDef( int parentId, final float x, final float y, final float z, final float a, final float s )
 	{
 		super();
 		this.x = x;
 		this.y = y;
 		this.z = z;
 		this.a = a;
-		this.r = r;
+		this.s = s;
 
 		this.parentId = parentId;
 	}
@@ -40,7 +40,7 @@ public class AnchorDef implements ISpatialDef<AnchorComponent>
 				anchor.x(this.x());
 				anchor.y(this.y());
 				anchor.a(this.a());
-				anchor.r(this.r());
+				anchor.resize(this.s());
 				break;
 			}
 		}
@@ -76,9 +76,9 @@ public class AnchorDef implements ISpatialDef<AnchorComponent>
 	}
 
 	@Override
-	public float r()
+	public float s()
 	{
-		return r;
+		return s;
 	}
 
 	@Override
@@ -105,9 +105,9 @@ public class AnchorDef implements ISpatialDef<AnchorComponent>
 	}
 
 	@Override
-	public void r( final float r )
+	public void resize( final float s )
 	{
-		this.r = r;
+		this.s = s;
 	}
 
 	@Override
