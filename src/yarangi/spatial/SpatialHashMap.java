@@ -29,7 +29,7 @@ public class SpatialHashMap <O extends ISpatialObject> extends SpatialRegistry<O
 	/**
 	 * dimensions of area this hashmap represents
 	 */
-	private float width, height;
+	private int width, height;
 
 	/**
 	 * size of single hash cell
@@ -63,7 +63,7 @@ public class SpatialHashMap <O extends ISpatialObject> extends SpatialRegistry<O
 	 * @param height covered area height
 	 */
 	@SuppressWarnings("unchecked")
-	public SpatialHashMap(String name, int size, float cellSize, float width, float height)
+	public SpatialHashMap(String name, int size, float cellSize, int width, int height)
 	{
 		
 		super(name);
@@ -143,7 +143,7 @@ public class SpatialHashMap <O extends ISpatialObject> extends SpatialRegistry<O
 	 */
 	protected final int hash(int x, int y)
 	{
-		return ((x+halfGridWidth)*6184547 + (y+halfGridHeight)* 2221069) % size;
+		return (x+halfGridWidth)*width + (y+halfGridHeight);
 	}
 
 	/**
