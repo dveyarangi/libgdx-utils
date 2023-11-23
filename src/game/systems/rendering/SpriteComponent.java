@@ -1,5 +1,6 @@
 package game.systems.rendering;
 
+import com.badlogic.ashley.core.ComponentType;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
@@ -19,8 +20,14 @@ import lombok.Getter;
  *
  * @author Fima
  */
-public abstract class SpriteComponent implements IRenderingComponent
+public abstract class SpriteComponent implements ISpriteComponent
 {
+	
+	static
+	{   // map as rendering component:
+		ComponentType.registerFor(ISpriteComponent.class, SpriteComponent.class);
+	}
+	
 	public static final String PROP_SX = "sx";
 	public static final String PROP_SY = "sy";
 	public static final String PROP_DX = "dx";
@@ -175,7 +182,7 @@ public abstract class SpriteComponent implements IRenderingComponent
 		}*/
 		renderer.decals();
 		decal.setPosition(spatial.x()-dx, spatial.y()-dy, spatial.z()-dz);
-
+		decal.setScale(spatial.s());
 		renderer.decals().add(decal);
 
 	}
@@ -236,6 +243,12 @@ public abstract class SpriteComponent implements IRenderingComponent
 
 	//protected int [] cid;
 
+	@Override
+	public void scale(float size)
+	{
+		// TODO set dw multiplier for spatial.s()
+		
+	}
 
 	public void save(SpriteDef def, EntityProps props)
 	{

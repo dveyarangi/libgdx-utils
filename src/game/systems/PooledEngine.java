@@ -29,6 +29,9 @@ public class PooledEngine extends Engine
 
 	private EntityPool entityPool;
 	private ComponentPools componentPools;
+	
+	
+	private Array <EntityChangeListener> changeListeners = new Array<> ();
 
 	/**
 	 * Creates a new PooledEngine with a maximum of 100 entities and 100 components of each type. Use
@@ -191,4 +194,23 @@ public class PooledEngine extends Engine
 			}
 		}
 	}
+	
+	
+	public void addListener(EntityChangeListener l)
+	{
+		changeListeners.add(l);
+	}
+	
+	public void removeListener(EntityChangeListener l)
+	{
+		changeListeners.removeValue(l, true);
+	}
+	
+	
+	public void fireEntityChanged(Entity entity)
+	{
+		for(EntityChangeListener l : changeListeners)
+			l.entityChanged(entity);
+	}
+
 }

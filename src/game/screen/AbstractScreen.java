@@ -33,8 +33,6 @@ public abstract class AbstractScreen<G extends AbstractGame> implements Screen
 
 	private ICameraProvider cameraProvider;
 
-	public static float HUD_WIDTH = 500;
-	public static float HUD_HEIGHT = 500;
 
 	protected int worldWidth, worldHeight;
 
@@ -92,7 +90,7 @@ public abstract class AbstractScreen<G extends AbstractGame> implements Screen
 	@Override
 	public void render( final float delta )
 	{
-		// (1) process the game logic
+
 		renderer.update(delta);
 
 		// update the actors

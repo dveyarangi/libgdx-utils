@@ -1,10 +1,12 @@
 package game.systems.rendering;
 
-import com.badlogic.ashley.core.ComponentMapper;
+import com.badlogic.ashley.core.ComponentType;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
+import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 
 import game.resources.ResourceFactory;
 import game.systems.IComponentDef;
@@ -17,11 +19,12 @@ import game.world.saves.EntityProps;
 import game.world.saves.Savable;
 import lombok.Getter;
 
-public class TileSpriteComponent implements IRenderingComponent, Savable<TileSpriteDef>, SpatialListener
+public class TileSpriteComponent implements ISpriteComponent, Savable<TileSpriteDef>, SpatialListener
 {
-
-	static ComponentMapper<TileSpriteComponent> MAPPER = ComponentMapper.getFor(TileSpriteComponent.class);
-
+	static
+	{   // map as rendering component:
+		ComponentType.registerFor(ISpriteComponent.class, TileSpriteComponent.class);
+	}
 
 	String atlasName;
 	@Getter TextureRegion region = new TextureRegion();
@@ -57,11 +60,6 @@ public class TileSpriteComponent implements IRenderingComponent, Savable<TileSpr
 
 	public transient TileSpritesRenderer renderer;
 
-
-	public static TileSpriteComponent get( Entity entity )
-	{
-		return MAPPER.get(entity);
-	}
 
 	@Override
 	public void reset()
@@ -123,6 +121,7 @@ public class TileSpriteComponent implements IRenderingComponent, Savable<TileSpr
 		dy = (0.5f - yOffset)*sizeCoef*height;
 	}
 
+	@Override
 	public void scale(float size)
 	{
 		_scale(size);
@@ -195,6 +194,12 @@ public class TileSpriteComponent implements IRenderingComponent, Savable<TileSpr
 	public void spatialChanged(GenericSpatialComponent component)
 	{
 		scale(component.r());
+	}
+
+	@Override
+	public Drawable createDrawable()
+	{
+		return new TextureRegionDrawable(this.getRegion());
 	}
 
 

@@ -122,8 +122,6 @@ public abstract class WorldScreen<G extends AbstractGame> extends AbstractScreen
 
 		// TODO: remove
 		Debug.init(level);
-		
-		level.warmUp();
 
 	}
 

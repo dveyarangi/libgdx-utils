@@ -44,4 +44,5 @@ public interface IRenderingComponent extends Component, Poolable
 	 */
 	public abstract void render( Entity entity, IRenderer renderer, IRenderingContext context, float deltaTime );
 
+
 }

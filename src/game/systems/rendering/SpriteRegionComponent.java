@@ -4,6 +4,8 @@ import com.badlogic.ashley.core.ComponentType;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
+import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 
 import game.debug.Debug;
 import game.systems.IComponentDef;
@@ -47,4 +49,9 @@ public class SpriteRegionComponent extends SpriteComponent implements Savable <S
 		super.load(def, props);
 	}
 
+	@Override
+	public Drawable createDrawable()
+	{
+		return new TextureRegionDrawable(this.getRegion());
+	}
 }

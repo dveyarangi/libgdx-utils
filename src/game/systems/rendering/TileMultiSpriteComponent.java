@@ -1,7 +1,9 @@
 package game.systems.rendering;
 
+import com.badlogic.ashley.core.ComponentType;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.utils.Array;
 
 import game.systems.IComponentDef;
@@ -10,8 +12,13 @@ import game.systems.spatial.SpatialComponent;
 import game.systems.spatial.SpatialListener;
 import game.world.Level;
 
-public class TileMultiSpriteComponent  implements IRenderingComponent, SpatialListener
+public class TileMultiSpriteComponent implements ISpriteComponent, SpatialListener
 {
+	static
+	{   // map as rendering component:
+		ComponentType.registerFor(ISpriteComponent.class, TileMultiSpriteComponent.class);
+	}	
+	
 	//TileMultiSpriteDef def;
 	Array <TileSpriteComponent> sprites = new Array <> ();
 
@@ -52,6 +59,7 @@ public class TileMultiSpriteComponent  implements IRenderingComponent, SpatialLi
 	@Override
 	public int[] cid() { return cid; }
 
+	@Override
 	public void scale(float size)
 	{
 		for(int idx = 0; idx < sprites.size; idx ++)
@@ -68,6 +76,13 @@ public class TileMultiSpriteComponent  implements IRenderingComponent, SpatialLi
 	public void spatialChanged(GenericSpatialComponent component)
 	{
 		scale(component.r());
+	}
+
+	@Override
+	public Drawable createDrawable()
+	{
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

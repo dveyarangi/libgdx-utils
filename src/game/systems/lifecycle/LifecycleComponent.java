@@ -94,7 +94,6 @@ public class LifecycleComponent implements Component, Poolable, Savable<Lifecycl
 
 	// component retrieving nicety
 	public static ComponentMapper<LifecycleComponent> MAPPER = ComponentMapper.getFor(LifecycleComponent.class);
-
 	public static LifecycleComponent get( Entity entity )
 	{
 		return MAPPER.get(entity);

@@ -4,7 +4,7 @@ apply plugin: "eclipse"
 sourceCompatibility = 1.8
 [compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
 
-sourceSets.main.java.srcDirs = [ "src/" ]
+sourceSets.main.java.srcDirs = [ "src/", "assets/" ]
 ext {
 	appName = "libgdx-utils"
 	gdxVersion = '1.10.0'
@@ -31,7 +31,7 @@ eclipse {
 	project {
 		name = "libgdx-utils"
 		
-		natures 'org.springsource.ide.eclipse.gradle.core.nature', 'org.eclipse.jdt.core.javanature'		
+		natures 'org.eclipse.jdt.core.javanature'		
 		buildCommand 'org.eclipse.jdt.core.javabuilder'
 	}
 	
@@ -39,21 +39,13 @@ eclipse {
 
 	classpath {
 	    file {
-			withXml {
-				def node = it.asNode();
-				
-				// fix  local entries to be of 'lib' type
-				// this is a workaround to simplify core project plugin configuration;
-				// packages from locally imported jars properly exported from plugin:
-				
-				node.classpathentry.findAll { entry -> entry.@kind == 'var' }*.@kind = 'lib';
-				
-				// export Eclipse project dependencies:
-				
-				node.classpathentry.findAll { entry -> entry.@kind == 'lib' }*.@exported = true;
+			whenMerged { classpath ->
+				{
+					classpath.entries.findAll { entry -> entry.kind == 'var' }*.kind = 'lib';
+					classpath.entries.findAll { entry -> entry.kind == 'lib' }*.exported = true;
+				}
 			}
 		}
-			
 	}
 }
 
@@ -67,7 +59,7 @@ dependencies {
 	implementation "com.badlogicgames.gdx:gdx:$gdxVersion"
 	implementation "com.badlogicgames.gdx:gdx-box2d:$gdxVersion"
 	implementation "com.badlogicgames.box2dlights:box2dlights:$box2DLightsVersion"
-	implementation "com.badlogicgames.gdx:gdx-controllers:$gdxVersion"
+	implementation "com.badlogicgames.gdx:gdx-controllers:1.9.11"
 	implementation "com.badlogicgames.gdx:gdx-ai:$aiVersion"
 	implementation "com.badlogicgames.gdx:gdx-freetype:$gdxVersion"
 	

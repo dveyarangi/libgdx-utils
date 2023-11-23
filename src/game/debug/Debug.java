@@ -10,6 +10,7 @@ import java.util.Map;
 import com.badlogic.ashley.core.Component;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
@@ -25,6 +26,7 @@ import game.systems.control.GameInputProcessor;
 import game.systems.control.Hotkeys;
 import game.systems.control.InputAction;
 import game.systems.control.InputContext;
+import game.systems.fabric.SpatialFabric;
 import game.systems.hud.UIInputProcessor;
 import game.systems.lifecycle.LifecycleComponent;
 import game.systems.rendering.EntityRenderingSystem;
@@ -217,7 +219,11 @@ public class Debug
 		// NOTE: This should be added last to properly display overlay key bindings
 		addOverlay(Hotkeys.TOGGLE_DEBUG_INFO, "Debug Info", new DebugInfoOverlay(inputController, debugOverlays));
 
+		
+		addOverlay(Keys.G, "Spatial Debug", new SpatialHashMapOverlay(
+				((SpatialFabric)level.getModules().getEnvironment()).space));
 
+		
 		for(OverlayBinding binding : debugOverlays.values())
 		{
 			if(binding.overlay instanceof WorldOverlay)
@@ -233,7 +239,6 @@ public class Debug
 				}
 			});
 		}
-
 
 
 

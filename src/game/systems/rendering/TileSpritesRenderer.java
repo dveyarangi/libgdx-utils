@@ -99,21 +99,24 @@ public class TileSpritesRenderer extends EntitySystem implements EntityListener,
 
 
 				int vidx = 0;
-				vertexBuffer.set(vidx++, x+dx);
-				vertexBuffer.set(vidx++, y+dy);
-				vertexBuffer.set(vidx++, 200);//heightmap[xx][yy];
-				vertexBuffer.set(vidx++, 0);
-				vertexBuffer.set(vidx++, 0);
-				vertexBuffer.set(vidx++, 0);
-				vertexBuffer.set(vidx++, 0);
-				vertexBuffer.set(vidx++, 1);
-
-				// color
-				vertexBuffer.set(vidx++, 1);
-				vertexBuffer.set(vidx++, 1);
-				vertexBuffer.set(vidx++, 1);
-				vertexBuffer.set(vidx++, 0);
-
+				for(int i = -1; i == 1; i += 2)
+					for(int j = -1; j == 1; j += 2)
+					{
+						vertexBuffer.set(vidx++, x+i*dx);
+						vertexBuffer.set(vidx++, y+j*dy);
+						vertexBuffer.set(vidx++, -200);//heightmap[xx][yy];
+						vertexBuffer.set(vidx++, (i+1)/2);
+						vertexBuffer.set(vidx++, (j+1)/2);
+						vertexBuffer.set(vidx++, 0);
+						vertexBuffer.set(vidx++, 0);
+						vertexBuffer.set(vidx++, 1);
+		
+						// color
+						vertexBuffer.set(vidx++, 0);
+						vertexBuffer.set(vidx++, 0);
+						vertexBuffer.set(vidx++, 0);
+						vertexBuffer.set(vidx++, 1);
+					}
 				int c00 = verticesPerTile*tileIdx+0;
 				int c10 = verticesPerTile*tileIdx+1;
 				int c01 = verticesPerTile*tileIdx+2;
@@ -222,19 +225,19 @@ public class TileSpritesRenderer extends EntitySystem implements EntityListener,
 	@Override
 	public void entityAdded(Entity entity)
 	{
-		TileSpriteComponent tileSprite = entity.getComponent( TileSpriteComponent.class );
+		ISpriteComponent tileSprite = entity.getComponent( ISpriteComponent.class );
 		ISpatialComponent spatial = entity.getComponent(ISpatialComponent.class);
-		if( tileSprite != null)
+		if( tileSprite instanceof TileSpriteComponent)
 		{
-			updateSprite(tileSprite, spatial);
+			updateSprite((TileSpriteComponent)tileSprite, spatial);
 		}
-
-		TileMultiSpriteComponent tileMultiSprite = entity.getComponent( TileMultiSpriteComponent.class );
-		if( tileMultiSprite != null )
+		else
+		if( tileSprite instanceof TileMultiSpriteComponent)
 		{
+			TileMultiSpriteComponent tileMultiSprite = (TileMultiSpriteComponent)tileSprite;
 			for(int i = 0; i < tileMultiSprite.sprites.size; i ++)
 			{
-				TileSpriteComponent sprite = tileMultiSprite.sprites.get(i);
+				TileSpriteComponent sprite =tileMultiSprite.sprites.get(i);
 				updateSprite( sprite, spatial );
 			}
 		}
@@ -258,15 +261,9 @@ public class TileSpritesRenderer extends EntitySystem implements EntityListener,
 		tileSprite.update(x, y, spatial.inv(), tile);
 		//if( tile.getX() == 140 && tile.getY() == 135)
 		//	System.out.print("");
-
-		multimesh.updateTile(meshDef.getUnitsPerTile()*tile.getX(), meshDef.getUnitsPerTile()*tile.getY(), new TileUpdate() {
-
-			@Override
-			public void updateVertexBuffer(int tx, int ty, float[] vertexBufferUpdate)
-			{
-				updateTileGeometry(tileSprite.x, tileSprite.y, tileSprite.priority, grids[meshIndex].opacity, vertexBufferUpdate, tileSprite);
-			}
-		});
+		update.setSprite(tileSprite, grids[meshIndex].opacity);
+		multimesh.updateTile(meshDef.getUnitsPerTile()*tile.getX(), 
+							 meshDef.getUnitsPerTile()*tile.getY(), update);
 	}
 
 
@@ -302,7 +299,7 @@ public class TileSpritesRenderer extends EntitySystem implements EntityListener,
 		@Override
 		public void updateVertexBuffer(int tx, int ty, float[] vertexBufferUpdate)
 		{
-			updateTileGeometry(tx,ty, 200, 1, vertexBufferUpdate, tileSprite);
+			updateTileGeometry(tx,ty, -200, 0, vertexBufferUpdate, tileSprite);
 		}
 	}
 
@@ -335,23 +332,22 @@ public class TileSpritesRenderer extends EntitySystem implements EntityListener,
 	@Override
 	public void entityRemoved(Entity entity)
 	{
+		ISpriteComponent tileSprite = entity.getComponent( ISpriteComponent.class );
 		ISpatialComponent spatial = entity.getComponent(ISpatialComponent.class);
-		TileSpriteComponent tileSprite = entity.getComponent( TileSpriteComponent.class );
-		if( tileSprite != null )
+		if( tileSprite instanceof TileSpriteComponent)
 		{
-			removeSprite(tileSprite, spatial);
+			removeSprite((TileSpriteComponent)tileSprite, spatial);
 		}
-
-		TileMultiSpriteComponent tileMultiSprite = entity.getComponent( TileMultiSpriteComponent.class );
-		if( tileMultiSprite != null )
+		else
+		if( tileSprite instanceof TileMultiSpriteComponent)
 		{
+			TileMultiSpriteComponent tileMultiSprite = (TileMultiSpriteComponent)tileSprite;
 			for(int i = 0; i < tileMultiSprite.sprites.size; i ++)
 			{
-				TileSpriteComponent sprite = tileMultiSprite.sprites.get(i);
-				removeSprite(sprite, spatial);
+				TileSpriteComponent sprite =tileMultiSprite.sprites.get(i);
+				removeSprite( sprite, spatial );
 			}
-		}
-
+		}		
 	}
 
 
@@ -504,4 +500,25 @@ public class TileSpritesRenderer extends EntitySystem implements EntityListener,
 
 	@Override
 	public String toString() { return "tile sprites"; }
+
+/*	@Override
+	public void entityChanged(Entity entity)
+	{
+		TileSpriteComponent tileSprite = entity.getComponent( TileSpriteComponent.class );
+		ISpatialComponent spatial = entity.getComponent(ISpatialComponent.class);
+		if( tileSprite != null)
+		{
+			updateSprite(tileSprite, spatial);
+		}
+
+		TileMultiSpriteComponent tileMultiSprite = entity.getComponent( TileMultiSpriteComponent.class );
+		if( tileMultiSprite != null )
+		{
+			for(int i = 0; i < tileMultiSprite.sprites.size; i ++)
+			{
+				TileSpriteComponent sprite = tileMultiSprite.sprites.get(i);
+				updateSprite( sprite, spatial );
+			}
+		}	
+	}*/
 }

@@ -125,6 +125,8 @@ public class SpatialFabric extends EntitySystem implements IFabric, EntityListen
 		public Entity pick(float x, float y, float pickRadius)
 		{
 			assert pickRadius > 0 : "Invalid pick radius";
+			//if( x >= 118 && x < 119 && y >= 105&& y < 106)
+			//	System.out.println("test");
 			sensed.clear();
 			// preparing querying cursor location and size
 			cursor.move(x-space.getWidth()/2, y-space.getHeight()/2);
