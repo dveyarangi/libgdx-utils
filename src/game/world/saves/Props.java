@@ -7,46 +7,51 @@ import com.badlogic.gdx.utils.Pool;
 import lombok.Getter;
 
 
-public class EntityProps
+public class Props
 {
 	@Getter private OrderedMap<String,String> props;
 	
-	private static Pool<EntityProps> pool = new Pool<EntityProps> () {
-		@Override protected EntityProps newObject() { return new EntityProps(); }
+	private static Pool<Props> pool = new Pool<Props> () {
+		@Override protected Props newObject() { return new Props(); }
 	};
 	
-	public static EntityProps get() { return pool.obtain(); }
+	public static Props get() { return pool.obtain(); }
 	
 	public void free() { pool.free(this); }
 
-	private EntityProps()
+	private Props()
 	{
 		this(new OrderedMap <> ());
 	}
 
-	public EntityProps(OrderedMap<String, String> props)
+	public Props(OrderedMap<String, String> props)
 	{
 		this.props = props;
 	}
-	public void put(String prop, String val)
+	public Props put(String prop, String val)
 	{
 		props.put(prop, val);
+		return this;
 	}
 
-	public void put(String prop, int val) {
+	public Props put(String prop, int val) {
 		props.put(prop, String.valueOf(val));
+		return this;
 	}
-	public void put(String prop, float val) {
+	public Props put(String prop, float val) {
 		props.put(prop, String.valueOf(val));
+		return this;
 	}
 
-	public void put(String prop, Color color)
+	public Props put(String prop, Color color)
 	{
 		props.put(prop, color.toString());
+		return this;
 	}
-	public void put(String prop, boolean value)
+	public Props put(String prop, boolean value)
 	{
 		props.put(prop, String.valueOf(value));
+		return this;
 	}
 
 	public boolean containsKey(String prop) { return props.containsKey(prop); }
