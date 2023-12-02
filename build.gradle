@@ -1,7 +1,7 @@
 apply plugin: "java"
 apply plugin: "eclipse"
 
-sourceCompatibility = 1.8
+sourceCompatibility = 18
 [compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
 
 sourceSets.main.java.srcDirs = [ "src/", "assets/" ]
