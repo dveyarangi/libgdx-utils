@@ -7,6 +7,6 @@ package game.systems;
  */
 public interface WarmedUpSystem {
 	public default void initWarmup() {};
-	public void warmup(float deltaTime);
+	public default void warmup(float deltaTime) {};
 	public default void finishWarmup() {};
 }

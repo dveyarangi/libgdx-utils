@@ -1,7 +1,7 @@
 package game.world.saves;
 
-import java.util.ArrayList;
-import java.util.List;
+import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.ObjectMap;
 
 import game.world.IGameSettings;
 import lombok.Getter;
@@ -16,18 +16,21 @@ public class SavedLevel
 	@Getter IGameSettings settings;
 
 
-	//List <EntitySystem> systems = new ArrayList <> ();
-	@Getter List <SavedEntity> entities = new ArrayList <> ();
+	@Getter ObjectMap<String, SavedSystem> systems = new ObjectMap <> ();
+	@Getter Array <Props> entities = new Array <> ();
 
 
 	public SavedLevel(IGameSettings settings)
 	{
 		this.settings = settings;
 	}
-
-	public void addEntity(EntityProps properties)
+	public void addSystem(SavedSystem system)
 	{
-		entities.add(new SavedEntity(properties.getProps()));
+		systems.put(system.getName(), system);
+	}
+	public void addEntity(Props properties)
+	{
+		entities.add(properties);
 	}
 
 }

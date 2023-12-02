@@ -3,19 +3,20 @@ package game.world.saves;
 import java.io.IOException;
 import java.io.Writer;
 import java.nio.ByteBuffer;
-import java.text.DecimalFormat;
 import java.util.Base64;
 import java.util.HashSet;
 import java.util.Set;
 
 import com.badlogic.ashley.core.Component;
 import com.badlogic.ashley.core.Entity;
+import com.badlogic.ashley.core.EntitySystem;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.Json.Serializer;
 import com.badlogic.gdx.utils.JsonValue;
 import com.badlogic.gdx.utils.JsonWriter.OutputType;
+import com.badlogic.gdx.utils.OrderedMap;
 
 import game.debug.Debug;
 import game.systems.EntityPrefab;
@@ -66,13 +67,16 @@ public class LevelStore
 
 		////////////////////////////////////////////////////////////
 		// TODO: save systems
-		/*for(EntitySystem system : level.getEngine().getSystems())
+		for(EntitySystem system : level.getEngine().getSystems())
 		{
-			if(system.getClass().isAnnotationPresent(Transient.class))
+			if(!SavableSystem.class.isAssignableFrom(system.getClass()))
 				continue;
+			SavableSystem savableSystem = (SavableSystem) system;
+			
+			SavedSystem systemData = savableSystem.save();
 
-			savedata.systems.add(system);
-		}*/
+			savedata.addSystem(systemData);
+		}
 
 		////////////////////////////////////////////////////////////
 		// save entities
@@ -81,7 +85,7 @@ public class LevelStore
 		for(Entity entity : level.getEngine().getEntities())
 		{
 			// this props objects will receive values to save from entity components
-			EntityProps savedProps = EntityProps.get();
+			Props savedProps = Props.get();
 
 			// get object blueprint to analyze components
 			LifecycleComponent lifecycle = entity.getComponent(LifecycleComponent.class);
@@ -119,17 +123,7 @@ public class LevelStore
 		////////////////////////////////////////////////////////////
 		// write save file
 		// internalize loaded strings
-		json.setSerializer( Float.class, new Serializer<Float>()
-		{
-			String FMT_STR = String.format("0.%" + settings.maxFractionDigits + "d", 0);
-			DecimalFormat format = new DecimalFormat(FMT_STR);
-
-			@Override public Float read(Json json, JsonValue value, Class type) { return value.asFloat(); }
-
-			@Override public void write(Json json, Float value, Class type) {
-				json.writeValue( format.format(value));
-			}
-		});
+		json.setSerializer( Props.class, propsSerializer);
 		String jsonStr = json.prettyPrint(savedata);
 
 		try (Writer writer = savefile.writer(false, "UTF-8"))
@@ -162,7 +156,7 @@ public class LevelStore
 			@Override public void write(Json json, String value, Class type) { json.writeValue(value); }
 		});
 
-
+		json.setSerializer( Props.class, propsSerializer);
 		// load
 		SavedLevel savedLevel = json.fromJson(SavedLevel.class, savefile);
 
@@ -206,4 +200,25 @@ public class LevelStore
 
 		return grid;
 	}
+	
+	static Serializer<Props> propsSerializer = new Serializer<Props>()
+	{
+		
+		@Override public Props read(Json json, JsonValue value, Class type) 
+		{ 	
+			OrderedMap<String, String> map = new OrderedMap <> ();
+			for(JsonValue field : value)
+				map.put(field.name(), field.asString());
+			return new Props(map); 
+		}
+
+		@Override public void write(Json json, Props value, Class type) 
+		{
+			json.writeObjectStart();
+			for(OrderedMap.Entry<String,String> entry : value.getProps().entries())
+				json.writeValue(entry.key, entry.value);
+			json.writeObjectEnd();
+		}
+
+	};
 }

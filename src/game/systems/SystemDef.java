@@ -4,6 +4,8 @@ import com.badlogic.ashley.core.EntitySystem;
 
 import game.systems.rendering.IRenderingContext;
 import game.world.Level;
+import game.world.saves.SavableSystem;
+import game.world.saves.SavedSystem;
 import lombok.Getter;
 
 public class SystemDef <S extends EntitySystem>
@@ -15,6 +17,8 @@ public class SystemDef <S extends EntitySystem>
 	
 
 	protected IRenderingContext renderer;
+
+	private SavedSystem loadedData;
 
 	public SystemDef()
 	{
@@ -33,6 +37,12 @@ public class SystemDef <S extends EntitySystem>
 	{
 		this.system = system;
 		this.renderer = renderer;
+	}
+	
+	public SystemDef( S system, SavedSystem loadedData)
+	{
+		this.system = system;
+		this.loadedData = loadedData;
 	}
 
 	public S createSystem()
@@ -54,8 +64,12 @@ public class SystemDef <S extends EntitySystem>
 
 	public void initSystem( Level level, S system )
 	{
-		// TODO Auto-generated method stub
-
+		if(!(system instanceof SavableSystem))
+			return;
+		
+		SavableSystem savableSystem = (SavableSystem) system;
+		if(this.loadedData != null) 
+			savableSystem.load(level, this.loadedData);
 	}
 
 	public IRenderingContext createRenderer() { return renderer; }
