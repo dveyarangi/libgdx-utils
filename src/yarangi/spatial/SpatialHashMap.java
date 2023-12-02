@@ -143,7 +143,9 @@ public class SpatialHashMap <O extends ISpatialObject> extends SpatialRegistry<O
 	 */
 	protected final int hash(int x, int y)
 	{
-		return (x+halfGridWidth)*width + (y+halfGridHeight);
+		int hash = (x+halfGridWidth)*height + (y+halfGridHeight);
+		assert hash < map.length;
+		return hash;
 	}
 
 	/**
@@ -209,8 +211,8 @@ public class SpatialHashMap <O extends ISpatialObject> extends SpatialRegistry<O
 		
 		int minIdxx = Math.max(toGridIndex(cx-rx), -halfGridWidth);
 		int minIdxy = Math.max(toGridIndex(cy-ry), -halfGridHeight);
-		int maxIdxx = Math.min(toGridIndex(cx+rx),  halfGridWidth);
-		int maxIdxy = Math.min(toGridIndex(cy+ry),  halfGridHeight);
+		int maxIdxx = Math.min(toGridIndex(cx+rx),  halfGridWidth-1);
+		int maxIdxy = Math.min(toGridIndex(cy+ry),  halfGridHeight-1);
 		
 		int currx, curry;
 		int passId = getNextPassId();
@@ -295,8 +297,8 @@ public class SpatialHashMap <O extends ISpatialObject> extends SpatialRegistry<O
 		double radiusSquare = radius*radius;
 		int minx = Math.max(toGridIndex(x-radius), -halfGridWidth);
 		int miny = Math.max(toGridIndex(y-radius), -halfGridHeight);
-		int maxx = Math.min(toGridIndex(x+radius),  halfGridWidth);
-		int maxy = Math.min(toGridIndex(y+radius),  halfGridHeight);
+		int maxx = Math.min(toGridIndex(x+radius),  halfGridWidth-1);
+		int maxy = Math.min(toGridIndex(y+radius),  halfGridHeight-1);
 		int passId = getNextPassId();
 //		O object;
 		
@@ -336,6 +338,7 @@ public class SpatialHashMap <O extends ISpatialObject> extends SpatialRegistry<O
 		
 		return sensor;
 	}
+
 	
 	@Override
 	public final ISpatialSensor <O> queryLine(ISpatialSensor <O> sensor, double ox, double oy, double dx, double dy)
