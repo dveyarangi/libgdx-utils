@@ -25,7 +25,7 @@ public abstract class LoadableThread implements LoadableModule
 		try {
 			load(loadingProgress);
 		}
-		catch(Exception e) { loadingProgress.setFailed(e); }
+		catch(Throwable e) { loadingProgress.setFailed(e); }
 
 		loadingProgress.setFinished(true);
 	}
