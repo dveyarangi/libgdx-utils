@@ -12,7 +12,7 @@ import game.systems.IComponentDef;
 import game.systems.spatial.ISpatialComponent;
 import game.util.Equals;
 import game.world.Level;
-import game.world.saves.EntityProps;
+import game.world.saves.Props;
 import lombok.Getter;
 
 /**
@@ -250,14 +250,14 @@ public abstract class SpriteComponent implements ISpriteComponent
 		
 	}
 
-	public void save(SpriteDef def, EntityProps props)
+	public void save(SpriteDef def, Props props)
 	{
 
 		if(!Equals.eq(def.w, sx)) props.put(PROP_SX, sx);
 		if(!Equals.eq(def.h, sy)) props.put(PROP_SY, sy);
 	}
 
-	public void load(SpriteDef def, EntityProps props)
+	public void load(SpriteDef def, Props props)
 	{
 		this.sx = props.get(PROP_SX, def.w);
 		this.sy = props.get(PROP_SY, def.h);

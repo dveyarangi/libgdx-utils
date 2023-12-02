@@ -3,7 +3,7 @@ package game.systems;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Pool.Poolable;
 
-import game.world.saves.EntityProps;
+import game.world.saves.Props;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -27,7 +27,7 @@ public class EntityPrefab implements/*Component,*/ Poolable
 	 */
 	public boolean descendants = false;
 
-	@Getter @Setter private EntityProps props;
+	@Getter @Setter private Props props;
 
 	/**
 	 * Used to initialize entity with additional components
@@ -36,10 +36,10 @@ public class EntityPrefab implements/*Component,*/ Poolable
 
 	public EntityPrefab()
 	{
-		this(EntityProps.get());
+		this(Props.get());
 	}
 
-	public EntityPrefab(EntityProps props)
+	public EntityPrefab(Props props)
 	{
 		this.props = props;
 	}

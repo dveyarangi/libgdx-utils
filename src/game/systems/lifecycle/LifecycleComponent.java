@@ -12,7 +12,7 @@ import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.utils.Pool.Poolable;
 
 import game.util.Equals;
-import game.world.saves.EntityProps;
+import game.world.saves.Props;
 import game.world.saves.Savable;
 /**
  * This entity component provides unit's birth and death effects.
@@ -100,7 +100,7 @@ public class LifecycleComponent implements Component, Poolable, Savable<Lifecycl
 	}
 
 	@Override
-	public void save(LifecycleDef def, EntityProps props)
+	public void save(LifecycleDef def, Props props)
 	{
 		props.put(PROP_ID, id);
 		props.put(PROP_TYPE, type);
@@ -112,7 +112,7 @@ public class LifecycleComponent implements Component, Poolable, Savable<Lifecycl
 
 
 	@Override
-	public void load(LifecycleDef def, EntityProps props)
+	public void load(LifecycleDef def, Props props)
 	{
 		// init/load static component properties
 		type = props.get(PROP_TYPE, def.type);

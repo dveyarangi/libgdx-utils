@@ -7,8 +7,11 @@ import com.badlogic.gdx.utils.Pool;
 import lombok.Getter;
 
 
+
 public class Props
 {
+	public static String FMT_STR = "%.3f";
+	
 	@Getter private OrderedMap<String,String> props;
 	
 	private static Pool<Props> pool = new Pool<Props> () {
@@ -39,7 +42,7 @@ public class Props
 		return this;
 	}
 	public Props put(String prop, float val) {
-		props.put(prop, String.valueOf(val));
+		props.put(prop, String.format(FMT_STR, val));
 		return this;
 	}
 
@@ -57,10 +60,18 @@ public class Props
 	public boolean containsKey(String prop) { return props.containsKey(prop); }
 
 	public String get(String prop) { return props.get(prop); }
+	public String getString(String prop) 
+	{ 
+		ensureExists(prop);
+		return props.get(prop).intern(); 
+	}
+	public String getString(String prop, String defval) 
+	{ 
+		return (containsKey(prop) ? get(prop) : defval).intern(); 
+	}
 	public int getInt(String prop)
 	{
-		if(!containsKey(prop))
-			throw new IllegalArgumentException("Required property " + prop + " is missing.");
+		ensureExists(prop);
 		return Integer.parseInt(get(prop));
 	}
 	public int getInt(String prop, int defval)
@@ -70,8 +81,7 @@ public class Props
 
 	public float getFloat(String prop)
 	{
-		if(!containsKey(prop))
-			throw new IllegalArgumentException("Required property " + prop + " is missing.");
+		ensureExists(prop);
 		return Float.parseFloat(get(prop));
 	}
 
@@ -117,5 +127,11 @@ public class Props
 	public String toString()
 	{
 		return props.toString();
+	}
+	
+	private void ensureExists(String prop)
+	{
+		if(!hasProp(prop))
+			throw new IllegalArgumentException("Required property " + prop + " is missing.");
 	}
 }

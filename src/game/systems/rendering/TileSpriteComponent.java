@@ -15,7 +15,7 @@ import game.systems.spatial.SpatialComponent;
 import game.systems.spatial.SpatialListener;
 import game.systems.tiles.ITile;
 import game.world.Level;
-import game.world.saves.EntityProps;
+import game.world.saves.Props;
 import game.world.saves.Savable;
 import lombok.Getter;
 
@@ -176,13 +176,13 @@ public class TileSpriteComponent implements ISpriteComponent, Savable<TileSprite
 	public static final String PROP_COLOR = "color";
 
 	@Override
-	public void save(TileSpriteDef def, EntityProps props)
+	public void save(TileSpriteDef def, Props props)
 	{
 		props.put(PROP_COLOR, color);
 	}
 
 	@Override
-	public void load(TileSpriteDef def, EntityProps props)
+	public void load(TileSpriteDef def, Props props)
 	{
 		color = props.getColor(PROP_COLOR, def.color);
 	}

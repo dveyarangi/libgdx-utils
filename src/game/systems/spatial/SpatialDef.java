@@ -3,7 +3,7 @@ package game.systems.spatial;
 import com.badlogic.ashley.core.Entity;
 
 import game.world.Level;
-import game.world.saves.EntityProps;
+import game.world.saves.Props;
 
 
 public class SpatialDef implements ISpatialDef<SpatialComponent>
@@ -23,7 +23,7 @@ public class SpatialDef implements ISpatialDef<SpatialComponent>
 		this.inv = inv;
 	}
 
-	public EntityProps initProps( EntityProps prop)
+	public Props initProps( Props prop)
 	{
 		return initProps(prop, x, y, z, a, s, inv);
 	}
@@ -31,7 +31,7 @@ public class SpatialDef implements ISpatialDef<SpatialComponent>
 	/**
 	 * Configure initial properties for this component type
 	 */
-	public static EntityProps initProps( EntityProps prop, float x, float y, float z, float a, float s, boolean inv )
+	public static Props initProps( Props prop, float x, float y, float z, float a, float s, boolean inv )
 	{
 		return SpatialComponent.save(prop, x, y, z, a, s, inv);
 	}

@@ -1,10 +1,8 @@
 package game.world.saves;
 
-import game.systems.IComponentDef;
-
-public interface Savable <C extends IComponentDef>
+public interface Savable <C>
 {
-	void save(C def, EntityProps props);
-	void load(C def, EntityProps props);
+	void save(C def, Props props);
+	void load(C def, Props props);
 	Class<C> getDefClass();
 }

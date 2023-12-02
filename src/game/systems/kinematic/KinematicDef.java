@@ -4,7 +4,7 @@ import com.badlogic.ashley.core.Entity;
 
 import game.systems.movement.IMovementDef;
 import game.world.Level;
-import game.world.saves.EntityProps;
+import game.world.saves.Props;
 import lombok.Getter;
 
 /**
@@ -25,7 +25,7 @@ public class KinematicDef implements IMovementDef<KinematicComponent>
 	public static final float DEFAULT_VA = 0;
 	public static final float DEFAULT_VR = 0;
 
-	public static EntityProps initProps(EntityProps props, float vx, float vy, float va, float vr)
+	public static Props initProps(Props props, float vx, float vy, float va, float vr)
 	{
 		return KinematicComponent.save(props, vx, vy, va, vr);
 	}

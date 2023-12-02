@@ -14,7 +14,7 @@ import static game.systems.spatial.SpatialDef.PROP_Z;
 import com.badlogic.ashley.core.ComponentType;
 
 import game.util.Equals;
-import game.world.saves.EntityProps;
+import game.world.saves.Props;
 import game.world.saves.Savable;
 
 /**
@@ -25,7 +25,7 @@ public class SpatialComponent extends GenericSpatialComponent implements Savable
 	static { ComponentType.registerFor(ISpatialComponent.class, SpatialComponent.class); }
 
 	@Override
-	public void load(SpatialDef def, EntityProps props)
+	public void load(SpatialDef def, Props props)
 	{
 		x(props.getFloat(PROP_X, def.x));
 		y(props.getFloat(PROP_Y, def.y));
@@ -37,7 +37,7 @@ public class SpatialComponent extends GenericSpatialComponent implements Savable
 	}
 
 	@Override
-	public void save(SpatialDef def, EntityProps props)
+	public void save(SpatialDef def, Props props)
 	{
 		props.put(PROP_X, x);
 		props.put(PROP_Y, y);
@@ -47,7 +47,7 @@ public class SpatialComponent extends GenericSpatialComponent implements Savable
 		if(inv != def.inv) props.put(PROP_INV, inv);
 	}
 
-	public static EntityProps save(EntityProps props, float x, float y, float z, float a, float s, boolean inv )
+	public static Props save(Props props, float x, float y, float z, float a, float s, boolean inv )
 	{
 		props.put(PROP_X, x);
 		props.put(PROP_Y, y);

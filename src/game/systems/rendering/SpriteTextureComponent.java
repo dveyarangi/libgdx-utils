@@ -9,7 +9,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import game.resources.ResourceFactory;
 import game.systems.IComponentDef;
 import game.world.Level;
-import game.world.saves.EntityProps;
+import game.world.saves.Props;
 import game.world.saves.Savable;
 
 public class SpriteTextureComponent extends SpriteComponent implements Savable <SpriteTextureDef>
@@ -33,12 +33,12 @@ public class SpriteTextureComponent extends SpriteComponent implements Savable <
 	@Override
 	public Class<SpriteTextureDef> getDefClass() { return SpriteTextureDef.class; }
 	@Override
-	public void save(SpriteTextureDef def, EntityProps props)
+	public void save(SpriteTextureDef def, Props props)
 	{
 		super.save(def, props);
 	}
 	@Override
-	public void load(SpriteTextureDef def, EntityProps props)
+	public void load(SpriteTextureDef def, Props props)
 	{
 		super.load(def, props);
 	}

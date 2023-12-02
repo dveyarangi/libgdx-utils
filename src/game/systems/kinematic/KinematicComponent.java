@@ -14,7 +14,7 @@ import com.badlogic.ashley.core.Entity;
 
 import game.systems.movement.IMovementComponent;
 import game.util.Equals;
-import game.world.saves.EntityProps;
+import game.world.saves.Props;
 import game.world.saves.Savable;
 import lombok.Getter;
 
@@ -79,7 +79,7 @@ public class KinematicComponent implements IMovementComponent, Savable <Kinemati
 	}
 
 	@Override
-	public void save(KinematicDef def, EntityProps props)
+	public void save(KinematicDef def, Props props)
 	{
 		if( !Equals.eq(vx, def.vx ) ) props.put(PROP_VX, vx);
 		if( !Equals.eq(vy, def.vy ) ) props.put(PROP_VY, vy);
@@ -89,14 +89,14 @@ public class KinematicComponent implements IMovementComponent, Savable <Kinemati
 		if( !Equals.eq(maxThrust, def.maxThrust ) ) props.put(PROP_MAX_THRUST, maxSpeed);
 	}
 
-	public static EntityProps save(EntityProps props, float vx, float vy, float va, float vr)
+	public static Props save(Props props, float vx, float vy, float va, float vr)
 	{
 
 		return props;
 	}
 
 	@Override
-	public void load(KinematicDef def, EntityProps props)
+	public void load(KinematicDef def, Props props)
 	{
 		setLinearVelocity(props.get(PROP_VX, def.vx), props.get(PROP_VY, def.vy));
 		setAngularVelocity(props.get(PROP_VA, def.va));

@@ -2,7 +2,7 @@ package game.world;
 
 import game.systems.EntityDef;
 import game.systems.EntityPrefab;
-import game.world.saves.EntityProps;
+import game.world.saves.Props;
 
 public interface BlueprintFactory
 {
@@ -15,7 +15,7 @@ public interface BlueprintFactory
 	 * @param path
 	 * @param props
 	 */
-	void prepareEntity(LevelDef level, String type, String path, EntityProps props);
+	void prepareEntity(LevelDef level, String type, String path, Props props);
 
 	/**
 	 * Add entity to level that is already running
@@ -23,9 +23,9 @@ public interface BlueprintFactory
 	 * @param def
 	 * @param props
 	 */
-	void insertEntity(LevelDef level, EntityDef def, EntityProps props);
+	void insertEntity(LevelDef level, EntityDef def, Props props);
 
 
-	EntityPrefab getPrefab(String type, String path, EntityProps props);
+	EntityPrefab getPrefab(String type, String path, Props props);
 
 }
