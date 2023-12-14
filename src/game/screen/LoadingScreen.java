@@ -14,7 +14,6 @@ import game.debug.Debug;
 import game.util.LoadableModule;
 import game.util.LoadingProgress;
 import lombok.Getter;
-import lombok.experimental.var;
 
 /**
  * Creates and gradually loads game resources;

@@ -1,7 +1,7 @@
 apply plugin: "java"
 apply plugin: "eclipse"
 
-sourceCompatibility = 18
+sourceCompatibility = 21
 [compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
 
 sourceSets.main.java.srcDirs = [ "src/", "assets/" ]
@@ -41,8 +41,8 @@ eclipse {
 	    file {
 			whenMerged { classpath ->
 				{
-					classpath.entries.findAll { entry -> entry.kind == 'var' }*.kind = 'lib';
-					classpath.entries.findAll { entry -> entry.kind == 'lib' }*.exported = true;
+					classpath.entries.findAll { entry -> entry.kind == 'var' }*.kind = 'lib'
+					classpath.entries.findAll { entry -> entry.kind == 'lib' }*.exported = true
 				}
 			}
 		}
@@ -50,7 +50,9 @@ eclipse {
 }
 
 //apply plugin: "java-library"
-
+configurations {
+	exportedDeps
+}
 
 dependencies {
 	implementation name: "ashley-core-modified"
@@ -72,11 +74,16 @@ dependencies {
 	
 	/////////////////////////////////////////////////
 	
-	implementation "org.projectlombok:lombok:1.16.20"
-	
+	implementation "org.projectlombok:lombok:1.18.30"
+	annotationProcessor 'org.projectlombok:lombok:1.18.30'
 	/////////////////////////////////////////////////
     // logger
  	implementation "org.slf4j:slf4j-api:1.7.25"
 	implementation "ch.qos.logback:logback-classic:1.2.3"
 	implementation "ch.qos.logback:logback-core:1.2.3"
+
+	// Loop over all 'implementation' dependencies and add them to 'exportedDeps'
+	configurations.implementation.allDependencies.each {
+		exportedDeps it
+	}
 }

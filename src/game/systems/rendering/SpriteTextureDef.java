@@ -3,7 +3,7 @@ package game.systems.rendering;
 import com.badlogic.gdx.graphics.Color;
 
 import game.resources.TextureName;
-import lombok.Getter;
+
 
 public class SpriteTextureDef extends SpriteDef <SpriteTextureComponent>
 {

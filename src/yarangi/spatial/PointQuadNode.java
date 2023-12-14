@@ -168,7 +168,7 @@ public class PointQuadNode <T>
 		addAll(node.children[SOUTH][EAST]);
 	}
 
-	public PointQuadNode getChild(int north2, int west2) {
+	public PointQuadNode <T> getChild(int north2, int west2) {
 		return children[north2][west2];
 	}
 

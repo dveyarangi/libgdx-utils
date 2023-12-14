@@ -5,7 +5,6 @@ import java.util.List;
 
 import com.badlogic.gdx.utils.Pool;
 
-import yarangi.java.InvokationMapper;
 import yarangi.math.IVector2D;
 import yarangi.math.Vector2D;
 
@@ -33,7 +32,7 @@ public class AABB implements Area
 
 	private int passId;
 
-	private static InvokationMapper amap = new InvokationMapper();
+	//private static InvokationMapper amap = new InvokationMapper();
 
 	private static Pool <AABB> pool = new Pool<AABB>() {
 		@Override protected AABB newObject() { return new AABB();}

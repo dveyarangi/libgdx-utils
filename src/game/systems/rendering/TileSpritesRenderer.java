@@ -63,8 +63,8 @@ public class TileSpritesRenderer extends EntitySystem implements EntityListener,
 
 		// looking up for TileSystem to allow binding tile sprites to tile coordinates
 		for(EntitySystem system : engine.getSystems())
-			if(system instanceof TileSystem)
-				this.tilemap = (TileSystem) system;
+			if(system instanceof TileSystem tileSystem)
+				this.tilemap = tileSystem;
 
 		//		ResourceFactory factory = level.getModules().getGameFactory();
 		int meshNum = rendererDef.meshes.length;
@@ -225,22 +225,26 @@ public class TileSpritesRenderer extends EntitySystem implements EntityListener,
 	@Override
 	public void entityAdded(Entity entity)
 	{
+
 		ISpriteComponent tileSprite = entity.getComponent( ISpriteComponent.class );
 		ISpatialComponent spatial = entity.getComponent(ISpatialComponent.class);
-		if( tileSprite instanceof TileSpriteComponent)
+		switch(tileSprite)
 		{
+		case TileSpriteComponent sprite:
 			updateSprite((TileSpriteComponent)tileSprite, spatial);
-		}
-		else
-		if( tileSprite instanceof TileMultiSpriteComponent)
-		{
-			TileMultiSpriteComponent tileMultiSprite = (TileMultiSpriteComponent)tileSprite;
-			for(int i = 0; i < tileMultiSprite.sprites.size; i ++)
+			break;
+		case TileMultiSpriteComponent sprite:
+			for(int i = 0; i < sprite.sprites.size; i ++)
 			{
-				TileSpriteComponent sprite =tileMultiSprite.sprites.get(i);
-				updateSprite( sprite, spatial );
+				TileSpriteComponent subsprite = sprite.sprites.get(i);
+				updateSprite( subsprite, spatial );
 			}
+			break;
+		case null, default:
+			// does not have tile sprite 
+			break;
 		}
+
 	}
 
 
@@ -334,20 +338,24 @@ public class TileSpritesRenderer extends EntitySystem implements EntityListener,
 	{
 		ISpriteComponent tileSprite = entity.getComponent( ISpriteComponent.class );
 		ISpatialComponent spatial = entity.getComponent(ISpatialComponent.class);
-		if( tileSprite instanceof TileSpriteComponent)
+		switch(tileSprite)
 		{
+		case TileSpriteComponent sprite:
 			removeSprite((TileSpriteComponent)tileSprite, spatial);
-		}
-		else
-		if( tileSprite instanceof TileMultiSpriteComponent)
-		{
-			TileMultiSpriteComponent tileMultiSprite = (TileMultiSpriteComponent)tileSprite;
-			for(int i = 0; i < tileMultiSprite.sprites.size; i ++)
+			break;
+		case TileMultiSpriteComponent sprite:
+			for(int i = 0; i < sprite.sprites.size; i ++)
 			{
-				TileSpriteComponent sprite =tileMultiSprite.sprites.get(i);
-				removeSprite( sprite, spatial );
+				TileSpriteComponent subsprite =sprite.sprites.get(i);
+				removeSprite( subsprite, spatial );
 			}
-		}		
+
+			break;
+		case null, default:
+			// does not have tile sprite 
+			break;
+		}
+	
 	}
 
 

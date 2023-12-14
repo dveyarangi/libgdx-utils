@@ -4,8 +4,6 @@ package yarangi.spatial;
 public abstract class SpatialObjectSkeleton implements ISpatialObject
 {
 	
-	private static final long serialVersionUID = 7334675818507558850L;
-	
 	/**
 	 * Id auto-incremental counter
 	 */
@@ -35,8 +33,10 @@ public abstract class SpatialObjectSkeleton implements ISpatialObject
 	 */
 	public final int getId() { return id; }
 
+	@Override
 	public int hashCode() { return id; }
 	
+	@Override
 	public boolean equals(Object o)
 	{
 		if ( ! (o instanceof SpatialObjectSkeleton))

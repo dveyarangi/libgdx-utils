@@ -44,6 +44,6 @@ public interface ISpatialIndex <O>
 	
 	public ISpatialSensor <O> queryAABB(ISpatialSensor <O> sensor, double cx, double cy, double dx, double dy);
 
-	public float getWidth();
-	public float getHeight();
+	public int getWidth();
+	public int getHeight();
 }

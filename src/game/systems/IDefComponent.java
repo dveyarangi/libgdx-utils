@@ -7,13 +7,13 @@ import com.badlogic.gdx.utils.Pool.Poolable;
 import game.world.Level;
 
 /**
- * Used for self-defining components
+ * Used for self-defining components.
  * @author Fima
  */
-public interface IDefComponent extends IComponentDef, Component, Poolable
+public interface IDefComponent <C extends Component> extends IComponentDef <C>, Component, Poolable
 {
 	@Override
-	public default void initComponent(Component component, Entity entity, Level level)
+	public default void initComponent(C component, Entity entity, Level level)
 	{
 		
 	}

@@ -8,9 +8,9 @@ import com.badlogic.ashley.core.Family;
 import com.badlogic.gdx.utils.PooledLinkedList;
 
 import game.systems.DescendantsComponent;
-import game.systems.EntityPrefab;
 import game.systems.EntityFactory;
 import game.systems.EntityId;
+import game.systems.EntityPrefab;
 import game.systems.spatial.AnchorComponent;
 import game.systems.spatial.ISpatialComponent;
 import game.world.Constants;

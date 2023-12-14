@@ -2,6 +2,7 @@ package yarangi.spatial;
 
 import com.badlogic.gdx.utils.ObjectSet;
 
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import yarangi.math.FastMath;
 
@@ -29,12 +30,12 @@ public class SpatialHashMap <O extends ISpatialObject> extends SpatialRegistry<O
 	/**
 	 * dimensions of area this hashmap represents
 	 */
-	private int width, height;
+	@Getter private int width, height;
 
 	/**
 	 * size of single hash cell
 	 */
-	private float cellSize; 
+	@Getter private float cellSize; 
 	
 	/** 
 	 * 1/cellSize, to speed up some calculations
@@ -98,24 +99,7 @@ public class SpatialHashMap <O extends ISpatialObject> extends SpatialRegistry<O
 		super(name);
 		throw new IllegalStateException("Not implemented yet.");
 	}
-	
 
-	/**
-	 * @return width of the area, covered by this map
-	 */
-	@Override
-	public final float getHeight() { return height; }
-
-	/**
-	 * @return height of the area, covered by this map
-	 */
-	@Override
-	public final float getWidth() { return width; }
-
-	/**
-	 * @return size (height and width) of a single cell
-	 */
-	public final double getCellSize() { return cellSize; }
 	
 	/**
 	 * Retrieves content of the bucket that holds the contents of (x,y) cell.
@@ -410,12 +394,5 @@ public class SpatialHashMap <O extends ISpatialObject> extends SpatialRegistry<O
 		
 		return sensor;
 	}
-
-	private interface IObjectConsumer <T> extends IChunkConsumer
-	{
-		public void setObject(T object);
-	}
-	
-
 
 }

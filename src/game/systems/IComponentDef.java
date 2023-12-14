@@ -16,7 +16,7 @@ public interface IComponentDef<C extends Component>
 	 * @param level
 	 */
 	@Deprecated
-	void initComponent( C component,Entity entity, Level level );
+	void initComponent( C component, Entity entity, Level level );
 
 	//	default void initComponent( C component, EntityProps props, Entity entity, Level level ) {}
 	/**

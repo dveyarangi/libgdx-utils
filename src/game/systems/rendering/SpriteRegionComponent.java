@@ -18,9 +18,9 @@ public class SpriteRegionComponent extends SpriteComponent implements Savable <S
 	static { ComponentType.registerFor(SpriteComponent.class, SpriteRegionComponent.class); }
 
 	@Override
-	public void init( Entity entity, IComponentDef def, Level level )
+	public void init( Entity entity, IComponentDef <?> def, Level level )
 	{
-		SpriteRegionDef tdef = (SpriteRegionDef) def;
+		var tdef = (SpriteRegionDef) def;
 		TextureAtlas atlas = tdef.atlas;
 		TextureRegion origRegion;
 		if( tdef.regionName == null)
@@ -38,6 +38,7 @@ public class SpriteRegionComponent extends SpriteComponent implements Savable <S
 
 	@Override
 	public Class<SpriteRegionDef> getDefClass() { return SpriteRegionDef.class; }
+	
 	@Override
 	public void save(SpriteRegionDef def, Props props)
 	{

@@ -18,6 +18,7 @@ import game.world.Level;
  * @author Fima
  */
 public interface IRenderingComponent extends Component, Poolable
+//<C extends IRenderingComponent<C, T>, T extends IComponentDef<C>> extends Component, Poolable
 {
 	/**
 	 * Retrieve ID of rendering context.

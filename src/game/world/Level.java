@@ -97,8 +97,6 @@ public class Level extends EntitySystem
 
 		engine.addSystem( this );
 
-
-
 	}
 
 	/**

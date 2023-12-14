@@ -3,15 +3,12 @@ package yarangi.spatial;
 import java.util.HashMap;
 import java.util.Set;
 
-import lombok.extern.slf4j.Slf4j;
-
 
 /**
  * Common interface for spatial indexing data structures.
  * 
  * @param <T> stored element type.
  */
-@Slf4j
 public abstract class SpatialRegistry <K extends ISpatialObject> implements ISpatialSetIndex <K>
 {
 	

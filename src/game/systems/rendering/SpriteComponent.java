@@ -76,9 +76,9 @@ public abstract class SpriteComponent implements ISpriteComponent
 	}
 
 	@Override
-	public void init( Entity entity, IComponentDef def, Level level )
+	public void init( Entity entity, IComponentDef <?>def, Level level )
 	{
-		SpriteDef sdef = (SpriteDef) def;
+		var sdef = (SpriteDef<?>) def;
 
 		//this.region.flip(sdef.xFlip, sdef.yFlip);
 
@@ -250,14 +250,14 @@ public abstract class SpriteComponent implements ISpriteComponent
 		
 	}
 
-	public void save(SpriteDef def, Props props)
+	public void save(SpriteDef<?> def, Props props)
 	{
 
 		if(!Equals.eq(def.w, sx)) props.put(PROP_SX, sx);
 		if(!Equals.eq(def.h, sy)) props.put(PROP_SY, sy);
 	}
 
-	public void load(SpriteDef def, Props props)
+	public void load(SpriteDef<?> def, Props props)
 	{
 		this.sx = props.get(PROP_SX, def.w);
 		this.sy = props.get(PROP_SY, def.h);

@@ -35,7 +35,6 @@ import game.systems.rendering.IRenderingComponent;
 import game.systems.rendering.OverlayRenderer;
 import game.world.Level;
 import lombok.Getter;
-import lombok.experimental.var;
 
 /**
  * @author dveyarangi

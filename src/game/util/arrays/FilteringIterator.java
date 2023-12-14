@@ -21,11 +21,8 @@ public class FilteringIterator <T> implements Iterator <T>
 		if(next != null) // if next is set, just return true 
 			return true;
 		
-		if(!iterator.hasNext())
-			return false;
-		
 		// otherwise find that next:
-		while(!filter.accept(next = iterator.next())) ;
+		while(iterator.hasNext() && !filter.accept(next = iterator.next())) ;
 		
 		return next != null;
 	}

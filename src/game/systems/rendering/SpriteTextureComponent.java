@@ -17,7 +17,7 @@ public class SpriteTextureComponent extends SpriteComponent implements Savable <
 	static { ComponentType.registerFor(SpriteComponent.class, SpriteTextureComponent.class); }
 
 	@Override
-	public void init( Entity entity, IComponentDef def, Level level )
+	public void init( Entity entity, IComponentDef<?> def, Level level )
 	{
 		SpriteTextureDef tdef = (SpriteTextureDef) def;
 
