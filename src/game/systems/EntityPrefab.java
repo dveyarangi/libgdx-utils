@@ -32,7 +32,7 @@ public class EntityPrefab implements/*Component,*/ Poolable
 	/**
 	 * Used to initialize entity with additional components
 	 */
-	transient public Array <IComponentDef<?>> genericAspects = new Array <> ();
+	@Getter transient public Array <IComponentDef<?>> defs = new Array <> ();
 
 	public EntityPrefab()
 	{
@@ -54,10 +54,6 @@ public class EntityPrefab implements/*Component,*/ Poolable
 	}*/
 
 
-	public Array <IComponentDef<?>> getDefs()
-	{
-		return genericAspects;
-	}
 
 	public boolean hasDescendants()
 	{
@@ -66,7 +62,7 @@ public class EntityPrefab implements/*Component,*/ Poolable
 
 	public <E extends IComponentDef<?>> E addDef( final E def )
 	{
-		genericAspects.add(def);
+		defs.add(def);
 		return def;
 	}
 
@@ -90,7 +86,7 @@ public class EntityPrefab implements/*Component,*/ Poolable
 	@Override
 	public void reset()
 	{
-		genericAspects.clear();
+		defs.clear();
 		descendants = false;
 	}
 

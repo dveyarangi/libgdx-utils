@@ -1,13 +1,14 @@
 package game.systems.weapon;
 
+import com.badlogic.ashley.core.Engine;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.Family;
 import com.badlogic.ashley.systems.IteratingSystem;
 import com.badlogic.gdx.math.Vector2;
 
-import game.systems.EntityFactory;
 import game.systems.box2d.Box2DPhysicalComponent;
 import game.systems.box2d.Box2DPhysicalDef;
+import game.systems.lifecycle.LifecycleSystem;
 import game.systems.spatial.ISpatialComponent;
 import game.systems.spatial.ISpatialDef;
 import game.systems.targeting.TargetComponent;
@@ -23,16 +24,17 @@ import game.util.RandomUtil;
  */
 public class WeaponSystem extends IteratingSystem
 {
-	private EntityFactory factory;
+	private LifecycleSystem factory;
 
 	public WeaponSystem()
 	{
 		super(Family.one(WeaponComponent.class).get());
 	}
-
-	public void init( EntityFactory factory )
+	
+	@Override
+	public void addedToEngine(Engine engine)
 	{
-		this.factory = factory;
+		this.factory = engine.getSystem(LifecycleSystem.class);
 	}
 
 	@Override

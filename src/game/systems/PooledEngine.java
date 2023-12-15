@@ -178,7 +178,7 @@ public class PooledEngine extends Engine
 			pool.free(object);
 		}
 
-		public void freeAll (Array objects) {
+		/*public void freeAll (Array objects) {
 			if (objects == null) throw new IllegalArgumentException("objects cannot be null.");
 
 			for (int i = 0, n = objects.size; i < n; i++) {
@@ -186,7 +186,7 @@ public class PooledEngine extends Engine
 				if (object == null) continue;
 				free(object);
 			}
-		}
+		}*/
 
 		public void clear () {
 			for (Pool pool : pools.values()) {

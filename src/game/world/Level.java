@@ -11,7 +11,6 @@ import com.badlogic.gdx.utils.ObjectSet;
 
 import game.config.GraphicOptions;
 import game.debug.Debug;
-import game.systems.EntityFactory;
 import game.systems.PooledEngine;
 import game.systems.SystemDef;
 import game.systems.WarmedUpSystem;
@@ -43,10 +42,9 @@ public class Level extends EntitySystem
 	// factories
 
 	/**
-	 * Units factory; encapsulates means of defining and creating a game unit.
-	 * Relies on resource factory to load unit decorations;
+	 * Entities factory; encapsulates means of defining and creating a game unit.
 	 */
-	private EntityFactory unitsFactory;
+	@Getter private LifecycleSystem entityFactory;
 
 
 	/**
@@ -83,7 +81,6 @@ public class Level extends EntitySystem
 	 */
 	public Level( GameboardModules modules, GraphicOptions options )
 	{
-
 		this.modules = modules;
 
 		this.def = modules.getLevelDef();
@@ -93,10 +90,9 @@ public class Level extends EntitySystem
 		// game entities manager:
 		this.engine = new PooledEngine(INITIAL_UNITS_NUM, Integer.MAX_VALUE, 10 * INITIAL_UNITS_NUM, Integer.MAX_VALUE);
 		// flattening game modules:
-		this.unitsFactory = new EntityFactory( this, engine );
+		//this.unitsFactory = new EntityFactory( this, engine );
 
 		engine.addSystem( this );
-
 	}
 
 	/**
@@ -115,7 +111,8 @@ public class Level extends EntitySystem
 		////////////////////////////////////////////////////
 		// lifesystem works closely with units factory
 		// to give birth and death to entities
-		engine.addSystem( new LifecycleSystem( unitsFactory ) );
+		entityFactory = new LifecycleSystem();
+		engine.addSystem( entityFactory );
 
 		////////////////////////////////////////////////////
 		// this system controls the physical environment, manages cursor picking and collisions
@@ -151,7 +148,7 @@ public class Level extends EntitySystem
 			module.init(this);
 
 		// ////////////////////////////////////////////////////
-		unitsFactory.createUnits( def );
+		entityFactory.createEntities( def );
 
 
 
@@ -202,7 +199,7 @@ public class Level extends EntitySystem
 
 	public GameboardModules getModules() { return modules; }
 
-	public EntityFactory getEntityFactory() { return unitsFactory; }
+	//public EntityFactory getEntityFactory() { return unitsFactory; }
 
 	/*
 	 * some generic module to append at level creation

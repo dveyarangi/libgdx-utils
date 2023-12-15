@@ -96,6 +96,7 @@ public class Props
 		return containsKey(prop) ? Integer.parseInt(get(prop)) : defval;
 	}
 
+	@SuppressWarnings("unchecked")
 	public <E> E get(String prop, E defval)
 	{
 		return containsKey(prop) ? (E)get(prop) : defval;

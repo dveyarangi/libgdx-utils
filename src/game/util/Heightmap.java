@@ -1,7 +1,5 @@
 package game.util;
 
-import java.util.List;
-
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Array;

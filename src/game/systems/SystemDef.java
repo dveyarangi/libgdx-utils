@@ -45,19 +45,18 @@ public class SystemDef <S extends EntitySystem>
 		this.loadedData = loadedData;
 	}
 
+	@SuppressWarnings("deprecation")
 	public S createSystem()
 	{
 		if(system != null) return system;
 		try
 		{
 			system = systemClass.newInstance();
-		} catch( InstantiationException e )
+		} 
+		catch( InstantiationException | IllegalAccessException e )
 		{
 			throw new IllegalArgumentException("Entity system of type " + systemClass + " not found.");
-		} catch( IllegalAccessException e )
-		{
-			throw new IllegalArgumentException("Entity system of type " + systemClass + " not found.");
-		}
+		} 
 
 		return system;
 	}

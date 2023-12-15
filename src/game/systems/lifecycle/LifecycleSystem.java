@@ -1,5 +1,6 @@
 package game.systems.lifecycle;
 
+import com.badlogic.ashley.core.Component;
 import com.badlogic.ashley.core.Engine;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.EntityListener;
@@ -8,13 +9,19 @@ import com.badlogic.ashley.core.Family;
 import com.badlogic.gdx.utils.PooledLinkedList;
 
 import game.systems.DescendantsComponent;
-import game.systems.EntityFactory;
 import game.systems.EntityId;
 import game.systems.EntityPrefab;
+import game.systems.IComponentDef;
+import game.systems.IDefComponent;
+import game.systems.PooledEngine;
 import game.systems.spatial.AnchorComponent;
 import game.systems.spatial.ISpatialComponent;
+//import game.systems.spatial.ISpatialComponent;
 import game.world.Constants;
+import game.world.Level;
+import game.world.LevelDef;
 import game.world.Transient;
+import game.world.saves.Savable;
 
 /**
  * Manages entity's Great Cycle.
@@ -26,10 +33,9 @@ import game.world.Transient;
 @Transient
 public class LifecycleSystem extends EntitySystem implements EntityListener
 {
-	/**
-	 * The Configurer, One Who Manages The Great Pool
-	 */
-	private EntityFactory configurer;
+	private PooledEngine engine;
+	
+	private Level level;
 
 	/**
 	 * Newborn entities arrive here
@@ -50,11 +56,10 @@ public class LifecycleSystem extends EntitySystem implements EntityListener
 	 * Provides the system with entity factory.
 	 * @param factory
 	 */
-	public LifecycleSystem( EntityFactory factory )
+	public LifecycleSystem()
 	{
 		// all that live are subject to the Cycle
 		super();
-		this.configurer = factory;
 	}
 
 	/**
@@ -67,6 +72,10 @@ public class LifecycleSystem extends EntitySystem implements EntityListener
 
 		//entities = engine.getEntitiesFor(family);
 		engine.addEntityListener(family, 0, this);
+		
+		this.engine = (PooledEngine) engine;
+		
+		this.level = engine.getSystem(Level.class);
 	}
 
 	@Override
@@ -74,7 +83,7 @@ public class LifecycleSystem extends EntitySystem implements EntityListener
 	{
 		LifecycleComponent lifecycle = LifecycleComponent.get(entity);
 		nursery.add(entity);
-		lifecycle.isAlive = true; // no officially alive
+		lifecycle.isAlive = true; // now officially alive
 		entity.flags = EntityId.UID();
 	}
 
@@ -124,7 +133,7 @@ public class LifecycleSystem extends EntitySystem implements EntityListener
 					if( aura.timeSinceSpawn >= aura.def.trailInterval )
 					{
 						EntityPrefab def = aura.createTrailDef( entity );
-						configurer.addEntity(def);
+						addEntity(def);
 						aura.timeSinceSpawn = 0;
 					}
 				}
@@ -152,10 +161,7 @@ public class LifecycleSystem extends EntitySystem implements EntityListener
 			if( aura == null )
 				continue;
 			
-			configurer.addEntity(aura.createBirthDef( baby ));
-			
-			
-			
+			addEntity(aura.createBirthDef( baby ));
 		}
 		
 		nursery.clear();
@@ -173,7 +179,6 @@ public class LifecycleSystem extends EntitySystem implements EntityListener
 		Entity corpse;
 		while( ( corpse = graveyard.next() ) != null )
 		{
-			ISpatialComponent spatial = ISpatialComponent.get(corpse);
 
 			// removing this part of entity tree
 			DescendantsComponent descendants = DescendantsComponent.get(corpse);
@@ -189,6 +194,8 @@ public class LifecycleSystem extends EntitySystem implements EntityListener
 					getEngine().removeEntity(child);
 				}			
 			}
+			
+			ISpatialComponent spatial = ISpatialComponent.get(corpse);
 
 			// informing parent:
 			if( spatial != null && spatial instanceof AnchorComponent )
@@ -201,7 +208,7 @@ public class LifecycleSystem extends EntitySystem implements EntityListener
 			
 			LifeAuraComponent aura = LifeAuraComponent.get(corpse);
 			if( aura != null)
-				configurer.addEntity(aura.createDeathDef( corpse ));
+				addEntity(aura.createDeathDef( corpse ));
 
 			// thats it:
 			getEngine().removeEntity(corpse);
@@ -225,10 +232,87 @@ public class LifecycleSystem extends EntitySystem implements EntityListener
 		super.removedFromEngine(engine);
 	}
 
+	public Entity addEntity( EntityPrefab def )
+	{
+		if( def == null ) return null;
+
+		Entity entity = createEntity(def);
+
+		engine.addEntity( entity );
+
+		return entity;
+	}
+	
 	public void killEntity(Entity entity)
 	{
 		LifecycleComponent lifecycle = LifecycleComponent.get(entity);
 		lifecycle.isAlive = false;
-		entities.add(entity);
+		graveyard.add(entity);
 	}
+	
+	public void createEntities( LevelDef def )
+	{
+		// ////////////////////////////////////////////////////
+		// create starting units:
+		for( int idx = 0; idx < def.getEntityDefs().size(); idx ++ )
+		{
+			EntityPrefab entityDef = def.getEntityDefs().get(idx);
+			assert entityDef != null : "Unit def is null, looks like redundant comma in units list in config";
+			Entity unit = createEntity(entityDef);
+
+			engine.addEntity(unit);
+		}
+	}
+
+	/**
+	 * Creates entity from definitions.
+	 *
+	 * Every created entity has the {@link LifecycleComponent} as well as
+	 * other components, specified by definitions.
+	 * @param prefab
+	 * @return
+	 */
+	@SuppressWarnings( "unchecked" )
+	private Entity createEntity( EntityPrefab prefab )
+	{
+		Entity entity = engine.createEntity();
+
+		if( prefab.hasDescendants() )
+		{
+			entity.add(engine.createComponent(DescendantsComponent.class));
+		}
+
+		// /////////////////////////////////////////////////////////
+		// Generic components
+		for( int idx = 0; idx < prefab.getDefs().size; idx ++ )
+		{
+			IComponentDef componentDef = prefab.getDefs().get(idx);
+
+			if(componentDef.getComponentClass() == null) // TODO: validate component type is not null
+				throw new IllegalArgumentException("No class defined for component def " + componentDef);
+
+			Component component = switch(componentDef) 
+			{
+				case IDefComponent<?> c -> c;
+				default -> engine.createComponent(componentDef.getComponentClass());
+			};
+			
+			// init the component:
+			if( component instanceof Savable savable )
+				savable.load(componentDef, prefab.getProps());
+			
+			//prefab.getProps().free();
+
+			componentDef.initComponent( component, entity, level );
+			// attach the component to the entity:
+			entity.add(component);
+		}
+
+		// /////////////////////////////////////////////////////////
+		// all done
+		return entity;
+	}
+
+
+
 }

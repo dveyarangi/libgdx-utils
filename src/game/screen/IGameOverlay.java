@@ -10,9 +10,9 @@ import game.systems.rendering.Renderer;
  */
 public interface IGameOverlay
 {
-	public void setFadeIn( AbstractScreen screen );
+	public void setFadeIn( AbstractScreen <?> screen );
 
-	public void setFadeOut( AbstractScreen screen );
+	public void setFadeOut( AbstractScreen <?> screen );
 
 	public void updateOverlay( float delta );
 

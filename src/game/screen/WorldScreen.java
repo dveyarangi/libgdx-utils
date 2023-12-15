@@ -109,16 +109,13 @@ public abstract class WorldScreen<G extends AbstractGame> extends AbstractScreen
 		progress.setFinished(true);
 
 	}
-
-
+	
 	@Override
 	public void show()
 	{
 		super.show();
 
-
 		level = new Level( gameSetup, options );
-
 
 		// TODO: remove
 		Debug.init(level);
