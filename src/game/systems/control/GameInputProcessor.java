@@ -15,6 +15,7 @@ import com.badlogic.gdx.math.Vector2;
 import game.systems.hud.HUD;
 import game.systems.hud.UIInputProcessor;
 import game.systems.rendering.IRenderer;
+import game.world.Chronometer;
 import game.world.IPickProvider;
 import game.world.Level;
 import game.world.LevelInitialSettings;
@@ -61,6 +62,8 @@ public class GameInputProcessor extends EntitySystem implements InputProcessor
 	@Getter private ControlModes controlModes;
 
 
+	private Chronometer chronometer;
+
 	/**
 	 * Provides information about game entity under mouse cursor
 	 */
@@ -69,8 +72,6 @@ public class GameInputProcessor extends EntitySystem implements InputProcessor
 	private Entity pickedObject;
 
 	private Entity touchedObject;
-
-	private TimeController timeController;
 
 	private UIInputProcessor uiProcessor;
 
@@ -86,31 +87,39 @@ public class GameInputProcessor extends EntitySystem implements InputProcessor
 
 	public static float ZOOM_SPEED_COEF = 0.025f;
 
-	public GameInputProcessor( HUD ui )
+	public GameInputProcessor( HUD ui, Chronometer chronometer )
 	{
+		this.chronometer = chronometer;
+		
 		this.controlModes = new ControlModes();
+		
 
 		inputMultiplexer = new InputMultiplexer();
 
 		this.uiProcessor = new UIInputProcessor();
 
-		this.timeController = new TimeController();
 
 		uiProcessor.registerAction(Hotkeys.TIME_FASTER, new InputAction() {
 			@Override
 			public void execute( final InputContext context )
 			{
-				timeController.setTarget(timeController.getTargetModifier() * 2f);
+				chronometer.setTimeSpeed(chronometer.getTimeSpeed()*2);
 			}
 		});
 		uiProcessor.registerAction(Hotkeys.TIME_SLOWER, new InputAction() {
 			@Override
 			public void execute( final InputContext context )
 			{
-				timeController.setTarget(timeController.getTargetModifier() / 2f);
+				chronometer.setTimeSpeed(chronometer.getTimeSpeed()/2);
 			}
 		});
-
+		uiProcessor.registerAction(Hotkeys.TIME_PAUSE, new InputAction() {
+			@Override
+			public void execute( final InputContext context )
+			{
+				chronometer.togglePause();
+			}
+		});
 		this.ui = ui;
 
 	}
@@ -122,7 +131,6 @@ public class GameInputProcessor extends EntitySystem implements InputProcessor
 	public void addedToEngine (Engine engine)
 	{
 		this.level = engine.getSystem(Level.class);
-
 
 		controlModes.init( level );
 
@@ -163,22 +171,20 @@ public class GameInputProcessor extends EntitySystem implements InputProcessor
 	public void update( final float delta )
 	{
 
+		float systemDelta = chronometer.toSystemTime(delta);
+		
 		setPickFilter(controlModes.getPickFilter());
 
-		uiProcessor.update(delta);
+		uiProcessor.update(systemDelta);
 
 		// adjusting camera:
-		camController.update(delta);
+		camController.update(systemDelta);
 
 		// TODO: this may be called too much:
 		toggleCursorMoved(currx, curry, true);
 
-		timeController.update(delta);
 
-		controlModes.update(delta);
-
-
-
+		controlModes.update(systemDelta);
 	}
 
 	/**
@@ -339,7 +345,13 @@ public class GameInputProcessor extends EntitySystem implements InputProcessor
 
 		return consumed;
 	}
-
+	
+	@Override
+	public boolean touchCancelled(int screenX, int screenY, int pointer, int button)
+	{
+		throw new UnsupportedOperationException();
+	}
+	
 	@AllArgsConstructor
 	public class MoveCameraAction implements InputAction
 	{
@@ -437,14 +449,10 @@ public class GameInputProcessor extends EntitySystem implements InputProcessor
 		return uiProcessor;
 	}
 
-	public float getTimeModifier()
-	{
-		return timeController.getModifier();
-	}
-
 
 	public void dispose()
 	{
 		ui.dispose();
 	}
+
 }

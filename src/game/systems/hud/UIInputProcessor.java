@@ -24,6 +24,17 @@ public class UIInputProcessor implements InputProcessor
 	{
 		this.keyActions.put(keycode, action);
 	}
+	
+
+	public void update(float dt)
+	{
+		context.dt = dt;
+		for(int i = 0; i < activeActions.size; i ++)
+		{
+			activeActions.get(i).execute(context);
+		}
+	}
+
 
 	@Override
 	public boolean keyDown( final int keycode )
@@ -80,6 +91,13 @@ public class UIInputProcessor implements InputProcessor
 	}
 
 	@Override
+	public boolean touchCancelled(int screenX, int screenY, int pointer, int button)
+	{
+		// TODO Auto-generated method stub
+		return false;
+	}
+	
+	@Override
 	public boolean mouseMoved( final int screenX, final int screenY )
 	{
 		// TODO Auto-generated method stub
@@ -93,13 +111,5 @@ public class UIInputProcessor implements InputProcessor
 		return false;
 	}
 
-	public void update(float dt)
-	{
-		context.dt = dt;
-		for(int i = 0; i < activeActions.size; i ++)
-		{
-			activeActions.get(i).execute(context);
-		}
-	}
 
 }

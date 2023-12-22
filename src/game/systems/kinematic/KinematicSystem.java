@@ -56,8 +56,8 @@ public class KinematicSystem extends IteratingSystem implements EntityListener
 		spatial.setChanged(false);
 		if( !kinematics.isStatic() )
 		{
-			if( deltaTime > 1)
-				deltaTime = 1;
+			//if( deltaTime > 1)
+			//	deltaTime = 1;
 			spatial.transpose(kinematics.getVx() * deltaTime, kinematics.getVy() * deltaTime);
 			spatial.rotate(kinematics.getVa() * Angles.TAU * deltaTime);
 			spatial.resize(spatial.s() + kinematics.getVr() * deltaTime);

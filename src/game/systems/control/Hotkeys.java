@@ -9,8 +9,9 @@ public class Hotkeys
 	private static IntSet allocatedKeys = new IntSet();
 	
 	
-	public static final int TIME_FASTER = Keys.PLUS;
+	public static final int TIME_FASTER = Keys.EQUALS;
 	public static final int TIME_SLOWER = Keys.MINUS;
+	public static final int TIME_PAUSE = Keys.SPACE;
 
 	public static final int NEXT_CONTROL_MODE = Keys.M;
 

@@ -26,18 +26,26 @@ public class GameboardModules
 	@Getter protected LevelDef levelDef;
 
 	@Getter private IFabric environment;
+	
+	@Getter private Chronometer chronometer;
 
 	@Getter private ICameraProvider cameraProvider;
 
 	private ObjectMap <Class<? extends GameModule>, GameModule> customModules = new ObjectMap <> ();
 
 
-	public GameboardModules( ResourceFactory resourceFactory, LevelDef def, IFabric environment, ICameraProvider cameraProvider)
+	public GameboardModules( ResourceFactory resourceFactory, 
+			LevelDef def, 
+			IFabric environment, 
+			Chronometer chronometer,
+			ICameraProvider cameraProvider)
 	{
 		// game resources registry and loader
 		this.resourceFactory = resourceFactory;
 
 		this.levelDef = def;
+		
+		this.chronometer = chronometer;
 
 		this.environment = environment;
 

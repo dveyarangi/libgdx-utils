@@ -108,6 +108,23 @@ public class Level extends EntitySystem
 	{
 		Debug.startTiming("level initialization");
 
+		List <IRenderingContext> systemRenderers = new ArrayList <> ();
+		////////////////////////////////////////////////////
+		// initialize and add EntitySystems from definitions:
+		for(SystemDef<?>systemDef : def.getSystemDefs())
+		{
+			var systemRenderer = systemDef.createRenderer();
+			if( systemRenderer != null )
+				systemRenderers.add(systemRenderer);
+		}
+		// ////////////////////////////////////////////////////
+		Renderer rend = new Renderer( modules.getCameraProvider(), graphicOptions );
+		// creating entity rendering system:
+		this.renderer = new EntityRenderingSystem( rend, modules.getResourceFactory(), systemRenderers );
+
+		engine.addSystem( this.renderer );
+		
+		engine.addSystem( modules.getChronometer() );
 		////////////////////////////////////////////////////
 		// lifesystem works closely with units factory
 		// to give birth and death to entities
@@ -119,9 +136,8 @@ public class Level extends EntitySystem
 		engine.addSystem( (EntitySystem) modules.getEnvironment() );
 
 
-		List <IRenderingContext> systemRenderers = new ArrayList <> ();
-		////////////////////////////////////////////////////
-		// initialize and add EntitySystems from definitions:
+
+		
 		for(SystemDef systemDef : def.getSystemDefs())
 		{
 			EntitySystem system = systemDef.createSystem();
@@ -130,18 +146,7 @@ public class Level extends EntitySystem
 			
 			if( system instanceof WarmedUpSystem )
 				warmedUpSystems.add((WarmedUpSystem)system);
-
-			IRenderingContext systemRenderer = systemDef.createRenderer();
-			if( systemRenderer != null )
-				systemRenderers.add(systemRenderer);
 		}
-
-		// ////////////////////////////////////////////////////
-		Renderer rend = new Renderer( modules.getCameraProvider(), graphicOptions );
-		// creating entity rendering system:
-		this.renderer = new EntityRenderingSystem( rend, modules.getResourceFactory(), systemRenderers );
-
-		engine.addSystem( this.renderer );
 
 		// ////////////////////////////////////////////////////
 		for(GameModule module : getModules().getCustomModules())
@@ -272,7 +277,7 @@ public class Level extends EntitySystem
 		
 		for(int tick = 0; tick < def.getSimulationTicks(); tick ++)
 			for(WarmedUpSystem system : warmedUpSystems)
-				system.warmup(100);
+				system.warmup(100000);
 
 		for(WarmedUpSystem system : warmedUpSystems)
 			system.finishWarmup();

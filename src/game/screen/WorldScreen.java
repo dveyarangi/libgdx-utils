@@ -11,6 +11,7 @@ import game.systems.rendering.EntityRenderingSystem;
 import game.util.LoadableModule;
 import game.util.LoadableThread;
 import game.util.LoadingProgress;
+import game.world.Chronometer;
 import game.world.GameboardModules;
 import game.world.IFabric;
 import game.world.Level;
@@ -28,6 +29,9 @@ public abstract class WorldScreen<G extends AbstractGame> extends AbstractScreen
 	protected Level level;
 
 	@Getter protected GraphicOptions options;
+	
+	protected IFabric fabric;
+	protected Chronometer chronometer;
 
 	public WorldScreen( G game, GraphicOptions options )
 	{
@@ -61,6 +65,19 @@ public abstract class WorldScreen<G extends AbstractGame> extends AbstractScreen
 		progress.update(0, "Loading level...");
 
 
+		ResourceFactory factory = super.game.getResourceFactory();
+
+
+		// /////////////////////////////////////////////////////////////////////////
+		// CREATING INTERACTIVE ENVIRONMENT
+		//
+		// this provides entity-entity and UI-entity interaction methods
+		//
+		fabric = createFabric(progress);
+		
+		chronometer = createChronometer(progress);
+
+
 		// /////////////////////////////////////////////////////////////////////////
 		// GENERATING/LOADING LEVEL DEFINITIONS:
 		//
@@ -70,11 +87,14 @@ public abstract class WorldScreen<G extends AbstractGame> extends AbstractScreen
 		LevelDef def = createLevel(progress.subprogress(0.8f));
 		Debug.stopTiming("level creation");
 
+		
 
 		LevelInitialSettings settings = def.getInitialSettings();
 		if( settings == null )
 			throw new IllegalArgumentException("Missing level initial settings");
 
+
+		
 		ICameraProvider worldCameraProvider = null;
 
 		switch(settings.getCameraMode())
@@ -90,18 +110,8 @@ public abstract class WorldScreen<G extends AbstractGame> extends AbstractScreen
 			break;
 
 		}
-
-		ResourceFactory factory = super.game.getResourceFactory();
-
-
-		// /////////////////////////////////////////////////////////////////////////
-		// CREATING INTERACTIVE ENVIRONMENT
-		//
-		// this provides entity-entity and UI-entity interaction methods
-		//
-		IFabric environment = createFabric(progress);
-
-		gameSetup = new GameboardModules(factory, def, environment, worldCameraProvider);
+		gameSetup = new GameboardModules(factory, def, fabric, chronometer, worldCameraProvider);
+		
 		extendModules(gameSetup);
 
 
@@ -124,15 +134,18 @@ public abstract class WorldScreen<G extends AbstractGame> extends AbstractScreen
 
 	protected abstract LevelDef createLevel(LoadingProgress progress);
 
+	protected abstract Chronometer createChronometer(LoadingProgress progress);
+	
 	protected abstract IFabric createFabric(LoadingProgress progress);
 
 	protected void extendModules(GameboardModules modules)
 	{
 	}
 
-	private void update( float delta )
+	private void update( float deltaSeconds )
 	{
-
+		if(deltaSeconds > 0.1f) deltaSeconds = 0.1f;
+		float delta = chronometer.toGameTime(deltaSeconds);
 		level.engineUpdate(delta);
 
 		assert Debug.debug.update(delta);
