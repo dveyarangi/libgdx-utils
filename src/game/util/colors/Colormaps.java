@@ -122,8 +122,11 @@ public class Colormaps
 			}
 			else
 			{
-				long hex = Long.parseLong( element.getAsString(), 16 );
-				color = new Color( (int)hex );
+				var colorStr = element.getAsString();
+				if(colorStr.startsWith("#"))
+					colorStr = colorStr.substring(1);
+				long hex = Long.parseLong( colorStr, 16 );
+				color = new Color( (int)hex);
 			}
 			return color;
 		}
