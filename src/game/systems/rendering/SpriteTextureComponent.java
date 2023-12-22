@@ -23,7 +23,6 @@ public class SpriteTextureComponent extends SpriteComponent implements Savable <
 
 		TextureRegion origRegion = ResourceFactory.getTextureRegion(tdef.textureName.getName());
 
-
 		this.region.setRegion(origRegion);
 		if( tdef.color != null )
 			this.color.set(tdef.color);

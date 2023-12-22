@@ -93,7 +93,7 @@ public class LevelStore
 			EntityPrefab prefab = blueprints.getPrefab(lifecycle.type, lifecycle.path, savedProps);
 			if( prefab == null)
 			{
-				Debug.warn("Entity of type " + lifecycle.type + " is missing prefab, not saving");
+				//Debug.warn("Entity of type " + lifecycle.type + " is missing prefab, not saving");
 				continue;
 			}
 
