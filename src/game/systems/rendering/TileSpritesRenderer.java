@@ -6,12 +6,16 @@ import com.badlogic.ashley.core.EntityListener;
 import com.badlogic.ashley.core.EntitySystem;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Camera;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.VertexAttribute;
 import com.badlogic.gdx.graphics.VertexAttributes;
 import com.badlogic.gdx.graphics.VertexAttributes.Usage;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.graphics.g3d.ModelBatch;
+import com.badlogic.gdx.graphics.g3d.shaders.DefaultShader;
+import com.badlogic.gdx.graphics.g3d.utils.DefaultShaderProvider;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.utils.ObjectIntMap;
 
@@ -41,6 +45,10 @@ public class TileSpritesRenderer extends EntitySystem implements EntityListener,
 	TileSpritesGrid [] grids;
 
 	ObjectIntMap<String> meshIndices = new ObjectIntMap<> ();
+	
+	IRenderer renderer;
+	
+	ModelBatch batch;
 
 	Camera cam;
 
@@ -53,6 +61,7 @@ public class TileSpritesRenderer extends EntitySystem implements EntityListener,
 	public void init(ResourceFactory factory, IRenderer renderer)
 	{
 		this.cam = renderer.camera();
+		this.renderer = renderer;
 	}
 
 	@Override
@@ -62,6 +71,7 @@ public class TileSpritesRenderer extends EntitySystem implements EntityListener,
 		engine.addEntityListener(this);
 
 		// looking up for TileSystem to allow binding tile sprites to tile coordinates
+		// the game-specific implementation class is not known here
 		for(EntitySystem system : engine.getSystems())
 			if(system instanceof TileSystem tileSystem)
 				this.tilemap = tileSystem;
@@ -69,18 +79,16 @@ public class TileSpritesRenderer extends EntitySystem implements EntityListener,
 		//		ResourceFactory factory = level.getModules().getGameFactory();
 		int meshNum = rendererDef.meshes.length;
 
-
+		//Environment env = new Environment();
 		grids = new TileSpritesGrid[meshNum];
 
-
-		//interp = Interpolation.getInstance(Interpolation.Type.BICUBIC, heightLowressArr);
-		//float [][] heightmap = interp.resize(2*w+1, 2*h+1);
 		VertexAttributes vattr = new VertexAttributes(
 				new VertexAttribute(Usage.Position, 3, ShaderProgram.POSITION_ATTRIBUTE),
 				VertexAttribute.TexCoords(0),
 				VertexAttribute.Normal(),
 				VertexAttribute.ColorUnpacked()
 				);
+		
 
 		int verticesPerTile = 4;
 		int trianglesPerTile = 2;
@@ -141,6 +149,13 @@ public class TileSpritesRenderer extends EntitySystem implements EntityListener,
 			grids[idx] = grid;
 
 		}
+		
+		DefaultShader.Config config = new DefaultShader.Config();
+		config.numDirectionalLights = 2;
+		config.numPointLights = 0;
+		config.numBones = 16;
+		batch = new ModelBatch(new DefaultShaderProvider(config));
+		//Model model = mulbuildMo
 	}
 
 
@@ -450,17 +465,36 @@ public class TileSpritesRenderer extends EntitySystem implements EntityListener,
 
 			if( meshDef.context != null)
 				meshDef.context.updateShader(shader);
+			TileMultiMesh multimesh = grid.mesh;
+			
+			/*Material material = new Material(
+					//ColorAttribute.createDiffuse(new Color(0,1,1,1)),
+					TextureAttribute.createDiffuse(grid.texture),
+					//TextureAttribute.createEmissive(meshTexture),
+					new IntAttribute(IntAttribute.CullFace, 0)
+					//	TextureAttribute.createBump(meshTexture)
+					);
+			Model model = multimesh.buildModel("test", material);
+			ModelInstance modelInstance = new ModelInstance(model);
 
-
+			
+			batch.begin(cam);
+			//Gdx.gl.glEnable(GL20.GL_DEPTH_TEST);
+			//Gdx.gl.glDepthFunc(GL20.GL_LEQUAL);
+			batch.render(modelInstance, environment);
+			batch.end();*/
+			Color ambient = renderer.getAmbientColor();
+			shader.setUniformf("u_ambientColor", ambient.r, ambient.g, ambient.b, ambient.a);
 			shader.setUniformMatrix("u_projTrans", cam.combined);
+
 			//		Color color1 = ceilingWallMesh.color1;
 			//		Color color2 = Color.BLACK;
 			//		bicoloringShader.setUniformf("u_maskingColor", color1.r, color1.g, color1.b, 0.2f);
 			//		bicoloringShader.setUniformf("v_maskingColor", color2.r, color2.g, color2.b, 1f);
-			TileMultiMesh multimesh = grid.mesh;
-
+			
 			for(int midx = 0; midx < multimesh.getMeshes().size(); midx ++)
 				multimesh.getMeshes().get(midx).render( shader, GL20.GL_TRIANGLES );
+				
 
 		}
 	}

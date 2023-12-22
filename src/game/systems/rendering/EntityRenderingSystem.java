@@ -10,7 +10,9 @@ import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.EntityListener;
 import com.badlogic.ashley.core.EntitySystem;
 import com.badlogic.gdx.graphics.Camera;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g3d.Environment;
 import com.badlogic.gdx.graphics.g3d.decals.DecalBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.utils.Array;
@@ -370,5 +372,11 @@ public class EntityRenderingSystem extends EntitySystem implements EntityListene
 
 	@Override
 	public Camera camera() { return renderer.camera(); }
+
+	@Override
+	public Environment environment() { return renderer.environment(); }
+
+	@Override
+	public Color getAmbientColor() { return renderer.getAmbientColor(); }
 
 }

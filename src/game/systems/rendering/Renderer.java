@@ -2,9 +2,13 @@ package game.systems.rendering;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Camera;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g3d.Environment;
+import com.badlogic.gdx.graphics.g3d.attributes.DirectionalLightsAttribute;
 import com.badlogic.gdx.graphics.g3d.decals.DecalBatch;
+import com.badlogic.gdx.graphics.g3d.environment.DirectionalLight;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 
 import game.config.GraphicOptions;
@@ -25,6 +29,8 @@ public class Renderer implements IRenderer
 
 	private ICameraProvider cameraProvider;
 
+	private Environment environment;
+	
 	public Renderer( ICameraProvider cameraProvider, GraphicOptions options )
 	{
 
@@ -34,8 +40,12 @@ public class Renderer implements IRenderer
 
 		shapes = new ShapeRenderer();
 		shapes.setAutoShapeType(true);
-		DecalGroupStrategy strategy = new DecalGroupStrategy(cameraProvider.getCamera());
+		
+		DecalGroupStrategy strategy = new DecalGroupStrategy(cameraProvider.getCamera(), this);
 		decals = new DecalBatch(strategy);
+		
+		this.environment = new Environment();
+		
 	}
 
 
@@ -52,9 +62,11 @@ public class Renderer implements IRenderer
 
 		// debugMatrix.set(cameraProvider.getCamera().combined);
 		// TODO: ineffective? matrices are copied every frame
-		shapes.setProjectionMatrix(cameraProvider.getCamera().combined);
+		shapes.setProjectionMatrix(camera().projection);
+		shapes.setTransformMatrix(camera().view);
 
-		sprites.setProjectionMatrix(cameraProvider.getCamera().combined);
+		sprites.setProjectionMatrix(camera().combined);
+		sprites.setTransformMatrix(camera().view);
 	}
 
 	@Override
@@ -74,13 +86,34 @@ public class Renderer implements IRenderer
 		return shapes;
 	}
 	
+	@Override
 	public Camera camera() { return cameraProvider.getCamera(); }
+	
+	@Override
+	public Environment environment() { return environment; }
 
 	@Override
 	public void resize( int screenWidth, int screenHeight )
 	{
 		cameraProvider.resize(screenWidth, screenHeight);
 	}
+	
+	Color ambientColor = new Color();
+	@Override
+	public Color getAmbientColor()
+	{
+		//var ambientAttr = (ColorAttribute)environment.get(ColorAttribute.AmbientLight);
+		
+		//ambientColor.set(ambientAttr.color);
+		ambientColor.set(1,1,1,1);
+		var lights = (DirectionalLightsAttribute) environment.get(DirectionalLightsAttribute.Type);
+		
+		for(DirectionalLight light : lights.lights)
+			ambientColor.mul(light.color);
+		return ambientColor;
+		
+	}
+	
 
 	@Override
 	public void dispose()

@@ -2,8 +2,10 @@ package game.systems.rendering;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Camera;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g3d.Environment;
 import com.badlogic.gdx.graphics.g3d.decals.DecalBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 
@@ -88,4 +90,19 @@ public class OverlayRenderer implements IRenderer
 
 	@Override
 	public Camera camera() { return cameraProvider.getCamera(); }
+
+
+	@Override
+	public Environment environment()
+	{
+		throw new UnsupportedOperationException();
+	}
+
+
+	@Override
+	public Color getAmbientColor()
+	{
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

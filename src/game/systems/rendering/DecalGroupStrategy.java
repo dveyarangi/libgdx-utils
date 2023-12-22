@@ -4,6 +4,7 @@ import java.util.Comparator;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Camera;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g3d.decals.Decal;
 import com.badlogic.gdx.graphics.g3d.decals.DecalMaterial;
@@ -79,11 +80,12 @@ public class DecalGroupStrategy implements GroupStrategy, Disposable {
 	ObjectMap<DecalMaterial, Array<Decal>> materialGroups = new ObjectMap<DecalMaterial, Array<Decal>>();
 
 	Camera camera;
+	IRenderer renderer;
 	ShaderProgram shader;
 	private final Comparator<Decal> cameraSorter;
 
-	public DecalGroupStrategy (final Camera camera) {
-		this(camera, new Comparator<Decal>() {
+	public DecalGroupStrategy (final Camera camera, IRenderer renderer) {
+		this(camera, renderer, new Comparator<Decal>() {
 			@Override
 			public int compare (Decal o1, Decal o2) {
 				float dist1 = camera.position.dst(o1.getPosition());
@@ -93,8 +95,9 @@ public class DecalGroupStrategy implements GroupStrategy, Disposable {
 		});
 	}
 
-	public DecalGroupStrategy (Camera camera, Comparator<Decal> sorter) {
+	public DecalGroupStrategy (Camera camera, IRenderer renderer, Comparator<Decal> sorter) {
 		this.camera = camera;
+		this.renderer = renderer;
 		this.cameraSorter = sorter;
 		createDefaultShader();
 
@@ -152,9 +155,11 @@ public class DecalGroupStrategy implements GroupStrategy, Disposable {
 	@Override
 	public void beforeGroups () {
 		Gdx.gl.glEnable(GL20.GL_DEPTH_TEST);
-		shader.begin();
+		shader.bind();
 		shader.setUniformMatrix("u_projectionViewMatrix", camera.combined);
 		shader.setUniformi("u_texture", 0);
+		Color ambient = renderer.getAmbientColor();
+		shader.setUniformf("u_ambientColor", ambient.r, ambient.g, ambient.b, ambient.a);
 	}
 
 	@Override
@@ -168,6 +173,7 @@ public class DecalGroupStrategy implements GroupStrategy, Disposable {
 			+ "attribute vec4 " + ShaderProgram.COLOR_ATTRIBUTE + ";\n" //
 			+ "attribute vec2 " + ShaderProgram.TEXCOORD_ATTRIBUTE + "0;\n" //
 			+ "uniform mat4 u_projectionViewMatrix;\n" //
+
 			+ "varying vec4 v_color;\n" //
 			+ "varying vec2 v_texCoords;\n" //
 			+ "\n" //
@@ -184,6 +190,7 @@ public class DecalGroupStrategy implements GroupStrategy, Disposable {
 			+ "varying vec4 v_color;\n" //
 			+ "varying vec2 v_texCoords;\n" //
 			+ "uniform sampler2D u_texture;\n" //
+			+ "uniform vec4 u_ambientColor;\n"
 			+ "void main()\n"//
 			+ "{\n" //
 			+ "	 vec4 texColor = texture2D(u_texture, v_texCoords);\n"
@@ -191,7 +198,7 @@ public class DecalGroupStrategy implements GroupStrategy, Disposable {
 			+ "  if( alpha <= 0.1f || v_color.a <= 0) {\n"
 			+ "     discard;\n"
  	 		+ "}\n"
-			+ "  gl_FragColor = v_color * texColor;\n" //
+			+ "  gl_FragColor = v_color * texColor * u_ambientColor;\n" //
 			+ "}";
 
 		shader = new ShaderProgram(vertexShader, fragmentShader);

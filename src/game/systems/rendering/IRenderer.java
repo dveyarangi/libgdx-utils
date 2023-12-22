@@ -1,7 +1,9 @@
 package game.systems.rendering;
 
 import com.badlogic.gdx.graphics.Camera;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g3d.Environment;
 import com.badlogic.gdx.graphics.g3d.decals.DecalBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 
@@ -32,6 +34,8 @@ public interface IRenderer
 	
 	
 	Camera camera();
+	
+	Environment environment();
 
 	/**
 	 * Prepare rendering stuff
@@ -55,5 +59,7 @@ public interface IRenderer
 	 * Clean up
 	 */
 	void dispose();
+
+	Color getAmbientColor();
 
 }
