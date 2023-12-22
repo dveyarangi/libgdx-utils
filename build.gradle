@@ -7,12 +7,13 @@ sourceCompatibility = 21
 sourceSets.main.java.srcDirs = [ "src/", "assets/" ]
 ext {
 	appName = "libgdx-utils"
-	gdxVersion = '1.10.0'
-	roboVMVersion = '2.3.7'
-	box2DLightsVersion = '1.4'
-	ashleyVersion = '1.7.0'
+	gdxVersion = '1.12.1'
+
+	box2DLightsVersion = '1.5'
+	gdxControllersVersion='1.9.13'
+
 	aiVersion = '1.8.2'
-	visuiVersion = '1.4.2'
+	visuiVersion = '1.5.3'
 }
 
 repositories {
@@ -61,7 +62,7 @@ dependencies {
 	implementation "com.badlogicgames.gdx:gdx:$gdxVersion"
 	implementation "com.badlogicgames.gdx:gdx-box2d:$gdxVersion"
 	implementation "com.badlogicgames.box2dlights:box2dlights:$box2DLightsVersion"
-	implementation "com.badlogicgames.gdx:gdx-controllers:1.9.11"
+	implementation "com.badlogicgames.gdx:gdx-controllers:$gdxControllersVersion"
 	implementation "com.badlogicgames.gdx:gdx-ai:$aiVersion"
 	implementation "com.badlogicgames.gdx:gdx-freetype:$gdxVersion"
 	

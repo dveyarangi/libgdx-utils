@@ -28,17 +28,17 @@
 			<attribute name="gradle_used_by_scope" value="main,test"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry exported="true" kind="lib" path="D:/Dev/java/gradle-8.5/caches/modules-2/files-2.1/com.badlogicgames.box2dlights/box2dlights/1.4/3d77ad5b4164fb32fc67e2446e35911bb0aaf0bd/box2dlights-1.4.jar" sourcepath="D:/Dev/java/gradle-8.5/caches/modules-2/files-2.1/com.badlogicgames.box2dlights/box2dlights/1.4/57a1f15112328706c648a430bd19574118e2d8f4/box2dlights-1.4-sources.jar">
+	<classpathentry exported="true" kind="lib" path="D:/Dev/java/gradle-8.5/caches/modules-2/files-2.1/com.badlogicgames.box2dlights/box2dlights/1.5/6902dbcd250c95a27973aa24a147a95b3828d348/box2dlights-1.5.jar" sourcepath="D:/Dev/java/gradle-8.5/caches/modules-2/files-2.1/com.badlogicgames.box2dlights/box2dlights/1.5/5115f6b01d36270c56b7a7ed41802f0c1f2ced4f/box2dlights-1.5-sources.jar">
 		<attributes>
 			<attribute name="gradle_used_by_scope" value="main,test"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry exported="true" kind="lib" path="D:/Dev/java/gradle-8.5/caches/modules-2/files-2.1/com.badlogicgames.gdx/gdx-box2d/1.10.0/b3a3c0f00b90716238835434d0ae8985604c37f8/gdx-box2d-1.10.0.jar" sourcepath="D:/Dev/java/gradle-8.5/caches/modules-2/files-2.1/com.badlogicgames.gdx/gdx-box2d/1.10.0/5f6dc3718918f7c296dcac95b9d76595e15b22a1/gdx-box2d-1.10.0-sources.jar">
+	<classpathentry exported="true" kind="lib" path="D:/Dev/java/gradle-8.5/caches/modules-2/files-2.1/com.badlogicgames.gdx/gdx-box2d/1.12.1/6c37ed04f97d062f1bdc4afe1f583182e539a269/gdx-box2d-1.12.1.jar" sourcepath="D:/Dev/java/gradle-8.5/caches/modules-2/files-2.1/com.badlogicgames.gdx/gdx-box2d/1.12.1/cc798f986bd3b0607e553c344403f593ab7fb0a9/gdx-box2d-1.12.1-sources.jar">
 		<attributes>
 			<attribute name="gradle_used_by_scope" value="main,test"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry exported="true" kind="lib" path="D:/Dev/java/gradle-8.5/caches/modules-2/files-2.1/com.badlogicgames.gdx/gdx-controllers/1.9.11/a46dc1b232b8c83d50f442e573ddeb4b121c396f/gdx-controllers-1.9.11.jar" sourcepath="D:/Dev/java/gradle-8.5/caches/modules-2/files-2.1/com.badlogicgames.gdx/gdx-controllers/1.9.11/81ed6c0d8be732bdf48f24162e8adafb8e6b7d76/gdx-controllers-1.9.11-sources.jar">
+	<classpathentry exported="true" kind="lib" path="D:/Dev/java/gradle-8.5/caches/modules-2/files-2.1/com.badlogicgames.gdx/gdx-controllers/1.9.13/2484c4fb16b0289175f2a632c4b4e8e9c5520bcf/gdx-controllers-1.9.13.jar" sourcepath="D:/Dev/java/gradle-8.5/caches/modules-2/files-2.1/com.badlogicgames.gdx/gdx-controllers/1.9.13/12bf4df7ab9add1056a793315cf81cacfa7cc569/gdx-controllers-1.9.13-sources.jar">
 		<attributes>
 			<attribute name="gradle_used_by_scope" value="main,test"/>
 		</attributes>
@@ -48,17 +48,17 @@
 			<attribute name="gradle_used_by_scope" value="main,test"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry exported="true" kind="lib" path="D:/Dev/java/gradle-8.5/caches/modules-2/files-2.1/com.badlogicgames.gdx/gdx-freetype/1.10.0/de1d0d5c1e92e8d91364256fd6b7bb279d3e9859/gdx-freetype-1.10.0.jar" sourcepath="D:/Dev/java/gradle-8.5/caches/modules-2/files-2.1/com.badlogicgames.gdx/gdx-freetype/1.10.0/8900f7ddf35e3a3184775d3e4614e5e52038986d/gdx-freetype-1.10.0-sources.jar">
+	<classpathentry exported="true" kind="lib" path="D:/Dev/java/gradle-8.5/caches/modules-2/files-2.1/com.badlogicgames.gdx/gdx-freetype/1.12.1/d5826997b0cfa595a72889610fadb18405056c1c/gdx-freetype-1.12.1.jar" sourcepath="D:/Dev/java/gradle-8.5/caches/modules-2/files-2.1/com.badlogicgames.gdx/gdx-freetype/1.12.1/bda1d1fe81b75d197e30b22b6069d19d55e00835/gdx-freetype-1.12.1-sources.jar">
 		<attributes>
 			<attribute name="gradle_used_by_scope" value="main,test"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry exported="true" kind="lib" path="D:/Dev/java/gradle-8.5/caches/modules-2/files-2.1/com.kotcrab.vis/vis-ui/1.4.2/229926609c7150a6d75df79f64320943e8b895a3/vis-ui-1.4.2.jar" sourcepath="D:/Dev/java/gradle-8.5/caches/modules-2/files-2.1/com.kotcrab.vis/vis-ui/1.4.2/adddec5d417f82aa7bef6abe6f282ee9c176b91d/vis-ui-1.4.2-sources.jar">
+	<classpathentry exported="true" kind="lib" path="D:/Dev/java/gradle-8.5/caches/modules-2/files-2.1/com.kotcrab.vis/vis-ui/1.5.3/b8479818d5427a3e34fda1165b19f47b055cfca3/vis-ui-1.5.3.jar" sourcepath="D:/Dev/java/gradle-8.5/caches/modules-2/files-2.1/com.kotcrab.vis/vis-ui/1.5.3/71261a03ccdbfdd829fa44ec9931b5b7809f627/vis-ui-1.5.3-sources.jar">
 		<attributes>
 			<attribute name="gradle_used_by_scope" value="main,test"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry exported="true" kind="lib" path="D:/Dev/java/gradle-8.5/caches/modules-2/files-2.1/com.badlogicgames.gdx/gdx/1.10.0/74c240f79dc4fb6b766a834249600d0a019d0489/gdx-1.10.0.jar" sourcepath="D:/Dev/java/gradle-8.5/caches/modules-2/files-2.1/com.badlogicgames.gdx/gdx/1.10.0/126a80a5ef6d32683bc563d4015c6c163d690f15/gdx-1.10.0-sources.jar">
+	<classpathentry exported="true" kind="lib" path="D:/Dev/java/gradle-8.5/caches/modules-2/files-2.1/com.badlogicgames.gdx/gdx/1.12.1/a2d066c09329c457045c284c42d6f37122840aa/gdx-1.12.1.jar" sourcepath="D:/Dev/java/gradle-8.5/caches/modules-2/files-2.1/com.badlogicgames.gdx/gdx/1.12.1/ab23b5d3982f3d89ba30f1c4db509aa7568c3024/gdx-1.12.1-sources.jar">
 		<attributes>
 			<attribute name="gradle_used_by_scope" value="main,test"/>
 		</attributes>
@@ -99,6 +99,11 @@
 		</attributes>
 	</classpathentry>
 	<classpathentry exported="true" kind="lib" path="D:/Dev/java/gradle-8.5/caches/modules-2/files-2.1/ch.qos.logback/logback-core/1.2.3/864344400c3d4d92dfeb0a305dc87d953677c03c/logback-core-1.2.3.jar" sourcepath="D:/Dev/java/gradle-8.5/caches/modules-2/files-2.1/ch.qos.logback/logback-core/1.2.3/3ebabe69eba0196af9ad3a814f723fb720b9101e/logback-core-1.2.3-sources.jar">
+		<attributes>
+			<attribute name="gradle_used_by_scope" value="main,test"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry exported="true" kind="lib" path="D:/Dev/java/gradle-8.5/caches/modules-2/files-2.1/com.badlogicgames.gdx/gdx-jnigen-loader/2.3.1/2d472f69243631fbcb3d4c3f93dd2e137a6cb084/gdx-jnigen-loader-2.3.1.jar" sourcepath="D:/Dev/java/gradle-8.5/caches/modules-2/files-2.1/com.badlogicgames.gdx/gdx-jnigen-loader/2.3.1/8228a038af98f2d0fa7b23ea7b4fa330af832305/gdx-jnigen-loader-2.3.1-sources.jar">
 		<attributes>
 			<attribute name="gradle_used_by_scope" value="main,test"/>
 		</attributes>
