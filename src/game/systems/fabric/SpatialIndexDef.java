@@ -3,6 +3,7 @@ package game.systems.fabric;
 import com.badlogic.ashley.core.Entity;
 
 import game.systems.IComponentDef;
+import game.systems.sensor.SensorCategory;
 import game.world.Level;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
@@ -15,7 +16,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class SpatialIndexDef implements IComponentDef<SpatialIndexComponent>
 {
-	public int collisionMask = 0;
+	public SensorCategory [] categories;
 	public boolean isStatic = true;
 
 	@Override
@@ -25,6 +26,9 @@ public class SpatialIndexDef implements IComponentDef<SpatialIndexComponent>
 	public void initComponent(SpatialIndexComponent component, Entity entity, Level level)
 	{
 		component.isStatic = this.isStatic;
+		
+		var fabric = level.getEngine().getSystem(SpatialFabric.class);
+		component.categories = fabric.getCategorySet(categories);
 		component.init(entity);
 	}
 }

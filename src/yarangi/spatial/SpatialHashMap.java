@@ -128,7 +128,7 @@ public class SpatialHashMap <O extends ISpatialObject> extends SpatialRegistry<O
 	protected final int hash(int x, int y)
 	{
 		int hash = (x+halfGridWidth)*height + (y+halfGridHeight);
-		assert hash < map.length;
+		assert hash >= 0 && hash < map.length;
 		return hash;
 	}
 
@@ -299,7 +299,7 @@ public class SpatialHashMap <O extends ISpatialObject> extends SpatialRegistry<O
 					continue;
 				
 //				System.out.println(aabb.r+radius + " : " + Math.sqrt(distanceSquare));
-				
+				cell.iterator();
 				// TODO: make it strictier:
 				for(O object : cell)
 				{

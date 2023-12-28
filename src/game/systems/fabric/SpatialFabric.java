@@ -1,6 +1,5 @@
 package game.systems.fabric;
 
-import com.badlogic.ashley.core.ComponentMapper;
 import com.badlogic.ashley.core.Engine;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.EntityListener;
@@ -9,44 +8,55 @@ import com.badlogic.ashley.core.Family;
 import com.badlogic.ashley.utils.ImmutableArray;
 import com.badlogic.gdx.ai.msg.PriorityQueue;
 import com.badlogic.gdx.math.Matrix4;
+import com.badlogic.gdx.utils.ObjectMap;
 import com.badlogic.gdx.utils.ObjectSet;
 
 import game.systems.control.IEntityFilter;
 import game.systems.control.PickComponent;
+import game.systems.sensor.SensorCategory;
 import game.systems.sensor.SensorComponent;
 import game.systems.spatial.ISpatialComponent;
 import game.world.IFabric;
-import game.world.IPickProvider;
+import game.world.IScoopula;
+import lombok.Getter;
 import lombok.Setter;
 import yarangi.spatial.AABB;
 import yarangi.spatial.ISpatialSensor;
 import yarangi.spatial.SpatialHashMap;
 
+/**
+ * Entity system that provides means for spatial interactions.
+ * - Monitors updates of entities with {@link SpatialIndexComponent}
+ * - Manages entity sensor components, feeding them with surroundings data
+ * - Manages {@link IScoopula} that provide entity picking for InputProcessor
+ */
 public class SpatialFabric extends EntitySystem implements IFabric, EntityListener
 {
+	// spatial 
 	public SpatialHashMap <SpatialIndexComponent> space;
 
+	// entities with varying spatial props
 	private ObjectSet<Entity> dynamicEntities = new ObjectSet <>();
 
+	// entities with sensors
 	private ImmutableArray<Entity> sensorEntities;
 
-	private ComponentMapper<SpatialIndexComponent> mapper;
 
 	private SensorFilter sensorFilter = new SensorFilter();
 
-	//@Setter private IEntityFilter entityFilter;
+		
 
 
 	public SpatialFabric(int width, int height)
 	{
 		space = new SpatialHashMap<>("spatial-index", width*height, 1, width, height);
-		mapper = ComponentMapper.getFor(SpatialIndexComponent.class);
+
 	}
 
 	@Override
 	public void entityAdded(Entity e)
 	{
-		SpatialIndexComponent sic = mapper.get(e);
+		var sic = SpatialIndexComponent.get(e);
 		sic.getArea().translate(-space.getWidth()/2, -space.getHeight()/2);
 		space.add( sic );
 		if( !sic.isStatic )
@@ -56,7 +66,7 @@ public class SpatialFabric extends EntitySystem implements IFabric, EntityListen
 	@Override
 	public void entityRemoved(Entity e)
 	{
-		SpatialIndexComponent sic = mapper.get(e);
+		var sic = SpatialIndexComponent.get(e);
 		space.remove(sic);
 		if( !sic.isStatic )
 			dynamicEntities.remove(sic.getEntity());
@@ -70,11 +80,12 @@ public class SpatialFabric extends EntitySystem implements IFabric, EntityListen
 		// copy bodies positions into entities:
 		for(Entity entity : dynamicEntities)
 		{
-			ISpatialComponent spatial = ISpatialComponent.get(entity);
-			SpatialIndexComponent index = mapper.get(entity);
+			var spatial = ISpatialComponent.get(entity);
+			var index = SpatialIndexComponent.get(entity);
 			if( spatial.isChanged() )
 			{
 				index.update();
+				// TODO: 
 				index.getArea().translate(-space.getWidth()/2, -space.getHeight()/2);
 				space.update( index, null );
 			}
@@ -84,10 +95,10 @@ public class SpatialFabric extends EntitySystem implements IFabric, EntityListen
 		for( int idx = 0; idx < sensorEntities.size(); idx++ )
 		{
 			Entity entity = sensorEntities.get(idx);
-			ISpatialComponent spatial = ISpatialComponent.get(entity);
-			SensorComponent sensor = SensorComponent.get(entity);
+			var spatial = ISpatialComponent.get(entity);
+			var sensor = SensorComponent.get(entity);
 
-			if(sensor.shouldSense() )
+			if( sensor.shouldSense() )
 			{
 				sensorFilter.setSensor(sensor);
 				sensor.clear();
@@ -96,6 +107,9 @@ public class SpatialFabric extends EntitySystem implements IFabric, EntityListen
 			}
 			else
 				sensor.timeSinceSensing += delta;
+			
+
+
 		}
 
 		/*
@@ -110,13 +124,13 @@ public class SpatialFabric extends EntitySystem implements IFabric, EntityListen
 	}
 
 
-	class PickProvider implements IPickProvider, ISpatialSensor<SpatialIndexComponent>
+	class PickProvider implements IScoopula, ISpatialSensor<SpatialIndexComponent>
 	{
 		private PriorityQueue<PickComponent> sensed = new PriorityQueue<>();
 
 		private float pickRadius = 1;
 		private AABB cursor = AABB.createSquare(0, 0, 1, 0);
-
+		@Getter private CategorySet categories = new CategorySet(new int[]{0});
 
 		@Setter private IEntityFilter entityFilter;
 
@@ -156,11 +170,10 @@ public class SpatialFabric extends EntitySystem implements IFabric, EntityListen
 
 		@Override
 		public void clear() { }
-
 	}
 
 	@Override
-	public IPickProvider createPickProvider()
+	public IScoopula createPickProvider()
 	{
 		return new PickProvider();
 	}
@@ -221,9 +234,19 @@ public class SpatialFabric extends EntitySystem implements IFabric, EntityListen
 		@Override
 		public void clear()
 		{
-			// TODO Auto-generated method stub
-
 		}
+		@Override
+		public CategorySet getCategories() { return sensor.getCategories(); }
+	}
+
+	ObjectMap<SensorCategory[], CategorySet> categorySets = new ObjectMap <> ();
+ 	
+	public CategorySet getCategorySet(SensorCategory ... categories)
+	{
+		CategorySet set = categorySets.get(categories);
+		if(set == null)
+			categorySets.put(categories, set = new CategorySet(categories));
+		return set;
 	};
 
 }

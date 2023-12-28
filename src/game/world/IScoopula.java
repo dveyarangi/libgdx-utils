@@ -8,7 +8,7 @@ import game.systems.control.IEntityFilter;
  * Interface for classes that provide entity picking by mouse
  *
  */
-public interface IPickProvider
+public interface IScoopula
 {
 	/**
 	 * Allows setting a filter for entities picked

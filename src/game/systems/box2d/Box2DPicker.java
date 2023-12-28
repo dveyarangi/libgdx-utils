@@ -7,7 +7,7 @@ import com.badlogic.gdx.physics.box2d.World;
 
 import game.systems.control.IEntityFilter;
 import game.systems.control.PickComponent;
-import game.world.IPickProvider;
+import game.world.IScoopula;
 import lombok.Setter;
 
 /**
@@ -15,7 +15,7 @@ import lombok.Setter;
  *
  * @author Fima
  */
-public class Box2DPicker implements IPickProvider
+public class Box2DPicker implements IScoopula
 {
 	private World world;
 

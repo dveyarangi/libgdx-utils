@@ -3,25 +3,28 @@ package game.systems.sensor;
 import com.badlogic.ashley.core.Entity;
 
 import game.systems.IComponentDef;
+import game.systems.fabric.SpatialFabric;
 import game.world.Level;
 import lombok.Getter;
 
 public class SensorDef implements IComponentDef<SensorComponent>, ISensorDef
 {
 	float sensingInterval;
-	int factionId;
+
 	@Getter float radius;
+	
+	@Getter SensorCategory [] categories;
 
 	public SensorDef()
 	{
 
 	}
 
-	public SensorDef( float radius,float sensingInterval, int factionId )
+	public SensorDef( float radius,float sensingInterval, SensorCategory [] categories )
 	{
 		this.radius = radius;
 		this.sensingInterval = sensingInterval;
-		this.factionId = factionId;
+		this.categories = categories;
 	}
 
 	@Override
@@ -41,9 +44,9 @@ public class SensorDef implements IComponentDef<SensorComponent>, ISensorDef
 		// desynchronizing sensor phase:
 		component.timeSinceSensing = level.getDef().getInitialSettings().getSeed().R(sensingInterval);
 
-		component.factionId = factionId;
+		var fabric = level.getEngine().getSystem(SpatialFabric.class);
+		component.categories = fabric.getCategorySet(categories);
 
-		component.def = this;
 	}
 
 

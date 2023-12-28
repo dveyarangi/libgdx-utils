@@ -1,7 +1,5 @@
 package game.debug;
 
-import java.util.List;
-
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.GL20;
@@ -31,6 +29,7 @@ public class SpatialHashMapOverlay <O extends ISpatialObject> extends WorldOverl
 		this.map = map;
 	}
 
+	@Override
 	public void draw(final IRenderer rend)
 	{
 		ShapeRenderer renderer = rend.shaper();
@@ -38,7 +37,7 @@ public class SpatialHashMapOverlay <O extends ISpatialObject> extends WorldOverl
 		gl.glEnable(GL20.GL_BLEND);
 
 		int cellX, cellY;
-		float cellsize = (float)map.getCellSize();
+		float cellsize = map.getCellSize();
 		float halfCellSize = cellsize / 2.f;
 		
 		Camera camera = cameraProvider.getCamera();
@@ -50,10 +49,10 @@ public class SpatialHashMapOverlay <O extends ISpatialObject> extends WorldOverl
 		// higher right screen corner in world coordinates
 		float screenMaxX = camera.position.x + camera.viewportWidth / 2 * cameraProvider.zoom();
 		float screenMaxY = camera.position.y + camera.viewportHeight / 2 * cameraProvider.zoom();
-		float minx = -map.getWidth()/2-halfCellSize;
-		float maxx = map.getWidth()/2-halfCellSize;
-		float miny = -map.getHeight()/2-halfCellSize;
-		float maxy = map.getHeight()/2-halfCellSize;
+		float minx = -halfCellSize;
+		float maxx = map.getWidth()-halfCellSize;
+		float miny = -halfCellSize;
+		float maxy = map.getHeight()-halfCellSize;
 		renderer.setColor(0f, 0f, 0.4f, 0.5f);
 		renderer.begin( ShapeType.Line );
 		for(float y = miny; y <= maxy; y += map.getCellSize())
@@ -70,13 +69,14 @@ public class SpatialHashMapOverlay <O extends ISpatialObject> extends WorldOverl
 		renderer.end();
 
 		ObjectSet <O> bucket = null;
-		for(float y = miny; y <= maxy; y += map.getCellSize())
+		for(float y = miny; y < maxy; y += map.getCellSize())
 		{
-			cellY = map.toGridIndex( y );
+			
+			cellY = map.toGridIndex( y-map.getHeight()/2 );
 			for(float x = minx; x < maxx; x += map.getCellSize())
 			{
 
-				cellX = map.toGridIndex( x );
+				cellX = map.toGridIndex( x-map.getWidth()/2 );
 				
 				bucket = map.getBucket(cellX, cellY);
 
@@ -93,7 +93,7 @@ public class SpatialHashMapOverlay <O extends ISpatialObject> extends WorldOverl
 					}
 					if(isReal)
 					{
-						renderer.setColor(0.8f, 0.6f, 0.8f, 0.2f);
+						renderer.setColor(0.8f, 0.6f, 0.8f, 0.5f);
 						renderer.begin( ShapeType.Filled );
 						renderer.rect( x, y, cellsize, cellsize);
 						renderer.end();

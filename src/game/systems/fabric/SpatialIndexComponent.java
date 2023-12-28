@@ -1,6 +1,7 @@
 package game.systems.fabric;
 
 import com.badlogic.ashley.core.Component;
+import com.badlogic.ashley.core.ComponentMapper;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.utils.Pool.Poolable;
 
@@ -18,6 +19,9 @@ import yarangi.spatial.ISpatialObject;
 @Transient
 public class SpatialIndexComponent implements ISpatialObject, Component, Poolable
 {
+	private static ComponentMapper<SpatialIndexComponent> mapper =	
+	ComponentMapper.getFor(SpatialIndexComponent.class);
+	public static SpatialIndexComponent get(Entity entity) { return mapper.get(entity); }
 
 	@Getter Entity entity;
 
@@ -27,6 +31,8 @@ public class SpatialIndexComponent implements ISpatialObject, Component, Poolabl
 	@Getter AABB area = AABB.createFromCenter(0, 0, 1, 1, 0);
 
 	@Getter public boolean isStatic = true;
+	
+	@Getter CategorySet categories;
 
 	public void init(Entity entity)
 	{

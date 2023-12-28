@@ -1,9 +1,10 @@
 package game.systems.targeting;
 
+import java.util.Iterator;
+
 import com.badlogic.ashley.core.Component;
 import com.badlogic.ashley.core.ComponentMapper;
 import com.badlogic.ashley.core.Entity;
-import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Pool.Poolable;
 
 import game.systems.EntityCapsule;
@@ -45,15 +46,15 @@ public class TargetComponent implements Component, Poolable
 		return target.entity();
 	}
 
-	public void acquireTarget( Array<Entity> sensedEntities, Entity source, IFabric fabric )
+	public void acquireTarget( Iterator <Entity> sensedEntities, Entity source, IFabric fabric )
 	{
 		ISpatialComponent s = source.getComponent(SpatialComponent.class);
 		target.set( null );
 		boolean isVisible = false;
 		Entity entity = null;
-		for(int idx = 0; idx < sensedEntities.size; idx ++)
+		while(sensedEntities.hasNext())
 		{
-			entity = sensedEntities.get(idx);
+			entity = sensedEntities.next();
 			ISpatialComponent t = entity.getComponent(SpatialComponent.class);
 			isVisible = filter == null ? true : fabric.hasLineOfSight( s.x(), s.y(), t.x(), t.y(), filter );
 			if(isVisible)

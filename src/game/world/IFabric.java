@@ -12,7 +12,7 @@ import game.systems.control.IEntityFilter;
 public interface IFabric
 {
 
-	IPickProvider createPickProvider();
+	IScoopula createPickProvider();
 
 	public void debugDraw(Matrix4 proj);
 

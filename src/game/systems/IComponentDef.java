@@ -23,6 +23,6 @@ public interface IComponentDef<C extends Component>
 	 * @return Class of the component defined here
 	 */
 
-	Class<C> getComponentClass();
+	Class<? extends C> getComponentClass();
 	//public IComponentDef<C> copy();
 }

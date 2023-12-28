@@ -1,5 +1,7 @@
 package yarangi.spatial;
 
+import game.systems.fabric.CategorySet;
+
 /**
  * Sensor that picks a single object from the indexer.
  * @param <K> indexer ojbects type
@@ -94,6 +96,12 @@ public class PickingSensor <K extends ISpatialObject> implements ISpatialSensor 
 	{
 		object = null;
 		minDist = Double.MAX_VALUE;
+	}
+
+	@Override
+	public CategorySet getCategories()
+	{
+		return null;
 	}
 
 }

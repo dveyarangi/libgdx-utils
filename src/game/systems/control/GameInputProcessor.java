@@ -16,7 +16,7 @@ import game.systems.hud.HUD;
 import game.systems.hud.UIInputProcessor;
 import game.systems.rendering.IRenderer;
 import game.world.Chronometer;
-import game.world.IPickProvider;
+import game.world.IScoopula;
 import game.world.Level;
 import game.world.LevelInitialSettings;
 import game.world.Transient;
@@ -67,7 +67,7 @@ public class GameInputProcessor extends EntitySystem implements InputProcessor
 	/**
 	 * Provides information about game entity under mouse cursor
 	 */
-	protected IPickProvider picker;
+	protected IScoopula picker;
 
 	private Entity pickedObject;
 

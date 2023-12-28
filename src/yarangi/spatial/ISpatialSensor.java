@@ -1,5 +1,7 @@
 package yarangi.spatial;
 
+import game.systems.fabric.CategorySet;
+
 public interface ISpatialSensor <O> 
 {
 	/**
@@ -10,6 +12,7 @@ public interface ISpatialSensor <O>
 	 */
 	public boolean objectFound(O object);
 	
+	public CategorySet getCategories();
 	/**
 	 * Resets sensor collections; called by {@link ISpatialIndex} at start of each query.
 	 */

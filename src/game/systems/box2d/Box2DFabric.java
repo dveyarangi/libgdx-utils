@@ -26,7 +26,7 @@ import game.systems.sensor.SensorComponent;
 import game.systems.spatial.ISpatialComponent;
 import game.util.Angles;
 import game.world.IFabric;
-import game.world.IPickProvider;
+import game.world.IScoopula;
 
 /**
  * Manages entity interaction.
@@ -315,7 +315,7 @@ public class Box2DFabric extends EntitySystem implements IFabric, EntityListener
 	}
 
 	@Override
-	public IPickProvider createPickProvider()
+	public IScoopula createPickProvider()
 	{
 		return new Box2DPicker(world);
 	}

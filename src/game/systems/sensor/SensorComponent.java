@@ -1,12 +1,16 @@
 package game.systems.sensor;
 
+import java.util.Iterator;
+
 import com.badlogic.ashley.core.Component;
 import com.badlogic.ashley.core.ComponentMapper;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Pool.Poolable;
 
-import game.systems.faction.FactionComponent;
+import game.systems.EntityCapsule;
+import game.systems.fabric.CategorySet;
+import lombok.Getter;
 
 /**
  * Defines box2d sensor body.
@@ -15,7 +19,7 @@ import game.systems.faction.FactionComponent;
  *
  * @author Fima
  */
-public class SensorComponent implements Component, Poolable
+public class SensorComponent implements Component, Poolable, Iterable<Entity>
 {
 	public static ComponentMapper<SensorComponent> MAPPER = ComponentMapper.getFor(SensorComponent.class);
 
@@ -23,8 +27,6 @@ public class SensorComponent implements Component, Poolable
 	{
 		return MAPPER.get(entity);
 	}
-
-	public SensorDef def;
 
 	public float radius;
 
@@ -36,15 +38,19 @@ public class SensorComponent implements Component, Poolable
 	public float sensingInterval;
 	public float timeSinceSensing;
 
-	public int factionId;
 
-	public Array<Entity> sensed = new Array<>();
+	private Array<EntityCapsule> sensed = new Array<>();
+	
+	@Getter public CategorySet categories;
+	
+	private SensorIterator iterator = new SensorIterator();
 
 	@Override
 	public void reset()
 	{
 
 		timeSinceSensing = 0;
+		clear();
 	}
 
 	public boolean propagateToDescendants() { return propagateToDescendants; }
@@ -57,11 +63,7 @@ public class SensorComponent implements Component, Poolable
 	{
 		if(shouldSense())
 		{
-			FactionComponent faction = FactionComponent.get(sensedEntity);
-			//if( faction == null)
-			//	return;
-			if( factionId == 0 || faction.id() == factionId )
-				sensed.add(sensedEntity);
+			sensed.add(EntityCapsule.get(sensedEntity));
 		}
 	}
 	/**
@@ -70,27 +72,66 @@ public class SensorComponent implements Component, Poolable
 	 */
 	public void unsense( Entity sensedEntity )
 	{
-		FactionComponent faction = FactionComponent.get(sensedEntity);
-		//if( faction == null)
-		//	return;
-		if( factionId == 0 || faction.id() == factionId )
-		{
-			sensed.removeValue(sensedEntity, true);
-		}
+		//sensed.removeValue(sensedEntity, true);
 	}
 	public boolean shouldSense()
 	{
 		return timeSinceSensing >= sensingInterval;
 	}
 
-	public Array<Entity> getSensedEntities()
-	{
-		return sensed;
-	}
-
 	public void clear()
 	{
+		
+		for(var capsule : sensed)
+			capsule.free();
 		sensed.clear();
+	}
+	
+	/**
+	 * This iterator helps to clean up sensed entities cache,
+	 * dropping invalid entities
+	 */
+	private class SensorIterator implements Iterator <Entity>
+	{
+
+		Iterator <EntityCapsule> iterator;
+		EntityCapsule nextEntity = null;
+		protected SensorIterator()
+		{
+			iterator = SensorComponent.this.sensed.iterator();
+			
+		}
+		
+		@Override
+		public boolean hasNext()
+		{
+			while(iterator.hasNext())
+			{
+				nextEntity = iterator.next();
+				if(nextEntity.isValid())
+					return true;
+				iterator.remove();
+				nextEntity.free();
+			}
+			return false;
+		}
+
+		@Override
+		public Entity next()
+		{
+			return nextEntity.entity();
+		}
+		public void reset()
+		{
+			iterator = SensorComponent.this.sensed.iterator();
+		}
+	}
+
+	@Override
+	public Iterator<Entity> iterator()
+	{
+		iterator.reset();
+		return iterator;
 	}
 
 

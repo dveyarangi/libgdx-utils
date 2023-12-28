@@ -2,6 +2,8 @@ package yarangi.spatial;
 
 import java.util.HashSet;
 
+import game.systems.fabric.CategorySet;
+
 public class SetSensor <K extends ISpatialObject> extends HashSet <K> implements ISpatialSensor <K> 
 {
 
@@ -13,6 +15,13 @@ public class SetSensor <K extends ISpatialObject> extends HashSet <K> implements
 		add(object);
 		
 		return false;
+	}
+
+	@Override
+	public CategorySet getCategories()
+	{
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

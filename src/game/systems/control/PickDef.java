@@ -30,5 +30,4 @@ public class PickDef implements IComponentDef <PickComponent>
 		component.def = this;
 		component.entity = entity;
 	}
-
 }
