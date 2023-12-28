@@ -1,6 +1,7 @@
 package game.world.saves;
 
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.utils.ObjectFloatMap;
 import com.badlogic.gdx.utils.OrderedMap;
 import com.badlogic.gdx.utils.Pool;
 
@@ -13,6 +14,7 @@ public class Props
 	public static String FMT_STR = "%.3f";
 	
 	@Getter private OrderedMap<String,String> props;
+	@Getter private ObjectFloatMap<String> numerics;
 	
 	private static Pool<Props> pool = new Pool<Props> () {
 		@Override protected Props newObject() { return new Props(); }

@@ -17,7 +17,9 @@ import com.kotcrab.vis.ui.widget.VisWindow;
 import game.debug.Debug.OverlayBinding;
 import game.systems.control.GameInputProcessor;
 import game.systems.rendering.IRenderer;
+import game.ui.NamedValueWidget;
 import game.world.Level;
+import game.world.camera.ICameraProvider;
 
 public class DebugInfoOverlay implements IOverlay
 {
@@ -33,11 +35,12 @@ public class DebugInfoOverlay implements IOverlay
 	private static float alpha = 0.95f;
 
 	VisWindow debugWindow;
-	VisLabel fpsLabel;
-	VisLabel entitiesLabel;
+	NamedValueWidget<Integer> fpsProps;
+	NamedValueWidget<Integer> entitiesProps;
+	NamedValueWidget<ICameraProvider> cameraProps;
 	VisLabel cameraPosLabel;
 
-	IdentityMap <String, VisLabel> timerLabels = new IdentityMap <> ();
+	IdentityMap <String, NamedValueWidget<Float>> timerProps = new IdentityMap <> ();
 
 	public DebugInfoOverlay(GameInputProcessor inputController, IntMap<OverlayBinding> debugOverlays)
 	{
@@ -50,37 +53,34 @@ public class DebugInfoOverlay implements IOverlay
 		this.debugWindow = new VisWindow("Debug");
 		inputController.getUi().getStage().addActor(debugWindow);
 
-		debugWindow.row().align(Align.left);
-		debugWindow.add("FPS:");
-		fpsLabel = new VisLabel();
-		debugWindow.add(fpsLabel);
+		//debugWindow.row().align(Align.left);
+		fpsProps = new NamedValueWidget<Integer>("FPS", debugWindow);
 
-		if(Debug.debug.level != null)
-		{
-			debugWindow.row().align(Align.left);
-			debugWindow.add("Entities:");
-			entitiesLabel = new VisLabel();
-			debugWindow.add(entitiesLabel);
-		}
+		entitiesProps = new NamedValueWidget<Integer>("Entities", debugWindow);
 
+		cameraProps = new NamedValueWidget<ICameraProvider>("Camera",
+				(provider, builder) -> {
+					Vector3 cameraPos = provider.position();
+					float cameraZoom = provider.zoom();
+					builder.append(cameraPos.x).append(" ").append(cameraPos.y).append(" ").append(cameraZoom);
+				},
+				"", debugWindow);
+				//"%3.2f, %3.2f, z%2.2f"
 		debugWindow.row().align(Align.left);
 		debugWindow.add("Camera:");
 		cameraPosLabel = new VisLabel();
 		debugWindow.add(cameraPosLabel);
 
 		debugWindow.row().align(Align.left).colspan(2);
-		debugWindow.add("- CALL COUNT ------------------------------");
+		debugWindow.add("Call counts:");
 		for(String debugTag : Debug.timers.keys())
 		{
-			debugWindow.row().align(Align.left);
-			debugWindow.add(debugTag + ":");
-			VisLabel timerLabel = new VisLabel();
-			timerLabels.put(debugTag, timerLabel);
-			debugWindow.add(timerLabel);
+			
+			var timerProp = new NamedValueWidget<Float>(debugTag, debugWindow);
+			timerProps.put(debugTag, timerProp);
 		}
 
 		debugWindow.row().align(Align.left).colspan(2);
-		debugWindow.add("-------------------------------------------");
 		debugWindow.row().align(Align.left);
 		debugWindow.add("Overlays: ");
 
@@ -154,28 +154,17 @@ public class DebugInfoOverlay implements IOverlay
 		{
 			sinceSampling = 0;
 
+			fpsProps.update((int)averageFPS);
+			
+			entitiesProps.update(level.getEngine().getEntities().size());
 
-			fpsLabel.setText(""+(int)averageFPS);
+			cameraProps.update(level.getModules().getCameraProvider());
 
-			if(Debug.debug.level != null)
-			{
-				entitiesLabel.setText(""+level.getEngine().getEntities().size());
-			}
-
-
-			Vector3 cameraPos = level.getModules().getCameraProvider().position();
-			float cameraZoom = level.getModules().getCameraProvider().zoom();
-			String cameraInfo = String.format(CAMERA_POS_FMT,cameraPos.x, cameraPos.y, cameraZoom);
-
-			cameraPosLabel.setText(cameraInfo);
-
-
-
-			for(String debugTag : timerLabels.keys())
+			for(String debugTag : timerProps.keys())
 			{
 				InvokationTimer timer = Debug.timers.get(debugTag);
-				VisLabel timerLabel = timerLabels.get(debugTag);
-				timerLabel.setText(String.format(FLOAT_FMT,  timer.getAverage()));
+				var timerLabel = timerProps.get(debugTag);
+				timerLabel.update(timer.getAverage());
 			}
 
 		}

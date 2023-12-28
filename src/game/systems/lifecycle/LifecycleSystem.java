@@ -9,8 +9,8 @@ import com.badlogic.ashley.core.Family;
 import com.badlogic.gdx.utils.PooledLinkedList;
 
 import game.systems.DescendantsComponent;
-import game.systems.EntityId;
 import game.systems.EntityPrefab;
+import game.systems.EntityId;
 import game.systems.IComponentDef;
 import game.systems.IDefComponent;
 import game.systems.PooledEngine;

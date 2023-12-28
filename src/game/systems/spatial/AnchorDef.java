@@ -25,11 +25,11 @@ public class AnchorDef implements ISpatialDef<AnchorComponent>
 
 		this.parentId = parentId;
 	}
-
+	private static final Family descendantsFamily = Family.one(DescendantsComponent.class).get();
 	@Override
 	public void initComponent( final AnchorComponent anchor, final Entity entity, final Level level )
 	{
-		ImmutableArray<Entity> entities = level.getEngine().getEntitiesFor(Family.one(DescendantsComponent.class).get());
+		ImmutableArray<Entity> entities = level.getEngine().getEntitiesFor(descendantsFamily);
 		for( Entity potentialParent : entities )
 		{
 			LifecycleComponent parentDef = LifecycleComponent.get(potentialParent);
