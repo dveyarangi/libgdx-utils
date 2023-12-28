@@ -31,6 +31,7 @@ import game.systems.EntityDef;
 import game.util.LoadableModule;
 import game.util.LoadingProgress;
 import game.util.colors.Colormaps;
+import lombok.Getter;
 
 /**
  * This factory looks for resource annotations on constants in provided resource
@@ -44,7 +45,7 @@ public class ResourceFactory implements LoadableModule
 	// /////////////////////////////////////////////////////////////////////////////////////////////////////
 	// RESOURCE ANNOTATIONS:
 
-
+	
 	/**
 	 * Annotation to mark textures:
 	 *
@@ -148,7 +149,7 @@ public class ResourceFactory implements LoadableModule
 	/**
 	 * Resources list type
 	 */
-	private Class<?> resourceSetType;
+	private Class<? extends ResourceSet> resourceSetType;
 
 	private FileHandleResolver resolver;
 
@@ -169,6 +170,8 @@ public class ResourceFactory implements LoadableModule
 	// TODO factory singleton
 	private static ResourceFactory factory;
 
+	@Getter private ResourceSet resourceSet;
+
 
 	private JsonLoader jsonLoader;
 
@@ -184,11 +187,11 @@ public class ResourceFactory implements LoadableModule
 	 *            should contain static variables, annotated with resource type
 	 *            annotations
 	 */
-	public static ResourceFactory init( Class<?> resourceSetType)
+	public static ResourceFactory init( Class<? extends ResourceSet> resourceSetType)
 	{
 		return init(resourceSetType, new HashMap <>());
 	}
-	public static ResourceFactory init( Class<?> resourceSetType, Map <Class<?>, JsonDeserializer<?>> customJsonDeserializers)
+	public static ResourceFactory init( Class<? extends ResourceSet> resourceSetType, Map <Class<?>, JsonDeserializer<?>> customJsonDeserializers)
 	{
 
 		if( factory != null )
@@ -204,7 +207,9 @@ public class ResourceFactory implements LoadableModule
 
 		customJsonDeserializers.put(Color.class, new Colormaps.LibGDXColorDeserializer());
 		customJsonDeserializers.put(Class.class, new JsonClassAdapter());
-
+		
+		for(var entry : factory.resourceSet.getCfgEnums().entrySet())
+			customJsonDeserializers.put(entry.getKey(), new JsonEnumDeserializer(entry.getValue()));
 
 		// factory.manager.getLogger().setLevel(Logger.INFO);;
 		// add resources to assets manager:
@@ -271,9 +276,17 @@ public class ResourceFactory implements LoadableModule
 		return factory;
 	}
 
-	public ResourceFactory( Class <?> resourceSetType )
+	public ResourceFactory( Class <? extends ResourceSet> resourceSetType )
 	{
 		this.resourceSetType = resourceSetType;
+		try
+		{
+			resourceSet = resourceSetType.newInstance();
+		} catch (InstantiationException | IllegalAccessException e)
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 	public void unload()

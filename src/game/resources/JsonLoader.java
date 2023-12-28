@@ -24,6 +24,7 @@ import com.google.gson.JsonParseException;
 
 import game.systems.EntityDef;
 import game.systems.IComponentDef;
+import game.systems.sensor.SensorCategory;
 import game.util.colors.ColormapConf;
 import game.util.colors.Colormaps;
 
@@ -122,8 +123,14 @@ AsynchronousAssetLoader<Configuration, Configuration.Parameter>
 			}
 
 		});
-
-
+		/*preJsonBuilder.registerTypeAdapter(SensorCategory.class, new JsonDeserializer <SensorCategory>() {
+			@Override
+			public SensorCategory deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException
+			{
+				var value = Enum.valueOf(factory.getResourceSet().getSensorCategoryEnum(), json.getAsString());
+				return (SensorCategory) value;
+			}});*/
+		preJsonBuilder.registerTypeAdapter(SensorCategory.class, new JsonInterfaceAdapter<SensorCategory>());
 		// allows to load lists of component defs
 		preJsonBuilder.registerTypeAdapter(IComponentDef.class, new JsonInterfaceAdapter<IComponentDef<?>>());
 		preJsonBuilder.registerTypeAdapter(EntityDef.class, new JsonInterfaceAdapter<IComponentDef<?>>());
@@ -177,7 +184,14 @@ AsynchronousAssetLoader<Configuration, Configuration.Parameter>
 
 		postJsonBuilder.registerTypeAdapter(IComponentDef.class, new JsonInterfaceAdapter<IComponentDef<?>>());
 		postJsonBuilder.registerTypeAdapter(EntityDef.class, new JsonInterfaceAdapter<EntityDef>());
-
+		/*postJsonBuilder.registerTypeAdapter(SensorCategory.class, new JsonDeserializer <SensorCategory>() {
+			@Override
+			public SensorCategory deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException
+			{
+				var value = Enum.valueOf(factory.getResourceSet().getSensorCategoryEnum(), json.getAsString());
+				return (SensorCategory) value;
+			}});*/
+		postJsonBuilder.registerTypeAdapter(SensorCategory.class, new JsonInterfaceAdapter<SensorCategory>());
 		if( customDeserializers != null)
 			for(Class type : customDeserializers.keySet() )
 				postJsonBuilder.registerTypeAdapter(type, customDeserializers.get(type));
