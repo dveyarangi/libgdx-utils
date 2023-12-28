@@ -8,18 +8,16 @@ import game.resources.TextureName;
 public class SpriteTextureDef extends SpriteDef <SpriteTextureComponent>
 {
 	public TextureName textureName;
-	public Color color;
 
 	public SpriteTextureDef(String textureName)
 	{
 		this(new TextureName(textureName), 0, 0, 0, 1, 1, null);
 	}
 
-	public SpriteTextureDef(TextureName textureName, float xOffset, float yOffset, float zOffset, float w, float h, Color color)
+	public SpriteTextureDef(TextureName textureName, float xOffset, float yOffset, float zOffset, float w, float h, Color tint)
 	{
-		super(xOffset, yOffset, zOffset, w, h);
+		super(xOffset, yOffset, zOffset, w, h, tint);
 		this.textureName = textureName;
-		this.color = color;
 	}
 
 	@Override

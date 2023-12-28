@@ -170,7 +170,7 @@ public class Debug
 		uiRenderer = new OverlayRenderer();
 		//projectedShapeRenderer = new ShapeRenderingContext(PROJECTED_SHAPER_ID[0], levelRenderer.shaper());
 
-		GameInputProcessor inputController = level.getEngine().getSystem(GameInputProcessor.class);
+		GameInputProcessor inputController = level.getModules().getInput();
 
 		uiProcessor = inputController.getInputRegistry();
 

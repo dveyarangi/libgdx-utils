@@ -20,7 +20,6 @@ import com.badlogic.gdx.utils.OrderedMap;
 
 import game.debug.Debug;
 import game.systems.EntityPrefab;
-import game.systems.IComponentDef;
 import game.systems.lifecycle.LifecycleComponent;
 import game.world.BlueprintFactory;
 import game.world.Level;
@@ -90,7 +89,7 @@ public class LevelStore
 			// get object blueprint to analyze components
 			LifecycleComponent lifecycle = entity.getComponent(LifecycleComponent.class);
 
-			EntityPrefab prefab = blueprints.getPrefab(lifecycle.type, lifecycle.path, savedProps);
+			EntityPrefab prefab = blueprints.getPrefab(lifecycle.type, lifecycle.path, savedProps, false);
 			if( prefab == null)
 			{
 				//Debug.warn("Entity of type " + lifecycle.type + " is missing prefab, not saving");
@@ -111,7 +110,7 @@ public class LevelStore
 				Savable savableComponent = (Savable) component;
 				if(savableComponent.getDefClass() == null)
 					throw new RuntimeException("Def class is null for component type " + savableComponent.getClass());
-				IComponentDef <?> def = (IComponentDef) prefab.getDef(savableComponent.getDefClass());
+				var def = prefab.getDef(savableComponent.getDefClass());
 				savableComponent.save(def, savedProps);
 			}
 

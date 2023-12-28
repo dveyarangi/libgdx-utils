@@ -1,5 +1,7 @@
 package game.util;
 
+import com.badlogic.gdx.graphics.Color;
+
 public class Equals {
 
 	public static final float EPS = 10e-10f;
@@ -26,5 +28,9 @@ public class Equals {
 		return Math.abs(a) <EPS;
 	}
 
+	public static boolean eq(Color a, Color b)
+	{
+		return a.r == b.r && a.g == b.g && a.b == b.b && a.a == b.a;
+	}
 
 }

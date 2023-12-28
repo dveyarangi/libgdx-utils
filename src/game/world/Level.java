@@ -110,7 +110,7 @@ public class Level extends EntitySystem
 
 		List <IRenderingContext> systemRenderers = new ArrayList <> ();
 		////////////////////////////////////////////////////
-		// initialize and add EntitySystems from definitions:
+		// initialize and add renderers:
 		for(SystemDef<?>systemDef : def.getSystemDefs())
 		{
 			var systemRenderer = systemDef.createRenderer();
@@ -151,6 +151,8 @@ public class Level extends EntitySystem
 		// ////////////////////////////////////////////////////
 		for(GameModule module : getModules().getCustomModules())
 			module.init(this);
+		
+		getModules().getInput().init(this);
 
 		// ////////////////////////////////////////////////////
 		entityFactory.createEntities( def );
@@ -198,7 +200,8 @@ public class Level extends EntitySystem
 
 		Debug.debug.draw();
 
-		GameInputProcessor processor = getEngine().getSystem(GameInputProcessor.class);
+		GameInputProcessor processor = getModules().getInput();
+
 		processor.render(renderer);
 	}
 

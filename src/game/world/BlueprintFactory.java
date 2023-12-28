@@ -15,7 +15,7 @@ public interface BlueprintFactory
 	 * @param path
 	 * @param props
 	 */
-	void prepareEntity(LevelDef level, String type, String path, Props props);
+	//void prepareEntity(LevelDef level, String type, String path, Props props);
 
 	/**
 	 * Add entity to level that is already running
@@ -26,6 +26,6 @@ public interface BlueprintFactory
 	void insertEntity(LevelDef level, EntityDef def, Props props);
 
 
-	EntityPrefab getPrefab(String type, String path, Props props);
+	EntityPrefab getPrefab(String type, String path, Props props, boolean instantiate);
 
 }

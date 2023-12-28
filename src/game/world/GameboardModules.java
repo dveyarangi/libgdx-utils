@@ -4,6 +4,7 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ObjectMap;
 
 import game.resources.ResourceFactory;
+import game.systems.control.GameInputProcessor;
 import game.world.camera.ICameraProvider;
 import lombok.Getter;
 
@@ -25,6 +26,8 @@ public class GameboardModules
 	 */
 	@Getter protected LevelDef levelDef;
 
+	@Getter private GameInputProcessor input;
+
 	@Getter private IFabric environment;
 	
 	@Getter private Chronometer chronometer;
@@ -36,6 +39,7 @@ public class GameboardModules
 
 	public GameboardModules( ResourceFactory resourceFactory, 
 			LevelDef def, 
+			GameInputProcessor input,
 			IFabric environment, 
 			Chronometer chronometer,
 			ICameraProvider cameraProvider)
@@ -44,6 +48,8 @@ public class GameboardModules
 		this.resourceFactory = resourceFactory;
 
 		this.levelDef = def;
+		
+		this.input = input;
 		
 		this.chronometer = chronometer;
 

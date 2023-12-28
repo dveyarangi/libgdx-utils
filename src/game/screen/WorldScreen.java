@@ -7,6 +7,7 @@ import game.config.GraphicOptions;
 import game.debug.Debug;
 import game.resources.ResourceFactory;
 import game.systems.control.GameInputProcessor;
+import game.systems.hud.HUD;
 import game.systems.rendering.EntityRenderingSystem;
 import game.util.LoadableModule;
 import game.util.LoadableThread;
@@ -32,7 +33,7 @@ public abstract class WorldScreen<G extends AbstractGame> extends AbstractScreen
 	
 	protected IFabric fabric;
 	protected Chronometer chronometer;
-
+	protected GameInputProcessor processor;
 	public WorldScreen( G game, GraphicOptions options )
 	{
 		super(game);
@@ -68,15 +69,7 @@ public abstract class WorldScreen<G extends AbstractGame> extends AbstractScreen
 		ResourceFactory factory = super.game.getResourceFactory();
 
 
-		// /////////////////////////////////////////////////////////////////////////
-		// CREATING INTERACTIVE ENVIRONMENT
-		//
-		// this provides entity-entity and UI-entity interaction methods
-		//
-		fabric = createFabric(progress);
-		
-		chronometer = createChronometer(progress);
-
+		processor = new GameInputProcessor(createHUD());
 
 		// /////////////////////////////////////////////////////////////////////////
 		// GENERATING/LOADING LEVEL DEFINITIONS:
@@ -87,7 +80,16 @@ public abstract class WorldScreen<G extends AbstractGame> extends AbstractScreen
 		LevelDef def = createLevel(progress.subprogress(0.8f));
 		Debug.stopTiming("level creation");
 
+		// /////////////////////////////////////////////////////////////////////////
+		// CREATING INTERACTIVE ENVIRONMENT
+		//
+		// this provides entity-entity and UI-entity interaction methods
+		//
+		fabric = createFabric(progress);
 		
+		chronometer = createChronometer(progress);
+
+	
 
 		LevelInitialSettings settings = def.getInitialSettings();
 		if( settings == null )
@@ -110,7 +112,7 @@ public abstract class WorldScreen<G extends AbstractGame> extends AbstractScreen
 			break;
 
 		}
-		gameSetup = new GameboardModules(factory, def, fabric, chronometer, worldCameraProvider);
+		gameSetup = new GameboardModules(factory, def, processor, fabric, chronometer, worldCameraProvider);
 		
 		extendModules(gameSetup);
 
@@ -124,7 +126,6 @@ public abstract class WorldScreen<G extends AbstractGame> extends AbstractScreen
 	public void show()
 	{
 		super.show();
-
 		level = new Level( gameSetup, options );
 
 		// TODO: remove
@@ -137,6 +138,8 @@ public abstract class WorldScreen<G extends AbstractGame> extends AbstractScreen
 	protected abstract Chronometer createChronometer(LoadingProgress progress);
 	
 	protected abstract IFabric createFabric(LoadingProgress progress);
+	
+	protected abstract HUD createHUD();
 
 	protected void extendModules(GameboardModules modules)
 	{
@@ -145,6 +148,11 @@ public abstract class WorldScreen<G extends AbstractGame> extends AbstractScreen
 	private void update( float deltaSeconds )
 	{
 		if(deltaSeconds > 0.1f) deltaSeconds = 0.1f;
+		
+		// updating input controller with real time
+		level.getModules().getInput().update(deltaSeconds);
+		
+		// and updating entity systems with game time
 		float delta = chronometer.toGameTime(deltaSeconds);
 		level.engineUpdate(delta);
 
@@ -153,8 +161,6 @@ public abstract class WorldScreen<G extends AbstractGame> extends AbstractScreen
 
 	protected void draw( float delta )
 	{
-
-
 		level.draw(delta);
 	}
 
@@ -169,6 +175,8 @@ public abstract class WorldScreen<G extends AbstractGame> extends AbstractScreen
 		this.update(delta);
 
 		this.draw(delta);
+		
+		
 	}
 
 	@Override
@@ -178,7 +186,7 @@ public abstract class WorldScreen<G extends AbstractGame> extends AbstractScreen
 		EntityRenderingSystem renderer = level.getEngine().getSystem(EntityRenderingSystem.class);
 		renderer.resize(screenWidth, screenHeight);
 
-		GameInputProcessor processor = level.getEngine().getSystem(GameInputProcessor.class);
+		
 		processor.resize(screenWidth, screenHeight);
 
 		Debug.debug.resize(screenWidth, screenHeight);
@@ -187,7 +195,6 @@ public abstract class WorldScreen<G extends AbstractGame> extends AbstractScreen
 	@Override
 	public void dispose()
 	{
-		GameInputProcessor processor = level.getEngine().getSystem(GameInputProcessor.class);
 		processor.dispose();
 	}
 }

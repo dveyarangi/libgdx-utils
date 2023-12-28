@@ -1,8 +1,6 @@
 package game.systems.control;
 
-import com.badlogic.ashley.core.Engine;
 import com.badlogic.ashley.core.Entity;
-import com.badlogic.ashley.core.EntitySystem;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputMultiplexer;
@@ -15,7 +13,6 @@ import com.badlogic.gdx.math.Vector2;
 import game.systems.hud.HUD;
 import game.systems.hud.UIInputProcessor;
 import game.systems.rendering.IRenderer;
-import game.world.Chronometer;
 import game.world.IScoopula;
 import game.world.Level;
 import game.world.LevelInitialSettings;
@@ -30,7 +27,7 @@ import lombok.Getter;
  *
  */
 @Transient
-public class GameInputProcessor extends EntitySystem implements InputProcessor
+public class GameInputProcessor implements InputProcessor
 {
 	private Level level;
 
@@ -62,8 +59,6 @@ public class GameInputProcessor extends EntitySystem implements InputProcessor
 	@Getter private ControlModes controlModes;
 
 
-	private Chronometer chronometer;
-
 	/**
 	 * Provides information about game entity under mouse cursor
 	 */
@@ -87,56 +82,24 @@ public class GameInputProcessor extends EntitySystem implements InputProcessor
 
 	public static float ZOOM_SPEED_COEF = 0.025f;
 
-	public GameInputProcessor( HUD ui, Chronometer chronometer )
+	public GameInputProcessor(HUD ui)
 	{
-		this.chronometer = chronometer;
+		this.ui = ui;
 		
-		this.controlModes = new ControlModes();
-		
-
 		inputMultiplexer = new InputMultiplexer();
 
 		this.uiProcessor = new UIInputProcessor();
-
-
-		uiProcessor.registerAction(Hotkeys.TIME_FASTER, new InputAction() {
-			@Override
-			public void execute( final InputContext context )
-			{
-				chronometer.setTimeSpeed(chronometer.getTimeSpeed()*2);
-			}
-		});
-		uiProcessor.registerAction(Hotkeys.TIME_SLOWER, new InputAction() {
-			@Override
-			public void execute( final InputContext context )
-			{
-				chronometer.setTimeSpeed(chronometer.getTimeSpeed()/2);
-			}
-		});
-		uiProcessor.registerAction(Hotkeys.TIME_PAUSE, new InputAction() {
-			@Override
-			public void execute( final InputContext context )
-			{
-				chronometer.togglePause();
-			}
-		});
-		this.ui = ui;
-
+		this.controlModes = new ControlModes();
 	}
-	/**
-	 * Called when this EntitySystem is added to an {@link Engine}.
-	 * @param engine The {@link Engine} this system was added to.
-	 */
-	@Override
-	public void addedToEngine (Engine engine)
+
+	public void init(Level level)
 	{
-		this.level = engine.getSystem(Level.class);
+		this.level = level;
+
 
 		controlModes.init( level );
 
-
 		this.ui.init( this, level );
-
 
 		inputMultiplexer.addProcessor(uiProcessor);
 		if( ui != null)
@@ -167,32 +130,22 @@ public class GameInputProcessor extends EntitySystem implements InputProcessor
 	 *
 	 * @param delta
 	 */
-	@Override
+
 	public void update( final float delta )
 	{
-
-		float systemDelta = chronometer.toSystemTime(delta);
 		
 		setPickFilter(controlModes.getPickFilter());
 
-		uiProcessor.update(systemDelta);
+		uiProcessor.update(delta);
 
 		// adjusting camera:
-		camController.update(systemDelta);
+		camController.update(delta);
 
 		// TODO: this may be called too much:
 		toggleCursorMoved(currx, curry, true);
 
 
-		controlModes.update(systemDelta);
-	}
-
-	/**
-	 * Called when this EntitySystem is removed from an {@link Engine}.
-	 * @param engine The {@link Engine} the system was removed from.
-	 */
-	@Override
-	public void removedFromEngine (Engine engine) {
+		controlModes.update(delta);
 	}
 
 

@@ -30,6 +30,7 @@ public abstract class SpriteComponent implements ISpriteComponent
 	
 	public static final String PROP_SX = "sx";
 	public static final String PROP_SY = "sy";
+	public static final String PROP_TINT = "tint";
 	public static final String PROP_DX = "dx";
 	public static final String PROP_DY = "dy";
 	public static final String PROP_DZ = "dz";
@@ -62,7 +63,7 @@ public abstract class SpriteComponent implements ISpriteComponent
 	 */
 	@Getter protected TextureRegion region = new TextureRegion();
 	
-	@Getter protected Color color = new Color();
+	@Getter protected Color tint = new Color();
 
 	protected Decal decal = Decal.newDecal(this.sx, this.sy, this.region, false);
 
@@ -132,8 +133,9 @@ public abstract class SpriteComponent implements ISpriteComponent
 		this.decal.setDimensions(this.sx, this.sy);
 
 		this.decal.setTextureRegion(region);
-
-		this.decal.setColor(color);
+		
+		if(tint != null)
+			this.decal.setColor(tint);
 
 	}
 
@@ -255,13 +257,17 @@ public abstract class SpriteComponent implements ISpriteComponent
 
 		if(!Equals.eq(def.w, sx)) props.put(PROP_SX, sx);
 		if(!Equals.eq(def.h, sy)) props.put(PROP_SY, sy);
+		if((def.tint == null && tint != null) ||
+		   !Equals.eq(def.tint, tint)) 
+			props.put(PROP_TINT, tint);
+
 	}
 
 	public void load(SpriteDef<?> def, Props props)
 	{
 		this.sx = props.get(PROP_SX, def.w);
 		this.sy = props.get(PROP_SY, def.h);
-
+		this.tint = props.getColor(PROP_TINT, def.tint);
 	}
 
 }
