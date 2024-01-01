@@ -12,4 +12,7 @@ public abstract class EntityDef
 	 */
 	@Getter @Setter protected String path;
 
+//	@Getter List <IComponentDef<?>> components;
+	
+	public abstract <E extends IComponentDef<?>> E getDef(Class <E> class1);
 }

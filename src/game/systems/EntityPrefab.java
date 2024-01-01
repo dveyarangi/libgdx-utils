@@ -5,7 +5,6 @@ import com.badlogic.gdx.utils.Pool.Poolable;
 
 import game.world.saves.Props;
 import lombok.Getter;
-import lombok.Setter;
 
 /**
  * This class provides definitions common for entity components, and allows to
@@ -27,7 +26,7 @@ public class EntityPrefab implements/*Component,*/ Poolable
 	 */
 	public boolean descendants = false;
 
-	@Getter @Setter private Props props;
+	@Getter private Props props;
 
 	/**
 	 * Used to initialize entity with additional components
@@ -71,7 +70,7 @@ public class EntityPrefab implements/*Component,*/ Poolable
 	 * @return Def of specified type
 	 */
 	@SuppressWarnings("unchecked")
-	public <E> E getDef( final Class<E> class1 )
+	public <E extends IComponentDef <?>> E getDef( final Class<E> class1 )
 	{
 		for( Object cdef : getDefs() )
 		{
